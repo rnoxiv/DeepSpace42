@@ -96,8 +96,11 @@ public class MainPanel {
     
     public InfosPanel getIPanel(){return this.iPanel;}
     public boolean getDetailBarOn(){return this.detailBarOn;}
+    public String getName() {return this.name;}
     
-    public String getName() {
-        return this.name;
+    public void handleInput(){
+        if(this.detailBarOn){
+            iPanel.handleInput();
+        }
     }
 }

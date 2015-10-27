@@ -8,7 +8,7 @@ import Interface.Main.RessourcesView;
 import Interface.Main.SpaceStationView;
 import Interface.MainPanel;
 import Interface.MissionPanel;
-import Main.Variables;
+import Utilities.Variables;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -88,6 +88,7 @@ public class Simulation extends GameState {
 
     @Override
     public void handleInput() {
+        mainPanel.get(curMainPanel).handleInput();
         if (Keys.isPressed(Keys.RIGHT)) {
             curMainPanel++;
             if (curMainPanel > NUMPANELS - 1) {

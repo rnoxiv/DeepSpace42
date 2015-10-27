@@ -2,7 +2,7 @@ package Interface.Main;
 
 import Actors.Vehicle;
 import Interface.MainPanel;
-import Main.Variables;
+import Utilities.Variables;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class RadarView extends MainPanel {
 
-    private final ArrayList<Vehicle> listDetectVehicles;
+    private final ArrayList<Vehicle> listVehicles;
     private Variables var;
     
     private static final Color FRONT_RADAR_PAINT = Color.GREEN;
@@ -51,7 +51,7 @@ public class RadarView extends MainPanel {
 
     public RadarView(String n, int sW, int mW, int tH, int tW) {
         super(n, sW, mW, tW, tH);
-        listDetectVehicles = new ArrayList<>();
+        listVehicles = new ArrayList<>();
         var = new Variables();
         addObjects();
         init();
@@ -76,16 +76,15 @@ public class RadarView extends MainPanel {
     }
 
     public void addObjects() {
-        Vehicle rdo1 = new Vehicle(var.randomName(),200,20,20,sWidth + 900, 300, -.1f, 0.1f);
-        this.addRadarDetectObject(rdo1);
-        Vehicle rdo3 = new Vehicle(var.randomName(),200,20,20,sWidth + 450, 415, 0.1f, -.1f);
-        this.addRadarDetectObject(rdo3);
-        iPanel.setList(listDetectVehicles);
+        Vehicle v1 = new Vehicle(var.randomName(),200,20,20,sWidth + 900, 300, -.1f, 0.1f);
+        this.addVehicle(v1);
+        Vehicle v2 = new Vehicle(var.randomName(),200,20,20,sWidth + 450, 415, 0.1f, -.1f);
+        this.addVehicle(v2);
+        Vehicle v3 = new Vehicle(var.randomName(),200,20,20,sWidth + 450, 500, 0.0f, 0.0f);
+        this.addVehicle(v3);
     }
-
-    public void addRadarDetectObject(Vehicle rdo) {
-        listDetectVehicles.add(rdo);
-    }
+    
+    public void addVehicle(Vehicle v){listVehicles.add(v);}
 
     @Override
     public void draw(Graphics2D g) {
@@ -110,7 +109,7 @@ public class RadarView extends MainPanel {
         line.setLine(centerX, radarY, centerX, radarY + diameter);
         g.draw(line);
 
-        for (Vehicle v : listDetectVehicles) {
+        for (Vehicle v : listVehicles) {
             v.draw(g);
         }
 
@@ -156,16 +155,20 @@ public class RadarView extends MainPanel {
     }
     
     public void checkVehicleOnRadar(){
-        for(Vehicle v : listDetectVehicles){
+        for(Vehicle v : listVehicles){
             double distance = var.calculateDistanceFromRadar(centerX, centerY,v.getObjectX(),v.getObjectY());
-            if(distance <= radius) v.setIsOnRadar(true);
-            else v.setIsOnRadar(false);
-        }
-            
+            if(distance <= radius) {
+                v.setIsOnRadar(true);
+                iPanel.addToList(v);
+            }else {
+                v.setIsOnRadar(false);
+                iPanel.removeFromList(v);
+            }
+        } 
     }
     
     public void radarScan() {
-        for (Vehicle v : listDetectVehicles) {
+        for (Vehicle v : listVehicles) {
             v.radarBeamCollisionCheck(lineRadar);
             v.move();
         }

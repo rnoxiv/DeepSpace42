@@ -1,15 +1,19 @@
 package Interface;
 
 import Actors.Vehicle;
+import Handlers.Keys;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 public class InfosPanel {
 
     private final static String name = "Infos";
-    private int height, width, tWidth, topHeight;
+    private int height, width, tWidth, topHeight, curSelect;
 
     private ArrayList<Vehicle> list;
 
@@ -21,6 +25,7 @@ public class InfosPanel {
         tWidth = tW;
         topHeight = tH;
         isShown = false;
+        curSelect = 0;
         list = new ArrayList<>();
     }
 
@@ -33,8 +38,24 @@ public class InfosPanel {
 
     }
 
-    public void setList(ArrayList l) {
-        this.list = l;
+    public void addToList(Vehicle v) {
+        if (!list.contains(v)) {
+            this.list.add(v);
+        }
+    }
+
+    public void removeFromList(Vehicle v) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) == v) {
+                v.setVisible(false);
+                list.remove(v);
+                if (i == 0) {
+                    curSelect = 0;
+                } else {
+                    curSelect = i - 1;
+                }
+            }
+        }
     }
 
     public void setShown(boolean b) {
@@ -58,13 +79,61 @@ public class InfosPanel {
     public void drawList(Graphics2D g) {
         int fontSize = width / 20;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-        g.setColor(Color.GREEN);
+        int boxInfoSize = 0;
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getIsOnRadar()) {
-                String n = list.get(i).getName();
-                int sizeName = n.length() * fontSize;
-                g.drawString(n, tWidth - width / 2 - sizeName / 4, height / 10 + (i+2)*fontSize);
+            if (i == curSelect) {
+                g.setColor(new Color(15, 185, 120));
+            } else {
+                g.setColor(Color.GREEN);
+            }
+            String n = list.get(i).getName();
+            int sizeName = n.length() * fontSize;
+            g.drawString(n, tWidth - width / 2 - sizeName / 4, height / 10 + (i + 3) * 2*fontSize + boxInfoSize);
+            if (list.get(i).getInfo()) {
+                String passengers = "passengers : " + list.get(i).getNbPassenger() + "/" + list.get(i).getSize();
+                AffineTransform affinetransform = new AffineTransform();
+                FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
+                    int textHeight = (int) (g.getFont().getStringBounds(passengers, frc).getHeight());
+                    int textWidth = (int) (g.getFont().getStringBounds(passengers, frc).getWidth());
+                    boxInfoSize = 2*textHeight;
+                    g.setStroke(new BasicStroke(1));
+                    g.drawRect(tWidth - width / 2-textWidth, height / 10 + (i + 3) * 2*fontSize + 5, 2*textWidth, boxInfoSize);
+                    g.drawString(passengers, tWidth-width/2 - textWidth/2, height / 10 + (i + 3) * 2*fontSize + 5 + boxInfoSize/2+fontSize/4);
+                }
             }
         }
+
+    
+
+    public void select() {
+    }
+
+    public void handleInput() {
+        if (Keys.isPressed(Keys.CTRL)) {
+            if (this.list.get(curSelect).getVisible()) {
+                this.list.get(curSelect).setVisible(false);
+                this.list.get(curSelect).showInfo(false);
+            } else {
+                this.list.get(curSelect).setVisible(true);
+                this.list.get(curSelect).showInfo(true);
+            }
+        }
+
+        if (Keys.isPressed(Keys.UP)) {
+            this.list.get(curSelect).setVisible(false);
+            this.list.get(curSelect).showInfo(false);
+            if (curSelect > 0) {
+                curSelect--;
+            }
+        }
+
+        if (Keys.isPressed(Keys.DOWN)) {
+            this.list.get(curSelect).setVisible(false);
+            this.list.get(curSelect).showInfo(false);
+            if (curSelect < list.size() - 1) {
+                curSelect++;
+            }
+        }
+
     }
 }

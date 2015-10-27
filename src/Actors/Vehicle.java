@@ -1,7 +1,7 @@
 
 package Actors;
 
-import Main.Variables;
+import Utilities.Variables;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -18,7 +18,7 @@ public class Vehicle extends Actors{
 
     private Rectangle _rdrDetectRect;
     
-    private boolean visible, isOnRadar;
+    private boolean visible, isOnRadar, showInfo;
 
     private float _objectX,_objectY,_objSpeedX,_objSpeedY,_objOpacity = 0;
     
@@ -32,6 +32,7 @@ public class Vehicle extends Actors{
         
         this.visible = false;
         this.isOnRadar = false;
+        this.showInfo = false;
         
         _rdrDetectRect = new Rectangle(30, 30);
         this.nbPassenger = _nbPassenger;
@@ -44,7 +45,7 @@ public class Vehicle extends Actors{
         }
         
         
-        if (radarLine.intersects(_rdrDetectRect)) {
+        if (radarLine.intersects(_rdrDetectRect) || visible) {
             _objOpacity = GREEN_FIX;
             _clrObject = new Color(0.0f, GREEN_FIX, 0, _objOpacity);
         } else {
@@ -58,8 +59,7 @@ public class Vehicle extends Actors{
     
     public void draw(Graphics g) {
         _rdrDetectRect.setLocation((int) _objectX, (int) _objectY);
-        if(!visible) g.setColor(_clrObject);
-        else g.setColor(Color.GREEN);
+        g.setColor(_clrObject);
 
         g.fillOval(_rdrDetectRect.x, _rdrDetectRect.y, _rdrDetectRect.width, _rdrDetectRect.height);
     }
@@ -74,10 +74,12 @@ public class Vehicle extends Actors{
     public boolean getIsOnRadar(){return this.isOnRadar;}
     public int getNbPassenger(){return this.nbPassenger;}
     public int getSize(){return this.size;}
+    public boolean getInfo(){return this.showInfo;}
     
     public void setNbPassenger(int _nbPassenger){this.nbPassenger = _nbPassenger;}
     public void setSize(int _size){this.size = _size;}
     public void setVisible(boolean b){this.visible = b;}
     public void setIsOnRadar(boolean b){this.isOnRadar = b;}
+    public void showInfo(boolean b){this.showInfo = b;}
     
 }
