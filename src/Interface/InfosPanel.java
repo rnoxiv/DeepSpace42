@@ -88,22 +88,27 @@ public class InfosPanel {
             }
             String n = list.get(i).getName();
             int sizeName = n.length() * fontSize;
-            g.drawString(n, tWidth - width / 2 - sizeName / 4, height / 10 + (i + 3) * 2*fontSize + boxInfoSize);
+            g.drawString(n, tWidth - width / 2 - sizeName / 4, height / 10 + (i + 3) * 2 * fontSize + boxInfoSize);
             if (list.get(i).getInfo()) {
-                String passengers = "passengers : " + list.get(i).getNbPassenger() + "/" + list.get(i).getSize();
+                String passengers = "passengers : " + list.get(i).getNbPassenger();
+                String size = "size : " + list.get(i).getSize();
                 AffineTransform affinetransform = new AffineTransform();
                 FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
-                    int textHeight = (int) (g.getFont().getStringBounds(passengers, frc).getHeight());
-                    int textWidth = (int) (g.getFont().getStringBounds(passengers, frc).getWidth());
-                    boxInfoSize = 2*textHeight;
-                    g.setStroke(new BasicStroke(1));
-                    g.drawRect(tWidth - width / 2-textWidth, height / 10 + (i + 3) * 2*fontSize + 5, 2*textWidth, boxInfoSize);
-                    g.drawString(passengers, tWidth-width/2 - textWidth/2, height / 10 + (i + 3) * 2*fontSize + 5 + boxInfoSize/2+fontSize/4);
-                }
+                int textHeightP = (int) (g.getFont().getStringBounds(passengers, frc).getHeight());
+                int textHeightS = (int) (g.getFont().getStringBounds(size, frc).getHeight());
+                int textWidthP = (int) (g.getFont().getStringBounds(passengers, frc).getWidth());
+                int textWidthS = (int) (g.getFont().getStringBounds(size, frc).getWidth());
+                
+                int textHeight = textHeightP + textHeightS;
+                int textWidth = Math.max(textWidthP, textWidthS);
+                boxInfoSize = 2 * textHeight;
+                g.setStroke(new BasicStroke(1));
+                g.drawRect(tWidth - width / 2 - textWidth, height / 10 + (i + 3) * 2 * fontSize + 5, 2 * textWidth, boxInfoSize);
+                g.drawString(passengers, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 *fontSize + boxInfoSize/2);
+                g.drawString(size, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * fontSize + 5 + boxInfoSize/2  + fontSize / 2);
             }
         }
-
-    
+    }
 
     public void select() {
     }

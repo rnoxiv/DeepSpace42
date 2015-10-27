@@ -76,11 +76,11 @@ public class RadarView extends MainPanel {
     }
 
     public void addObjects() {
-        Vehicle v1 = new Vehicle(var.randomName(),200,20,20,sWidth + 900, 300, -.1f, 0.1f);
+        Vehicle v1 = new Vehicle(var.randomName(),42,5,1,sWidth + 900, 300, -.1f, 0.1f);
         this.addVehicle(v1);
-        Vehicle v2 = new Vehicle(var.randomName(),200,20,20,sWidth + 450, 415, 0.1f, -.1f);
+        Vehicle v2 = new Vehicle(var.randomName(),69,6,1,sWidth + 450, 415, 0.2f, -.2f);
         this.addVehicle(v2);
-        Vehicle v3 = new Vehicle(var.randomName(),200,20,20,sWidth + 450, 500, 0.0f, 0.0f);
+        Vehicle v3 = new Vehicle(var.randomName(),1,2,2,sWidth + 450, 500, 0.0f, 0.0f);
         this.addVehicle(v3);
     }
     
