@@ -1,19 +1,29 @@
+/*
+* classe Panel, gère l'affichage, les updates, et les inputs/outputs
+*/
+
 package Main;
 
+import Audio.JukeBox;
 import GameState.GameStateManager;
+import Handlers.Keys;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable {
+public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     private Thread thread;
     private boolean running;
     private GameStateManager gsm;
-
+    
     //Thread
     private static final int FPS = 60;
     private static final long targetTime = 1000 / FPS;
@@ -22,13 +32,15 @@ public class GamePanel extends JPanel implements Runnable {
     // graphics
     private BufferedImage image;
     private Graphics2D g;
-    private int tWidth, tHeight, mWidth, sWidth, sHeight;
-
+    private int tWidth, tHeight;
+    
     public GamePanel() {
         super();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         tWidth = (int) screenSize.getWidth();
         tHeight = (int) screenSize.getHeight();
+        
+        addKeyListener(this);
         
         setPreferredSize(new Dimension(tWidth, tHeight));
         requestFocus();
@@ -49,17 +61,19 @@ public class GamePanel extends JPanel implements Runnable {
         image = new BufferedImage(tWidth, tHeight, BufferedImage.TYPE_INT_RGB);
         g = (Graphics2D) image.getGraphics();
         
+        JukeBox.init();
+        
         gsm = new GameStateManager();
     }
-    
+
     @Override
     public void run() {
         init();
 
         while (running) {
             start = System.nanoTime();
-            update();
             draw();
+            update();
             drawToScreen();
             elapsed = System.nanoTime() - start;
             wait = targetTime - elapsed / 1000000;
@@ -77,18 +91,29 @@ public class GamePanel extends JPanel implements Runnable {
     public void draw() {
         gsm.draw(g);
     }
-    
+
     public void drawToScreen() {
         Graphics g2 = getGraphics();
         g2.drawImage(image, 0, 0, tWidth, tHeight, null);
         g2.dispose();
     }
-
+    
     public void update() {
         gsm.update();
+        Keys.update();
     }
     
-    public int getTWidth(){return tWidth;}
-    public int getTHeight(){return tHeight;}
-
+    @Override
+    public void keyPressed(KeyEvent k) {
+        Keys.keySet(k.getKeyCode(), true);
+    }
+    
+    @Override
+    public void keyTyped(KeyEvent k) {
+    }
+    
+    @Override
+    public void keyReleased(KeyEvent k) {
+        Keys.keySet(k.getKeyCode(), false);
+    }
 }

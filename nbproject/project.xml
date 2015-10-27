@@ -6,6 +6,7 @@
             <name>DeepSpace42</name>
             <source-roots>
                 <root id="src.dir"/>
+                <root id="src.rsc.dir" name="Ressources"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>

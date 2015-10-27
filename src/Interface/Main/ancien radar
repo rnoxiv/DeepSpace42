@@ -1,0 +1,28 @@
+
+//        g.setColor(Color.RED);
+//        g.fillRect(cX - 10, cY - 10, 20, 20);
+//        g.setColor(new Color(220, 205, 205));
+//        Area circle1 = new Area(new Ellipse2D.Double(cX - 100, cY - 100, 200, 200));
+//        g.draw(circle1);
+//        Area circle2 = new Area(new Ellipse2D.Double(cX - 250, cY - 250, 500, 500));
+//        g.draw(circle2);
+//        Area circle3 = new Area(new Ellipse2D.Double(cX - 400, cY - 400, 800, 800));
+//        g.draw(circle3);
+//        Area circle4 = new Area(new Ellipse2D.Double(cX - 550, cY - 550, 1100, 1100));
+//        g.draw(circle4);
+//        Area circle5 = new Area(new Ellipse2D.Double(cX - 700, cY - 700, 1400, 1400));
+//        g.draw(circle5);
+//        Area circle6 = new Area(new Ellipse2D.Double(cX - 850, cY - 850, 1700, 1700));
+//        g.draw(circle6);
+//        line.setLine(cX, 0, cX, height);
+//        g.draw(line);
+//        line.setLine(sWidth, cY, sWidth + width, cY);
+//        g.draw(line);
+//
+//        AffineTransform backTransform = g.getTransform();
+//        g.rotate(angle, cX, cY);
+//        g.setColor(FRONT_ACTIVE_RADAR_PAINT);
+//        line.setLine(cX, cY, cX + radius + 100, cY);
+//        g.draw(line);
+//
+//        g.setTransform(backTransform);
