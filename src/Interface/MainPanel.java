@@ -25,7 +25,7 @@ public class MainPanel {
         this.topHeight = this.height / 18;
         this.mainHeight = height - topHeight - 2;
         maxRightBarWidth = tWidth/6;
-        this.iPanel = new InfosPanel(maxRightBarWidth,tWidth,height,topHeight);
+        this.iPanel = new InfosPanel("Infos",maxRightBarWidth,tWidth,height,topHeight);
         
         detailBarOn = false;
         finishSliding = false;

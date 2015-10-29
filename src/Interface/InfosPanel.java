@@ -12,14 +12,15 @@ import java.util.ArrayList;
 
 public class InfosPanel {
 
-    private final static String name = "Infos";
-    private int height, width, tWidth, topHeight, curSelect;
+    protected String name;
+    protected int height, width, tWidth, topHeight, curSelect;
 
     private ArrayList<Vehicle> list;
 
-    private boolean isShown;
-
-    public InfosPanel(int w, int tW, int h, int tH) {
+    protected boolean isShown;
+    
+    public InfosPanel(String n,int w, int tW, int h, int tH) {
+        this.name = n;
         width = w;
         height = h;
         tWidth = tW;
