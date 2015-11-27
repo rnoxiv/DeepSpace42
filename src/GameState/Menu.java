@@ -1,6 +1,6 @@
 package GameState;
 
-import Audio.JukeBox;
+import Utilities.JukeBox;
 import Handlers.Keys;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,6 +32,7 @@ public class Menu extends GameState {
 
     @Override
     public void update() {
+        if(JukeBox.isRunning("bgIntro2")){ JukeBox.stop("bgIntro2");}
         handleInput();
     }
 
@@ -56,7 +57,6 @@ public class Menu extends GameState {
             int textWidth = (int)(introFont.getStringBounds(options[i], frc).getWidth());
             if(i ==0) boxWidth = (int)(introFont.getStringBounds(options[i], frc).getWidth());
             int textHeight = (int)(introFont.getStringBounds(options[i], frc).getHeight());
-            //g.drawString(options[i], width / 2 - textWidth/2, height * (i + 1) / (options.length + 1));
             g.drawString(options[i], (i+1)*width/(options.length+1) - textWidth/2, height/2+textHeight/4);
             g.drawRect((i+1)*width/(options.length+1) - boxWidth/2, height/2-textHeight/2, boxWidth, textHeight);
         }
@@ -64,7 +64,7 @@ public class Menu extends GameState {
 
     private void select() {
         if (currentSelection == 0) {
-            JukeBox.stop("bgIntro");
+            JukeBox.stop("bgIntro2");
             gsm.setState(GameStateManager.SIMULATIONSTATE);
         } else if (currentSelection == 1) {
             //gsm.setState(GameStateManager.HELPSTATE);
@@ -85,14 +85,14 @@ public class Menu extends GameState {
 
         if (Keys.isPressed(Keys.LEFT)) {
             if (currentSelection > 0) {
-                //JukeBox.play("menuoption", 0);
+                JukeBox.play("menuoption", 0);
                 currentSelection--;
             }
         }
 
         if (Keys.isPressed(Keys.RIGHT)) {
             if (currentSelection < options.length - 1) {
-                //JukeBox.play("menuoption", 0);
+                JukeBox.play("menuoption", 0);
                 currentSelection++;
             }
         }

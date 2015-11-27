@@ -4,7 +4,7 @@
 
 package Main;
 
-import Audio.JukeBox;
+import Utilities.JukeBox;
 import GameState.GameStateManager;
 import Handlers.Keys;
 import java.awt.Dimension;

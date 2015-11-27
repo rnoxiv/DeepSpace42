@@ -1,22 +1,28 @@
 package Interface;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 public class MainPanel {
 
-    protected boolean detailBarOn, finishSliding;
+    protected static final Stroke PASSIVE_STROKE = new BasicStroke(0.8f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
+    protected static final Stroke ACTIVE_STROKE = new BasicStroke(3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
+
+    protected boolean detailBarOn, isSliding;
     protected InfosPanel iPanel;
-    private String name;
+    protected String name, sound;
     /**
      * swidth = width panel gauche, width = width mainPanel, tWidth = width
      * fenêtre, height = height fenêtre
      */
     protected int width, height, sWidth, tWidth, topHeight, mainHeight, rightBarWidth, maxRightBarWidth;
 
-    public MainPanel(String n, int sW, int mW, int tH, int tW) {
+    public MainPanel(String n, int sW, int mW, int tH, int tW, Class c, String na, String sound) {
         super();
+        this.sound = sound;
         this.name = n;
         this.width = mW;
         this.sWidth = sW;
@@ -24,39 +30,36 @@ public class MainPanel {
         this.height = tH;
         this.topHeight = this.height / 18;
         this.mainHeight = height - topHeight - 2;
-        maxRightBarWidth = tWidth/6;
-        this.iPanel = new InfosPanel("Infos",maxRightBarWidth,tWidth,height,topHeight);
-        
+        maxRightBarWidth = tWidth / 6;
+        this.iPanel = new InfosPanel(na, maxRightBarWidth, tWidth, height, topHeight, c);
+
         detailBarOn = false;
-        finishSliding = false;
+        isSliding = false;
         rightBarWidth = 0;
     }
 
     public void draw(Graphics2D g) {
         g.setColor(Color.GREEN);
         g.drawLine(sWidth + 1, topHeight, tWidth, topHeight);
-        
+
         g.setColor(Color.BLACK);
         g.fillRect(tWidth - rightBarWidth, topHeight + 1, tWidth, height);
         g.setColor(Color.GREEN);
         g.drawLine(tWidth - rightBarWidth, topHeight + 1, tWidth - rightBarWidth, height);
-        
+
         drawName(g);
-        
-        if(this.iPanel.isShown()){
+
+        if (this.iPanel.isShown()) {
             this.iPanel.draw(g);
         }
     }
 
     public void update() {
         iPanel.update();
-        if (detailBarOn && !finishSliding) {
+        if (detailBarOn && isSliding) {
             showDetailBar();
-        }else if(!detailBarOn && !finishSliding){
+        } else if (!detailBarOn && isSliding) {
             hideDetailBar();
-        }else if((detailBarOn && finishSliding) || (!detailBarOn && finishSliding)){
-            finishSliding = false;
-            
         }
     }
 
@@ -69,38 +72,53 @@ public class MainPanel {
     }
 
     public void showDetailBar() {
-        if(rightBarWidth<maxRightBarWidth){
+        if (rightBarWidth < maxRightBarWidth) {
             this.rightBarWidth += 10;
-            this.width -=10;
-        }else{
+            this.width -= 10;
+        } else {
             this.rightBarWidth = maxRightBarWidth;
-            this.width = tWidth-sWidth-rightBarWidth;
-            this.finishSliding = true;
-            this.iPanel.setShown(true);        
+            this.width = tWidth - sWidth - rightBarWidth;
+            this.isSliding = false;
+            this.iPanel.setShown(true);
         }
     }
-    
-    public void hideDetailBar(){
+
+    public void hideDetailBar() {
         this.iPanel.setShown(false);
-        if(rightBarWidth>0){
-            this.rightBarWidth -=10;
+        if (rightBarWidth > 0) {
+            this.rightBarWidth -= 10;
             this.width += 10;
-        }else{
+        } else {
             this.rightBarWidth = 0;
-            this.width = tWidth-sWidth;
-            this.finishSliding = true;
+            this.width = tWidth - sWidth;
+            this.isSliding = false;
         }
     }
+
+    public void setDetailBar(boolean b) {
+        this.detailBarOn = b;
+        this.isSliding = true;
+    }
+
+    public InfosPanel getIPanel() {
+        return this.iPanel;
+    }
+
+    public boolean getDetailBarOn() {
+        return this.detailBarOn;
+    }
+
+    public String getName() {
+        return this.name;
+    }
     
-    public void setDetailBar(boolean b) {this.detailBarOn = b;}
-    
-    public InfosPanel getIPanel(){return this.iPanel;}
-    public boolean getDetailBarOn(){return this.detailBarOn;}
-    public String getName() {return this.name;}
-    
-    public void handleInput(){
-        if(this.detailBarOn){
-            iPanel.handleInput();
+    public String getSound(){
+        return this.sound;
+    }
+
+    public void handleInput() {
+        if (this.detailBarOn) {
+            this.iPanel.handleInput();
         }
     }
 }

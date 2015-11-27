@@ -15,7 +15,6 @@ public class GameStateManager {
     public static final int MENUSTATE = 0;
     public static final int HELPSTATE = 1;
     public static final int SIMULATIONSTATE = 2;
-    public static final int INTROSTATE = 3;
 
     private Font subFont;
 
@@ -23,7 +22,7 @@ public class GameStateManager {
 
         gameStates = new GameState[NUMGAMESTATES];
 
-        currentState = INTROSTATE;
+        currentState = MENUSTATE;
         loadState(currentState);
 
     }
@@ -32,8 +31,6 @@ public class GameStateManager {
         if (state == SIMULATIONSTATE) {
             gameStates[state] = new Simulation(this);
         } else if (state == MENUSTATE) {
-            gameStates[state] = new Menu(this);
-        } else if (state == INTROSTATE) {
             gameStates[state] = new Intro(this);
         }
 //                else if(state == HELPSTATE)

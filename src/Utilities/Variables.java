@@ -1,7 +1,7 @@
 package Utilities;
 
 import java.awt.Color;
-import java.awt.Shape;
+import java.awt.geom.Area;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -35,12 +35,40 @@ public class Variables {
                 b = new StringBuilder();
             }
         }
-        System.out.println(b.toString());
         return b.toString();
     }
     
-    public double calculateDistanceFromRadar(float cx, float cy, float x, float y){
+    public int randNum(int min, int max) {
+       Random rand = new Random();
+        return (rand.nextInt((max - min) + 1) + min);
+    }
+    
+    public float randFloat(float min, float max) {
+       Random rand = new Random();
+        return (rand.nextFloat()*(max - min) + min);
+    }
+    
+    public double calculateDistanceFromPoint(float cx, float cy, float x, float y){
         return Math.sqrt((cx-x)*(cx-x) + (cy-y)*(cy-y));
+    }
+    
+    public boolean Collision(Area area1, Area area2) {
+        boolean collide = false;
+
+        Area collide1 = new Area(area1);
+        collide1.subtract(area2);
+
+        if (!collide1.equals(area1)) {
+            collide = true;
+        }
+
+        Area collide2 = new Area(area2);
+        collide2.subtract(area1);
+
+        if (!collide2.equals(area2)) {
+            collide = true;
+        }
+        return collide;
     }
     
     public Color getMainColor() {
