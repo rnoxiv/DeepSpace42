@@ -1,5 +1,6 @@
 package Interface.Main;
 
+import Evenements.AsteroidIncoming;
 import GameObjects.Actors.Ship;
 import GameObjects.Zone;
 import Interface.MainPanel;
@@ -24,7 +25,7 @@ public class RadarView extends MainPanel {
 
     private int eventCountAddVehicle, addVehicleEventMaxTime, waitEvent, waitEventMaxTime;
     
-    
+    private boolean asteroid = false;
     
     private final ArrayList<Ship> listVehicles;
     private final ArrayList<Ship> listToDock;
@@ -152,6 +153,44 @@ public class RadarView extends MainPanel {
         g.setStroke(ACTIVE_STROKE);
         g.setTransform(backTransform);
 
+        if (asteroid == true){
+            AsteroidIncoming Asteroid = new AsteroidIncoming();
+            System.out.println(Asteroid.getColorAsteroid());
+            int sp = var.randNum(1,2);
+            float speed = sp / 1000f;
+            int randSource = var.randNum(0, 3);
+            int posX = sWidth;
+            int posY = topHeight;
+            switch (randSource) {
+                case 0:
+                    posX = var.randNum(sWidth, tWidth-rightBarWidth);
+                    break;
+                case 1:
+                    posY = var.randNum(topHeight, height);
+                    posX = width;
+                    break;
+                case 2:
+                    posX = var.randNum(sWidth, tWidth-rightBarWidth);
+                    posY = height;
+                    break;
+                case 3:
+                    posY = var.randNum(topHeight, height);
+                    break;
+            }
+            float dirX = centerX - 15 - posX;
+            float dirY = centerY - 15 - posY;
+            Ship AsteroidVehicle = new Ship(space,speed, posX, posY, dirX, dirY, (int)Asteroid.getRayonAsteroid(), Asteroid.getColorAsteroid());
+            AsteroidVehicle.setSize("ENORME");
+            AsteroidVehicle.addpassagers(0);
+            AsteroidVehicle.setId(" ???? - " + AsteroidVehicle.getSize());
+            addVehicle(AsteroidVehicle);   
+            asteroid = false;
+        }
+        
+    }
+    
+    public void setAsteroid(boolean b){
+        this.asteroid = b;
     }
     
     public Area stationCollision(){
@@ -218,7 +257,7 @@ public class RadarView extends MainPanel {
             float dirX = centerX - 15 - posX;
             float dirY = centerY - 15 - posY;
 
-            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side));
+            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, new Color(0, 1.0f, 0, 0.0f)));
         }
     }
 
@@ -250,6 +289,10 @@ public class RadarView extends MainPanel {
                 iPanel.removeVehicleFromList(listVehicles.get(i));
                 listToDock.add(listVehicles.get(i));
                 listVehicles.remove(listVehicles.get(i));
+            }
+            if(listVehicles.get(i).getSize()=="ENORME" && var.Collision(listVehicles.get(i).vehicleCollision(), stationCollision())){
+                System.out.println("Simulation terminée, un asteroide s'est écrasé sur la station Deep Space 42");
+                gameOver = true;
             }
         }
     }

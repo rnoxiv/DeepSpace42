@@ -11,7 +11,7 @@ public class MainPanel {
     protected static final Stroke PASSIVE_STROKE = new BasicStroke(0.8f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
     protected static final Stroke ACTIVE_STROKE = new BasicStroke(3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
 
-    protected boolean detailBarOn, isSliding;
+    protected boolean detailBarOn, isSliding, gameOver;
     protected InfosPanel iPanel;
     protected String name, sound;
     /**
@@ -32,10 +32,11 @@ public class MainPanel {
         this.mainHeight = height - topHeight - 2;
         maxRightBarWidth = tWidth / 6;
         this.iPanel = new InfosPanel(na, maxRightBarWidth, tWidth, height, topHeight, c);
-
-        detailBarOn = false;
-        isSliding = false;
-        rightBarWidth = 0;
+        
+        gameOver = false;
+        this.detailBarOn = false;
+        this.isSliding = false;
+        this.rightBarWidth = 0;
     }
 
     public void draw(Graphics2D g) {
@@ -98,6 +99,10 @@ public class MainPanel {
     public void setDetailBar(boolean b) {
         this.detailBarOn = b;
         this.isSliding = true;
+    }
+    
+    public boolean getGameOver(boolean b) {
+        return gameOver;
     }
 
     public InfosPanel getIPanel() {

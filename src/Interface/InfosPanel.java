@@ -130,7 +130,7 @@ public class InfosPanel {
         }
 
     }
-
+    
     public void drawVehicles(Graphics2D g) {
         int fontSize = width / 20;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
@@ -148,7 +148,7 @@ public class InfosPanel {
             int textHeightT = (int) (g.getFont().getStringBounds(na, frc).getHeight());
             int textWidthT = (int) (g.getFont().getStringBounds(na, frc).getWidth());
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize);
-            if (vehiclesList.get(i).getInfo()) {
+            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize()!="ENORME") {
                 String passengers = "passengers : " + vehiclesList.get(i).getPassagers().size();
                 String size = "size : " + vehiclesList.get(i).getSize();
                 String acceptOrReject = "A - Accept / R - Reject / W - Wait";
@@ -177,6 +177,38 @@ public class InfosPanel {
                 g.drawString(size, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 5 + boxInfoSize / 2 + textHeightT / 2);
                 if (!vehiclesList.get(i).getHasChosen()) {
                     g.drawString(acceptOrReject, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 20 + boxInfoSize / 2 + textHeightT / 2 + textHeightA / 2);
+                }
+
+            }
+            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize()=="ENORME") {
+                String rayonAsteroid = "rayon : " + vehiclesList.get(i).getSide();
+                String size = "size : " + vehiclesList.get(i).getSize();
+                String eliminateOrShield = "E - Eliminate / S - Shield";
+                affinetransform = new AffineTransform();
+                frc = new FontRenderContext(affinetransform, true, true);
+
+                int textHeightP = (int) (g.getFont().getStringBounds(rayonAsteroid, frc).getHeight());
+                int textHeightS = (int) (g.getFont().getStringBounds(size, frc).getHeight());
+                int textWidthP = (int) (g.getFont().getStringBounds(rayonAsteroid, frc).getWidth());
+                int textWidthS = (int) (g.getFont().getStringBounds(size, frc).getWidth());
+                int textHeightA = 0;
+                int textWidthA = 0;
+
+                if (!vehiclesList.get(i).getHasChosen()) {
+                    textHeightA = (int) (g.getFont().getStringBounds(eliminateOrShield, frc).getHeight());
+                    textWidthA = (int) (g.getFont().getStringBounds(eliminateOrShield, frc).getWidth());
+                }
+                
+                int textHeight = textHeightP + textHeightS+textHeightA;
+                int textWidth = Math.max(textWidthP, textWidthS+textWidthA);
+
+                boxInfoSize = 2 * textHeight;
+                g.setStroke(new BasicStroke(1));
+                g.drawRect(tWidth - width + boxConst, height / 10 + (i + 3) * 2 * textHeightT + 5, widthBox, boxInfoSize);
+                g.drawString(rayonAsteroid, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize / 2);
+                g.drawString(size, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 5 + boxInfoSize / 2 + textHeightT / 2);
+                if (!vehiclesList.get(i).getHasChosen()) {
+                    g.drawString(eliminateOrShield, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 20 + boxInfoSize / 2 + textHeightT / 2 + textHeightA / 2);
                 }
 
             }
@@ -317,6 +349,20 @@ public class InfosPanel {
                     this.vehiclesList.get(curSelect).setIsMoving(false);
                 }
             }
+        }
+        
+        if(Keys.isPressed(Keys.E)){
+            if(this.classList == VEHICLE){
+                if(!this.vehiclesList.get(curSelect).getHasChosen()){
+                    this.vehiclesList.get(curSelect).setVisible(false);
+                    this.vehiclesList.get(curSelect).showInfo(false);
+                    removeVehicleFromList(this.vehiclesList.get(curSelect));
+                }
+            }
+        }
+        
+        if(Keys.isPressed(Keys.S)){
+             System.out.println("Bouclier activé");
         }
 
     }

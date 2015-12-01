@@ -3,13 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Dav/Documents/NetBeansProjects/DeepSpace42/src/Interface/MainPanel.java</file>
-            <file>file:/C:/Users/Dav/Documents/NetBeansProjects/DeepSpace42/src/GameObjects/Actors/Vehicle.java</file>
-            <file>file:/C:/Users/Dav/Documents/NetBeansProjects/DeepSpace42/src/GameObjects/Actor.java</file>
-            <file>file:/C:/Users/Dav/Documents/NetBeansProjects/DeepSpace42/src/Interface/Main/RadarView.java</file>
-            <file>file:/C:/Users/Dav/Documents/NetBeansProjects/DeepSpace42/src/Interface/InfosPanel.java</file>
-            <file>file:/C:/Users/Dav/Documents/NetBeansProjects/DeepSpace42/src/GameState/Simulation.java</file>
-            <file>file:/C:/Users/Dav/Documents/NetBeansProjects/DeepSpace42/src/GameState/Intro.java</file>
+            <file>file:/C:/Users/Baptiste/Documents/NetBeansProjects/DeepSpace42-masterBat/src/GameObjects/Actors/Ship.java</file>
+            <file>file:/C:/Users/Baptiste/Documents/NetBeansProjects/DeepSpace42-masterBat/src/Interface/Main/RadarView.java</file>
+            <file>file:/C:/Users/Baptiste/Documents/NetBeansProjects/DeepSpace42-masterBat/src/Evenements/AsteroidIncoming.java</file>
+            <file>file:/C:/Users/Baptiste/Documents/NetBeansProjects/DeepSpace42-masterBat/src/Interface/InfosPanel.java</file>
+            <file>file:/C:/Users/Baptiste/Documents/NetBeansProjects/DeepSpace42-masterBat/src/GameState/Simulation.java</file>
         </group>
     </open-files>
 </project-private>

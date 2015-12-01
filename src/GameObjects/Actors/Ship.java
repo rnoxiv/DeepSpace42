@@ -18,7 +18,7 @@ import java.util.Random;
 public class Ship extends Actor {
 
     private final float GREEN_FIX = 1.0f;
-    private Color clrVehicle = new Color(0, GREEN_FIX, 0, 0.0f);
+    private Color clrVehicle;
 
     private int wShip;
     //private double direction;
@@ -48,15 +48,16 @@ public class Ship extends Actor {
     private int angle;
     private int distance;
 
-    public Ship(Zone zone, float sp, float objX, float objY, float dirX, float dirY, int side) {
+    public Ship(Zone zone, float sp, float objX, float objY, float dirX, float dirY, int side, Color _clrVehicle) {
         super(zone);
         
         var = new Variables();
-        
+        this.clrVehicle = _clrVehicle;
         Random generator = new Random();
 
         // TAILLE DU VAISSEAU ALEATOIRE
         int iSize = generator.nextInt(12) + 1;
+        
         if (iSize <= 4) {
             this.size = "S";
             this.addpassagers(2);
@@ -75,8 +76,8 @@ public class Ship extends Actor {
         } else if (iSize <= 11) {
             this.size = "XL";
             this.addpassagers(45);
-            this.volume = 42;
-
+            this.volume = 42; 
+            
         } else {
             this.size = "C";
             this.addpassagers(4);
@@ -106,7 +107,7 @@ public class Ship extends Actor {
         rdrDetectRect = new Rectangle(wShip, wShip);
 
     }
-
+    
     public void radarBeamCollisionCheck(Shape radarLine) {
         if (radarLine == null) {
             return;
@@ -114,18 +115,19 @@ public class Ship extends Actor {
 
         if (radarLine.intersects(rdrDetectRect) || visible) {
             vOpacity = GREEN_FIX;
-            clrVehicle = new Color(0.0f, GREEN_FIX, 0, vOpacity);
+            clrVehicle = new Color(clrVehicle.getRed()/255, clrVehicle.getGreen()/255, clrVehicle.getBlue()/255, vOpacity);
         } else {
             vOpacity -= 0.01;
             if (vOpacity < 0) {
                 vOpacity = 0;
             }
-            clrVehicle = new Color(0.0f, GREEN_FIX, 0.0f, vOpacity);
+            clrVehicle = new Color(clrVehicle.getRed()/255, clrVehicle.getGreen()/255, clrVehicle.getBlue()/255, vOpacity);
         }
     }
 
     public void draw(Graphics g) {
         rdrDetectRect.setLocation((int) vehicleX, (int) vehicleY);
+        
         g.setColor(clrVehicle);
 
         g.fillOval(rdrDetectRect.x, rdrDetectRect.y, rdrDetectRect.width, rdrDetectRect.height);
@@ -243,6 +245,10 @@ public class Ship extends Actor {
         return size;
     }
 
+    public int getSide(){
+        return wShip;
+    }
+    
     public void setSize(String size) {
         this.size = size;
     }
@@ -255,7 +261,7 @@ public class Ship extends Actor {
         this.volume = volume;
     }
 
-    private void addpassagers(int num) {
+    public void addpassagers(int num) {
         this.passagers = new ArrayList<Person>(num);
         for (int i = 0; i < num; i++) {
             this.passagers.add(new Person(this.getLocation(), this));

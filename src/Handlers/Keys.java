@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 
 public class Keys {
 	//number of Keys 
-	public static final int NUM_KEYS = 10;
+	public static final int NUM_KEYS = 12;
 	
         //arrays of the keys states
 	public static boolean keyState[] = new boolean[NUM_KEYS];
@@ -20,6 +20,8 @@ public class Keys {
 	public static final int A = 7;
 	public static final int R = 8;
 	public static final int W = 9;
+        public static final int E = 10;
+        public static final int S = 11;
         
 	
 	public static void keySet(int i, boolean b) {
@@ -33,6 +35,8 @@ public class Keys {
 		else if(i == KeyEvent.VK_A) keyState[A] = b;
 		else if(i == KeyEvent.VK_R) keyState[R] = b;
 		else if(i == KeyEvent.VK_W) keyState[W] = b;
+                else if(i == KeyEvent.VK_E) keyState[E] = b;
+                else if(i == KeyEvent.VK_S) keyState[S] = b;
 	}
 	
 	public static void update() {

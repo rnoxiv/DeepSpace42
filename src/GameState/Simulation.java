@@ -14,6 +14,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 public class Simulation extends GameState {
     
@@ -44,9 +47,25 @@ public class Simulation extends GameState {
     
     private Variables var;
 
+    private int x = 1;
+    private double y = 1;
+    
     public Simulation(GameStateManager gsm) {
         super(gsm);
         init();
+        Timer timer = new Timer(7000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int number = var.randNum(0,99);
+                if (number>=0 & number <100){
+                    radarView.setAsteroid(true);
+                    System.out.println("Un asteroide approche");
+                }/*
+                if (number>=50 & number <100){
+                    System.out.println("Pas d'evenement");
+                }*/
+            }
+        });
+        timer.start();
     }
     
     @Override
@@ -92,6 +111,11 @@ public class Simulation extends GameState {
         for (int i = 0; i < mainPanel.length; i++) {
             mainPanel[i].update();
         }
+        
+        if(radarView.getGameOver(true)){
+            gsm.setState(gsm.GAMEOVERSTATE);
+        }
+        
         missionPanel.update();
         docksPanel.update();
         
