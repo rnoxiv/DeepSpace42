@@ -29,7 +29,7 @@ public class Ship extends Actor {
 
     private Rectangle rdrDetectRect;
 
-    private boolean visible, isOnRadar, showInfo, dockingAccepted, hasChosen, docked, moving;
+    private boolean visible, isOnRadar, showInfo, dockingAccepted, hasChosen, docked, moving, destroyed;
 
     private float vehicleX, vehicleY, directionX, directionY, speed, vOpacity = 0;
 
@@ -103,6 +103,7 @@ public class Ship extends Actor {
         this.docked = false;
         this.moving = true;
         this.dockingAccepted = false;
+        this.destroyed = false;
 
         rdrDetectRect = new Rectangle(wShip, wShip);
 
@@ -176,6 +177,9 @@ public class Ship extends Actor {
     public boolean getHasChosen() {
         return this.hasChosen;
     }
+    public boolean getDestroyed() {
+        return this.destroyed;
+    }
 
     public boolean isMoving() {
         return this.moving;
@@ -195,6 +199,9 @@ public class Ship extends Actor {
 
     public void setDocked(boolean b) {
         this.docked = b;
+    }
+    public void setDestroyed(boolean b) {
+        this.destroyed = b;
     }
 
     public void setIsMoving(boolean b) {

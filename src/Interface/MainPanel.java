@@ -1,5 +1,6 @@
 package Interface;
 
+import Utilities.Delay;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -14,6 +15,7 @@ public class MainPanel {
     protected boolean detailBarOn, isSliding, gameOver;
     protected InfosPanel iPanel;
     protected String name, sound;
+    
     /**
      * swidth = width panel gauche, width = width mainPanel, tWidth = width
      * fenêtre, height = height fenêtre
@@ -32,7 +34,7 @@ public class MainPanel {
         this.mainHeight = height - topHeight - 2;
         maxRightBarWidth = tWidth / 6;
         this.iPanel = new InfosPanel(na, maxRightBarWidth, tWidth, height, topHeight, c);
-        
+
         gameOver = false;
         this.detailBarOn = false;
         this.isSliding = false;
@@ -65,11 +67,12 @@ public class MainPanel {
     }
 
     public void drawName(Graphics2D g) {
-        int fontSize = (width + rightBarWidth) / 60;
+        int fontSize = (tWidth - sWidth) / 60;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
         g.setColor(Color.GREEN);
         int sizeName = this.getName().length() * fontSize;
         g.drawString(this.getName(), sWidth + (width + rightBarWidth) / 2 - sizeName / 4, 2 * topHeight / 3);
+        
     }
 
     public void showDetailBar() {
@@ -100,7 +103,7 @@ public class MainPanel {
         this.detailBarOn = b;
         this.isSliding = true;
     }
-    
+
     public boolean getGameOver(boolean b) {
         return gameOver;
     }
@@ -116,11 +119,11 @@ public class MainPanel {
     public String getName() {
         return this.name;
     }
-    
-    public String getSound(){
+
+    public String getSound() {
         return this.sound;
     }
-
+    
     public void handleInput() {
         if (this.detailBarOn) {
             this.iPanel.handleInput();

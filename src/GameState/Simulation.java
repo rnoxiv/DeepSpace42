@@ -1,5 +1,7 @@
 package GameState;
 
+import Evenements.AsteroidIncoming;
+import Evenements.FireEvent;
 import GameObjects.Zone;
 import Utilities.JukeBox;
 import Handlers.Keys;
@@ -9,6 +11,7 @@ import Interface.Main.RessourcesView;
 import Interface.Main.SpaceStationView;
 import Interface.MainPanel;
 import Interface.MissionPanel;
+import Utilities.Time;
 import Utilities.Variables;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,12 +33,6 @@ public class Simulation extends GameState {
     private static final int RADAR = 0;
     private static final int STATION = 1;
     private static final int RESSOURCES = 2;
-    //Gestion des Hangars
-    private static final int HANGAR_A = 19;
-    private static final int HANGAR_B = 20;
-    private static final int HANGAR_C = 21;
-    private static final int HANGAR_D = 22;
-    private static final int HANGAR_E = 23;
     
     private RadarView radarView;
     private SpaceStationView SSView;
@@ -50,19 +47,33 @@ public class Simulation extends GameState {
     private int x = 1;
     private double y = 1;
     
+    private Time time;
+    
     public Simulation(GameStateManager gsm) {
         super(gsm);
         init();
-        Timer timer = new Timer(7000, new ActionListener() {
+        time = new Time();
+        Timer timer = new Timer(5000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int number = var.randNum(0,99);
-                if (number>=0 & number <100){
-                    radarView.setAsteroid(true);
-                    System.out.println("Un asteroide approche");
-                }/*
-                if (number>=50 & number <100){
-                    System.out.println("Pas d'evenement");
-                }*/
+                System.out.println(number);
+                if (number>=55 & number <60){
+                    AsteroidIncoming asteroid = new AsteroidIncoming();
+                    asteroid.launch();
+                    radarView.createAsteroid();
+                    System.out.println("Un asteroide approche de la station spatiale !");
+                }
+                if (number>=60 & number <100){
+                    System.out.println("Pas d'evenement particulier, la station Deep Space 42 est calme.");
+                }
+                if (number>=50 & number <55){
+                    FireEvent fire = new FireEvent();
+                    fire.launch();
+                }
+                if (number>=0 & number <50){
+                    int numShips = var.randNum(0,2);
+                    radarView.createVehicle(numShips);
+                }
             }
         });
         timer.start();
@@ -101,13 +112,14 @@ public class Simulation extends GameState {
         mainPanel[RESSOURCES]  = ReView;
         curMainPanel = RADAR;
         
-        JukeBox.loop("mainBG");
-        JukeBox.loop(mainPanel[curMainPanel].getSound());
+        //JukeBox.loop("mainBG");
+        //JukeBox.loop(mainPanel[curMainPanel].getSound());
         
     }
     
     @Override
     public void update() {
+        time.update();
         for (int i = 0; i < mainPanel.length; i++) {
             mainPanel[i].update();
         }

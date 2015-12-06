@@ -4,6 +4,7 @@ import GameObjects.Actors.Ship;
 import GameObjects.Zones.Building;
 import GameObjects.Ressource;
 import Handlers.Keys;
+import Utilities.Delay;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -14,8 +15,9 @@ import java.util.ArrayList;
 
 public class InfosPanel {
 
-    private String name;
-    private int height, width, tWidth, topHeight, widthBox, curSelect;
+    private final String name;
+    private final int height, width, tWidth, widthBox;
+    private int curSelect, classList;
 
     private static final int boxConst = 10;
 
@@ -23,20 +25,19 @@ public class InfosPanel {
     private static final int RESSOURCE = 1;
     private static final int BUILDING = 2;
 
-    private int classList;
-
     private ArrayList<Ship> vehiclesList;
     private ArrayList<Ressource> ressourcesList;
     private ArrayList<Building> buildingsList;
 
-    private boolean isShown;
+    private boolean isShown, shieldOn = false;
+
+    protected Delay attDelay, shieldDelay, shieldTime;
 
     public InfosPanel(String n, int w, int tW, int h, int tH, Class c) {
         this.name = "Infos (" + n + ")";
         width = w;
         height = h;
         tWidth = tW;
-        topHeight = tH;
         widthBox = width - 20;
         this.isShown = false;
         setClassList(c);
@@ -44,6 +45,8 @@ public class InfosPanel {
         vehiclesList = new ArrayList<>();
         ressourcesList = new ArrayList<>();
         buildingsList = new ArrayList<>();
+        attDelay = new Delay(10000000);
+        attDelay.terminate();
     }
 
     public void setClassList(Class c) {
@@ -112,7 +115,6 @@ public class InfosPanel {
         g.setColor(Color.GREEN);
         AffineTransform affinetransform = new AffineTransform();
         FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
-        int textHeight = (int) (g.getFont().getStringBounds(name, frc).getHeight());
         int textWidth = (int) (g.getFont().getStringBounds(name, frc).getWidth());
         g.drawString(name, tWidth - width / 2 - textWidth / 2, height / 10);
         g.drawLine(tWidth - width, height / 9, tWidth + width, height / 9);
@@ -130,7 +132,7 @@ public class InfosPanel {
         }
 
     }
-    
+
     public void drawVehicles(Graphics2D g) {
         int fontSize = width / 20;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
@@ -148,7 +150,7 @@ public class InfosPanel {
             int textHeightT = (int) (g.getFont().getStringBounds(na, frc).getHeight());
             int textWidthT = (int) (g.getFont().getStringBounds(na, frc).getWidth());
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize);
-            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize()!="ENORME") {
+            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize() != "ENORME") {
                 String passengers = "passengers : " + vehiclesList.get(i).getPassagers().size();
                 String size = "size : " + vehiclesList.get(i).getSize();
                 String acceptOrReject = "A - Accept / R - Reject / W - Wait";
@@ -166,9 +168,9 @@ public class InfosPanel {
                     textHeightA = (int) (g.getFont().getStringBounds(acceptOrReject, frc).getHeight());
                     textWidthA = (int) (g.getFont().getStringBounds(acceptOrReject, frc).getWidth());
                 }
-                
-                int textHeight = textHeightP + textHeightS+textHeightA;
-                int textWidth = Math.max(textWidthP, textWidthS+textWidthA);
+
+                int textHeight = textHeightP + textHeightS + textHeightA;
+                int textWidth = Math.max(textWidthP, textWidthS + textWidthA);
 
                 boxInfoSize = 2 * textHeight;
                 g.setStroke(new BasicStroke(1));
@@ -180,10 +182,10 @@ public class InfosPanel {
                 }
 
             }
-            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize()=="ENORME") {
+            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize() == "ENORME") {
                 String rayonAsteroid = "rayon : " + vehiclesList.get(i).getSide();
                 String size = "size : " + vehiclesList.get(i).getSize();
-                String eliminateOrShield = "E - Eliminate / S - Shield";
+                String eliminateOrShield = "E - Eliminate";
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
 
@@ -198,9 +200,9 @@ public class InfosPanel {
                     textHeightA = (int) (g.getFont().getStringBounds(eliminateOrShield, frc).getHeight());
                     textWidthA = (int) (g.getFont().getStringBounds(eliminateOrShield, frc).getWidth());
                 }
-                
-                int textHeight = textHeightP + textHeightS+textHeightA;
-                int textWidth = Math.max(textWidthP, textWidthS+textWidthA);
+
+                int textHeight = textHeightP + textHeightS + textHeightA;
+                int textWidth = Math.max(textWidthP, textWidthS + textWidthA);
 
                 boxInfoSize = 2 * textHeight;
                 g.setStroke(new BasicStroke(1));
@@ -253,7 +255,7 @@ public class InfosPanel {
         }
         g.setColor(Color.GREEN);
     }
-
+    
     public void handleInput() {
         if (Keys.isPressed(Keys.CTRL)) {
             if (this.classList == BUILDING) {
@@ -322,47 +324,44 @@ public class InfosPanel {
                 }
             }
         }
-        
-        if(Keys.isPressed(Keys.A)){
-            if(this.classList == VEHICLE){
-                if(!this.vehiclesList.get(curSelect).getHasChosen()){
+
+        if (Keys.isPressed(Keys.A)) {
+            if (this.classList == VEHICLE) {
+                if (!this.vehiclesList.get(curSelect).getHasChosen()) {
                     this.vehiclesList.get(curSelect).setHasChosen(true);
                     this.vehiclesList.get(curSelect).setDockingAccepted(true);
                     this.vehiclesList.get(curSelect).setIsMoving(true);
                 }
             }
         }
-        
-        if(Keys.isPressed(Keys.R)){
-            if(this.classList == VEHICLE){
-                if(!this.vehiclesList.get(curSelect).getHasChosen()){
+
+        if (Keys.isPressed(Keys.R)) {
+            if (this.classList == VEHICLE) {
+                if (!this.vehiclesList.get(curSelect).getHasChosen()) {
                     this.vehiclesList.get(curSelect).setHasChosen(true);
                     this.vehiclesList.get(curSelect).setDockingAccepted(false);
                     this.vehiclesList.get(curSelect).setIsMoving(true);
                 }
             }
         }
-        
-        if(Keys.isPressed(Keys.W)){
-            if(this.classList == VEHICLE){
-                if(!this.vehiclesList.get(curSelect).getHasChosen()){
+
+        if (Keys.isPressed(Keys.W)) {
+            if (this.classList == VEHICLE) {
+                if (!this.vehiclesList.get(curSelect).getHasChosen()) {
                     this.vehiclesList.get(curSelect).setIsMoving(false);
                 }
             }
         }
-        
-        if(Keys.isPressed(Keys.E)){
-            if(this.classList == VEHICLE){
-                if(!this.vehiclesList.get(curSelect).getHasChosen()){
+
+        if (Keys.isPressed(Keys.E)) {
+            if (this.classList == VEHICLE && vehiclesList.get(curSelect).getSize() == "ENORME") {
+                if (!this.vehiclesList.get(curSelect).getHasChosen() && attDelay.isOver()) {
                     this.vehiclesList.get(curSelect).setVisible(false);
                     this.vehiclesList.get(curSelect).showInfo(false);
-                    removeVehicleFromList(this.vehiclesList.get(curSelect));
+                    this.vehiclesList.get(curSelect).setDestroyed(true);
+                    attDelay.restart();
                 }
             }
-        }
-        
-        if(Keys.isPressed(Keys.S)){
-             System.out.println("Bouclier activé");
         }
 
     }

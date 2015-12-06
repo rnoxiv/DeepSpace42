@@ -20,6 +20,7 @@ public class Building extends Zone {
 
     private final int initPosX;
 
+    private boolean isFire = false;
     private boolean selected;
     private Color color;
 
@@ -157,6 +158,10 @@ public class Building extends Zone {
         return this.name;
     }
 
+    public Color getColorBuilding() {
+        return this.color;
+    }
+    
     public int getCurrentCapacity() {
         return this.currentCapacity;
     }
@@ -181,7 +186,8 @@ public class Building extends Zone {
         selected = b;
         if (selected) {
             this.color = colorSelected;
-        } else {
+        }
+        else {
             this.color = colorBasic;
         }
     }
@@ -214,4 +220,12 @@ public class Building extends Zone {
         this.showInfo = b;
     }
 
+    public boolean getFire(){
+        return this.isFire;
+    }
+    
+    public void setFire(boolean b){
+        this.isFire = b;
+    }
+    
 }
