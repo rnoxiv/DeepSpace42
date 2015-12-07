@@ -29,7 +29,7 @@ public class InfosPanel {
     private ArrayList<Ressource> ressourcesList;
     private ArrayList<Building> buildingsList;
 
-    private boolean isShown, shieldOn = false;
+    private boolean isShown, shieldOn = false, info = false;
 
     protected Delay attDelay, shieldDelay, shieldTime;
 
@@ -127,10 +127,53 @@ public class InfosPanel {
                 drawBuildings(g);
                 break;
             case RESSOURCE:
-                drawVehicles(g);
+                drawRessources(g);
                 break;
         }
 
+    }
+    
+     public void drawRessources(Graphics2D g){
+        
+        int fontSize = width/20;
+        g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
+        int boxInfoSize = 0;
+        for (int i = 0; i < ressourcesList.size(); i++) {
+            if (i == curSelect) {
+                g.setColor(new Color(15, 185, 120));
+            } else {
+                g.setColor(Color.GREEN);
+            }
+            String na = ressourcesList.get(i).getName();
+            AffineTransform affinetransform = new AffineTransform();
+            FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
+            int textHeightT = (int) (g.getFont().getStringBounds(na, frc).getHeight());
+            int textWidthT = (int) (g.getFont().getStringBounds(na, frc).getWidth());
+            g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize);
+            if (ressourcesList.get(i).getInfo()) {
+                String maxCap = "Maximum Capacity : " + ressourcesList.get(i).getMaxcap();
+                String curCap = "Current Capacity : " + ressourcesList.get(i).getCurrentcap();
+                affinetransform = new AffineTransform();
+                frc = new FontRenderContext(affinetransform, true, true);
+
+                int textHeightP = (int) (g.getFont().getStringBounds(maxCap, frc).getHeight());
+                int textHeightS = (int) (g.getFont().getStringBounds(curCap, frc).getHeight());
+                int textWidthP = (int) (g.getFont().getStringBounds(maxCap, frc).getWidth());
+                int textWidthS = (int) (g.getFont().getStringBounds(curCap, frc).getWidth());
+                int textHeightA = 0;
+                int textWidthA = 0;
+                
+                int textHeight = textHeightP + textHeightS+textHeightA;
+                int textWidth = Math.max(textWidthP, textWidthS+textWidthA);
+                
+                boxInfoSize = 2 * textHeight;
+                g.setStroke(new BasicStroke(1));
+                g.drawRect(tWidth - width + boxConst, height / 10 + (i + 3) * 2 * textHeightT + 5, widthBox, boxInfoSize);
+                g.drawString(maxCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize / 2);
+                g.drawString(curCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 5 + boxInfoSize / 2 + textHeightT / 2);
+                
+            }
+        }
     }
 
     public void drawVehicles(Graphics2D g) {
@@ -258,6 +301,11 @@ public class InfosPanel {
     
     public void handleInput() {
         if (Keys.isPressed(Keys.CTRL)) {
+            if(info){
+                info = false;
+            }else{
+                info = true;
+            }
             if (this.classList == BUILDING) {
                 if (this.buildingsList.get(curSelect).getInfo()) {
                     this.buildingsList.get(curSelect).showInfo(false);
@@ -273,7 +321,11 @@ public class InfosPanel {
                     this.vehiclesList.get(curSelect).showInfo(true);
                 }
             } else if (this.classList == RESSOURCE) {
-                this.vehiclesList.get(curSelect).showInfo(true);
+                if (this.ressourcesList.get(curSelect).getInfo()) {
+                    this.ressourcesList.get(curSelect).showInfo(false);
+                } else {
+                    this.ressourcesList.get(curSelect).showInfo(true);
+                }
             }
 
         }
@@ -286,19 +338,27 @@ public class InfosPanel {
                 if (curSelect > 0) {
                     curSelect--;
                     this.buildingsList.get(curSelect).setSelected(true);
+                    if(info){
+                        this.buildingsList.get(curSelect).showInfo(true);
+                    }
                 }
             } else if (this.classList == VEHICLE) {
                 this.vehiclesList.get(curSelect).setVisible(false);
                 this.vehiclesList.get(curSelect).showInfo(false);
                 if (curSelect > 0) {
                     curSelect--;
+                    if(info){
+                        this.vehiclesList.get(curSelect).showInfo(true);
+                    }
                 }
             } else if (this.classList == RESSOURCE) {
-                //this.ressourcesList.get(curSelect).showInfo(false);
+                this.ressourcesList.get(curSelect).showInfo(false);
                 if (curSelect > 0) {
                     curSelect--;
+                    if(info){
+                        this.ressourcesList.get(curSelect).showInfo(true);
+                    }
                 }
-
             }
         }
 
@@ -310,17 +370,26 @@ public class InfosPanel {
                 if (curSelect < buildingsList.size() - 1) {
                     curSelect++;
                     this.buildingsList.get(curSelect).setSelected(true);
+                    if(info){
+                        this.buildingsList.get(curSelect).showInfo(true);
+                    }
                 }
             } else if (this.classList == VEHICLE) {
                 this.vehiclesList.get(curSelect).setVisible(false);
                 this.vehiclesList.get(curSelect).showInfo(false);
                 if (curSelect < vehiclesList.size() - 1) {
                     curSelect++;
+                    if(info){
+                        this.vehiclesList.get(curSelect).showInfo(true);
+                    }
                 }
             } else if (this.classList == RESSOURCE) {
-                this.vehiclesList.get(curSelect).showInfo(false);
+                this.ressourcesList.get(curSelect).showInfo(false);
                 if (curSelect < ressourcesList.size() - 1) {
                     curSelect++;
+                    if(info){
+                        this.ressourcesList.get(curSelect).showInfo(true);
+                    }
                 }
             }
         }

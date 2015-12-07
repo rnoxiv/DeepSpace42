@@ -55,7 +55,7 @@ public class Building extends Zone {
 
         this.name = name;
         this.maxCapacity = maxCap;
-        this.currentCapacity = 0;
+        this.currentCapacity = 200;
         this.happiness = 0;
         this.posX = x;
         this.posY = y;
@@ -227,5 +227,9 @@ public class Building extends Zone {
     public void setFire(boolean b){
         this.isFire = b;
     }
+    
+    public void setCapacity(int cc){
+         this.currentCapacity = cc;
+     }
     
 }

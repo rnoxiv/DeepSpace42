@@ -1,6 +1,5 @@
 package Interface.Main;
 
-import GameObjects.Zone;
 import GameObjects.Zones.Building;
 import GameObjects.Zones.Buildings.Hangar;
 import Interface.MainPanel;
@@ -36,7 +35,7 @@ public class SpaceStationView extends MainPanel {
         
         posBuildings = new int[]{width / 2, height / 8, width / 6, height / 4, width / 3, height / 8, 2 * width / 3, height / 8, 5 * width / 6, height / 4, width / 6, 3 * height / 8, width / 3, height / 4, 2 * width / 3, height / 4, 5 * width / 6, 3 * height / 8, width / 6, height / 2, width / 2, height / 2, 5 * width / 6, height / 2, width / 6, 5 * height / 8, width / 3, 5 * height / 8, 2 * width / 3, 5 * height / 8, 5 * width / 6, 5 * height / 8, width / 6, 3 * height / 4, width / 2, 3 * height / 4, 5 * width / 6, 3 * height / 4, width / 6, 7 * height / 8, width / 3, 7 * height / 8, width / 2, 7 * height / 8, 2 * width / 3, 7 * height / 8, 5 * width / 6, 7 * height / 8};
 
-        maxCapBuilding = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1500, 500, 750, 500, 1000};
+        maxCapBuilding = new int[]{1, 1000, 2000, 500, 500, 1000, 500, 2000, 500, 1000, 1000, 2000, 4000, 500, 500, 1000, 2000, 1000, 1000, 1500, 500, 750, 500, 1000};
         tail = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
         head = new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 17, 10, 17, 17, 17, 17, 17, 17};
         //#ROP
@@ -57,7 +56,7 @@ public class SpaceStationView extends MainPanel {
             }
 
         }
-        System.out.println(listBuilding.get(numBuildings - 5).getName());
+        listBuilding.get(0).setCapacity(1);
 
         this.iPanel.setBuildingsList(listBuilding);
     }

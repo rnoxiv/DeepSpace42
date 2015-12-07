@@ -1,7 +1,6 @@
 package Evenements;
 
 import GameObjects.Zones.Building;
-import Interface.Main.SpaceStationView;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -19,15 +18,15 @@ public class FireEvent extends Evenement{
     private int mWidth = tWidth - tWidth / 5;
     private int sWidth = tWidth - mWidth;
     private int tHeight = (int) screenSize.getHeight();
-    SpaceStationView SSView = new SpaceStationView("Space Station View", sWidth, mWidth, tWidth, tHeight,null);
+    private ArrayList<Building> buildingList;
     
-    public FireEvent(){
+    public FireEvent(ArrayList<Building> l){
+        buildingList = l;
         launch();
     }
     
     public void launch(){
         Timer timer1 = new Timer(5000, new ActionListener() {
-            ArrayList<Building> buildingList = SSView.getListBuildings();
             ArrayList<Building> fireBuildingList = new ArrayList();
             ArrayList<ArrayList<Building>> neighboursList = new ArrayList();
             ArrayList<Building> a = new ArrayList();
@@ -35,11 +34,6 @@ public class FireEvent extends Evenement{
             public void actionPerformed(ActionEvent e) {
                 x=x+1;
                 Random r = new Random();
-                for (int j=0;j<buildingList.size();j++){
-                    if (buildingList.get(buildingList.size() - 1 - j).getName() == "Pompiers"){
-                        buildingList.remove(buildingList.get(buildingList.size() - 1 - j));
-                    }
-                }
                 if(x % 2 == 0){
                     if(x<=10 && fireBuildingList.size() != 0){
                         for (int i=0;i<fireBuildingList.size();i++){
@@ -50,6 +44,7 @@ public class FireEvent extends Evenement{
                         Building fireBuilding = buildingList.get(r.nextInt(buildingList.size()));
                         System.out.println("Attention ! " + fireBuilding.getName() + " en feu !");
                         fireBuilding.setFire(true);
+                        fireBuilding.addCapacity(500);
                         fireBuilding.setColorBuilding(Color.orange);
                         fireBuildingList.add(fireBuilding);
                     }

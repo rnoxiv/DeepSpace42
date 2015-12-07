@@ -1,6 +1,5 @@
 package Interface;
 
-import Utilities.Delay;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -65,7 +64,11 @@ public class MainPanel {
             hideDetailBar();
         }
     }
-
+    
+    public int getTopHeight(){
+        return this.topHeight;
+    }
+    
     public void drawName(Graphics2D g) {
         int fontSize = (tWidth - sWidth) / 60;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));

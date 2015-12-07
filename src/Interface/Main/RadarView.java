@@ -175,12 +175,12 @@ public class RadarView extends MainPanel {
             g.draw(ellipse);
         }
 
-        g.setColor(new Color(0f, 0f, 1f, 0.1f));
+        g.setColor(new Color(15f/255, 157f/255, 232f/255f, 0.3f));
 
         if (shieldDiam != 0) {
             g.fill(shield);
         }
-
+        
         g.setColor(FRONT_PASSIVE_RADAR_PAINT);
 
         line.setLine(radarX, centerY, radarX + diameter, centerY);
@@ -191,7 +191,7 @@ public class RadarView extends MainPanel {
         for (Ship v : listVehicles) {
             v.draw(g);
         }
-
+        
         g.setColor(Color.GREEN);
         //g.fillRect((int) centerX - 15, (int) centerY - 15, 30, 30);
         g.fillRect(station.x, station.y, station.width, station.height);
@@ -410,7 +410,9 @@ public class RadarView extends MainPanel {
     public ArrayList<Ship> getListToDock() {
         return listToDock;
     }
-
+    
+    public boolean getShieldOn(){return this.shieldOn;}
+    
     public void removeFromListToDock(Ship v) {
         for (int i = 0; i < listToDock.size(); i++) {
             if (listToDock.get(i) == v) {
@@ -438,11 +440,12 @@ public class RadarView extends MainPanel {
         super.handleInput();
 
         if (Keys.isPressed(Keys.S)) {
-            System.out.println("shield");
             if (!shieldOn) {
                 shieldOn = true;
+                System.out.println("Bouclier activé");
             } else {
                 shieldOn = false;
+                System.out.println("Bouclier désactivé");
             }
 
         }
