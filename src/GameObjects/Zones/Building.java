@@ -6,17 +6,22 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
+import static java.lang.Math.abs;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Building extends Zone {
 
-    private String name, type;
+    private String type;
 
     private boolean showInfo;
 
-    private ArrayList<Building> neighbours;
-
-    private int maxCapacity, currentCapacity, happiness, width, height, posX, posY, fontSize, topHeight, sideWidth;
+    private ArrayList<Building> neighbours = new ArrayList();
+    
+    private final int maxCapacity, happiness, fontSize;
+    private int  currentCapacity, width, height, posX, posY ;
 
     private final int initPosX;
 
@@ -24,16 +29,16 @@ public class Building extends Zone {
     private boolean selected;
     private Color color;
 
-    private static final Color colorBasic = Color.GREEN;
-    private static final Color colorSelected = Color.WHITE;
+    private static final Color colorBasic = Color.green;
+    private static final Color colorSelected = Color.white;
+    private final static int red = 255, blue = 0;
+    private int green = 0;
+    private boolean orange;
 
     public Building(String name, int maxCap, int x, int y, String type, int w, int h, ArrayList<Building> neighbours) {
         super(name);
         this.neighbours = neighbours;
-        this.sideWidth = w;
-        this.topHeight = h;
 
-        this.name = name;
         this.maxCapacity = maxCap;
         this.currentCapacity = 0;
         this.happiness = 0;
@@ -50,10 +55,7 @@ public class Building extends Zone {
 
     public Building(String name, int maxCap, int x, int y, String type, int w, int h) {
         super(name);
-        this.sideWidth = w;
-        this.topHeight = h;
 
-        this.name = name;
         this.maxCapacity = maxCap;
         this.currentCapacity = 200;
         this.happiness = 0;
@@ -84,13 +86,32 @@ public class Building extends Zone {
         int textHeight = (int) (g.getFont().getStringBounds(this.name, frc).getHeight());
         g.setColor(Color.BLACK);
         g.fillRect(this.posX - textWidth / 2, this.posY - textHeight, textWidth, 2 * textHeight);
-        g.setColor(color);
+        if(this.isFire){
+            changeColor(g);
+        }
+        g.setColor(this.color);
         g.drawRect(this.posX - textWidth / 2, this.posY - textHeight, textWidth, 2 * textHeight);
 //        g.drawString(name, posX + 10, posY + 45);
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-        g.drawString(name, posX - textWidth / 2, posY);
+        g.drawString(this.name, this.posX - textWidth / 2, this.posY);
     }
-
+    
+    public void changeColor(Graphics2D g){
+        if(!orange && green <=140){
+            green++;
+            if(green == 140){
+                orange = true;
+            }
+        }else{
+            green--;
+            if(green == 0){
+                orange = false;
+            }
+        }
+        
+        this.color = new Color(red, green, blue);
+    }
+    
     public ArrayList<Building> getNeighbours() {
         return neighbours;
     }
@@ -99,6 +120,36 @@ public class Building extends Zone {
         this.neighbours = neighbours;
     }
 
+    public ArrayList<Building> addNeighbourFire (ArrayList <Building> ab, Building b){
+        List<Double> distanceList = new ArrayList();
+        for (Building ab1 : ab) {
+            float centerX = ab1.getPosX() + ab1.getWidth() / 2;
+            float centerY = ab1.getPosY() + ab1.getHeight() / 2;
+            double distance = sqrt(abs((centerX-b.getPosX())*(centerX-b.getPosX())+(centerY-b.getPosY())*(centerY-b.getPosY())));
+            if (distance != 0.0){
+                distanceList.add(distance);
+            }
+        }
+        Collections.sort(distanceList);
+        System.out.println("distanceList = " + distanceList);
+        double firstB = distanceList.get(0);
+        double secondB = distanceList.get(1);
+        for (Building ab1 : ab) {
+            float centerX = ab1.getPosX() + ab1.getWidth() / 2;
+            float centerY = ab1.getPosY() + ab1.getHeight() / 2;
+            double distance = sqrt(abs((centerX-b.getPosX())*(centerX-b.getPosX())+(centerY-b.getPosY())*(centerY-b.getPosY())));
+            if (distance == firstB) {
+                //b.addNeighbour(ab.get(j));
+                neighbours.add(ab1);
+            }
+            if (distance == secondB) {
+                //b.addNeighbour(ab.get(j));
+                neighbours.add(ab1);
+            }
+        }
+        return b.getNeighbours();
+    }
+    
     // RAJOUTE UN BATIMENT ADJACENT
     public boolean addNeighbour(Building pNeighbour) {
         if (this.neighbours.contains(pNeighbour)) {
@@ -154,10 +205,6 @@ public class Building extends Zone {
         return this.posY;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
     public Color getColorBuilding() {
         return this.color;
     }
@@ -187,7 +234,7 @@ public class Building extends Zone {
         if (selected) {
             this.color = colorSelected;
         }
-        else {
+        else{
             this.color = colorBasic;
         }
     }
@@ -226,6 +273,7 @@ public class Building extends Zone {
     
     public void setFire(boolean b){
         this.isFire = b;
+        if(!isFire) this.green = 0;
     }
     
     public void setCapacity(int cc){

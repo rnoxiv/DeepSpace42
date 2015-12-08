@@ -22,11 +22,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
-public class Simulation extends GameState {
+public final class Simulation extends GameState {
 
     private int tWidth, tHeight, mWidth, sWidth, sHeight;
 
-    private Zone space, docks, city;
+    private Zone space;
 
     private boolean echap = false;
 
@@ -48,33 +48,26 @@ public class Simulation extends GameState {
 
     private Variables var;
 
-    private int x = 1;
-    private double y = 1;
-
-    private Time time;
-
     public Simulation(GameStateManager gsm) {
         super(gsm);
         init();
-        time = new Time();
-        Timer timer = new Timer(5000, new ActionListener() {
+        Timer timer;
+        timer = new Timer(5000, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 int number = var.randNum(0, 99);
-                System.out.println(number);
-                if (number >= 55 & number < 60) {
+                if (number >= 35 & number < 40) {
                     AsteroidIncoming asteroid = new AsteroidIncoming();
                     asteroid.launch();
                     radarView.createAsteroid();
-                    System.out.println("Un asteroide approche de la station spatiale !");
+                    missionPanel.addMision("Caution : Asteroid!");
                 }
-                if (number >= 60 & number < 100) {
-                    System.out.println("Pas d'evenement particulier, la station Deep Space 42 est calme.");
-                }
-                if (number >= 50 & number < 55) {
+                if (number >= 30 & number < 35) {
                     FireEvent fire = new FireEvent(SSView.getListBuildings());
                     fire.launch();
+                    missionPanel.addMision("Caution : Fire!");
                 }
-                if (number >= 0 & number < 50) {
+                if (number >= 0 & number < 30) {
                     int numShips = var.randNum(0, 2);
                     radarView.createVehicle(numShips);
                 }
@@ -88,8 +81,6 @@ public class Simulation extends GameState {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         space = new Zone("SPACE");
-        docks = new Zone("DOCKS");
-        city = new Zone("CITY");
 
         JukeBox.load("/SFX/radar.mp3", "radar");
         JukeBox.load("/SFX/amongTheStars.mp3", "mainBG");
@@ -117,24 +108,23 @@ public class Simulation extends GameState {
         mainPanel[RESSOURCES] = ReView;
         curMainPanel = RADAR;
 
-        //JukeBox.loop("mainBG");
-        //JukeBox.loop(mainPanel[curMainPanel].getSound());
+        JukeBox.loop("mainBG");
+        JukeBox.loop(mainPanel[curMainPanel].getSound());
     }
 
     @Override
     public void update() {
-        time.update();
-        for (int i = 0; i < mainPanel.length; i++) {
-            mainPanel[i].update();
-        }
-
-        if (radarView.getGameOver(true)) {
-            gsm.setState(gsm.GAMEOVERSTATE);
+        Time.update();
+        for (MainPanel mP : mainPanel) {
+            mP.update();
+            if (mP.getGameOver()) {
+                gsm.setState(GameStateManager.GAMEOVERSTATE);
+            }
         }
 
         if (echap) {
             if (echapPanel.getEchap()) {
-                gsm.setState(gsm.MENUSTATE);
+                gsm.setState(GameStateManager.MENUSTATE);
             } else if (echapPanel.getStay()) {
                 echap = false;
                 echapPanel.reInit();
@@ -214,11 +204,7 @@ public class Simulation extends GameState {
         }
 
         if (Keys.isPressed(Keys.ECHAP)) {
-            if (echap) {
-                echap = false;
-            } else {
-                echap = true;
-            }
+            echap = !echap;
         }
     }
 

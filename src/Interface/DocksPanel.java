@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class DocksPanel {
 
-    private String name;
-    private int posY, height, width;
+    private final String name;
+    private final int posY, height, width;
     private ArrayList<Building> buildingsList;
 
     public DocksPanel(String n, int sW, int tH) {

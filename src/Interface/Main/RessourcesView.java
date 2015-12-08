@@ -27,7 +27,7 @@ public class RessourcesView extends MainPanel {
         this.iPanel.setRessourcesList(listRessources);
     }
 
-    public void init() {
+    private void init() {
         
         int popMax=0;
         for (int i=0; i<this.listPop.size()-5;i++){
@@ -46,8 +46,8 @@ public class RessourcesView extends MainPanel {
     @Override
     public void draw(Graphics2D g) {
         super.draw(g);
-        for (int i = 0; i < listRessources.size(); i++) {
-            listRessources.get(i).draw(g);
+        for (Ressource listRessource : listRessources) {
+            listRessource.draw(g);
         }
     }
 
@@ -125,9 +125,9 @@ public class RessourcesView extends MainPanel {
                 }
             }
         } else {
-            for (int i = 0; i < listRessources.size(); i++) {
-                if (listRessources.get(i).getPosx() < listRessources.get(i).getInitPosX()) {
-                    listRessources.get(i).setPosx(listRessources.get(i).getPosx() - this.rightBarWidth + rbWidth);
+            for (Ressource listRessource : listRessources) {
+                if (listRessource.getPosx() < listRessource.getInitPosX()) {
+                    listRessource.setPosx(listRessource.getPosx() - this.rightBarWidth + rbWidth);
                 }
             }
 

@@ -19,7 +19,6 @@ public class FireEvent extends Evenement{
     private int sWidth = tWidth - mWidth;
     private int tHeight = (int) screenSize.getHeight();
     private ArrayList<Building> buildingList;
-    
     public FireEvent(ArrayList<Building> l){
         buildingList = l;
         launch();
@@ -37,30 +36,43 @@ public class FireEvent extends Evenement{
                 if(x % 2 == 0){
                     if(x<=10 && fireBuildingList.size() != 0){
                         for (int i=0;i<fireBuildingList.size();i++){
-                            System.out.println("Attention ! " + fireBuildingList.get(fireBuildingList.size() - 1).getName() + " en feu !");
+                            System.out.println("Attention ! " + fireBuildingList.get(i).getName() + " en feu !");
                         }
                     }
                     if(x<=10 && fireBuildingList.size() == 0){
                         Building fireBuilding = buildingList.get(r.nextInt(buildingList.size()));
-                        System.out.println("Attention ! " + fireBuilding.getName() + " en feu !");
-                        fireBuilding.setFire(true);
-                        fireBuilding.addCapacity(500);
-                        fireBuilding.setColorBuilding(Color.orange);
-                        fireBuildingList.add(fireBuilding);
+                        if (fireBuilding.getName() != "Hall d'arrivée" && fireBuilding.getName() != "Pompiers"){
+                            if (fireBuilding.getFire() == true){
+                                System.out.println(fireBuilding.getName() + " est en feu, des personnes succombent dans l'incendie !");
+                                //baisse de la population dans ce batiment
+                            }
+                            if (fireBuilding.getFire() == false){
+                                System.out.println("Attention ! " + fireBuilding.getName() + " en feu !!!");
+                                fireBuilding.setFire(true);
+                                fireBuilding.setColorBuilding(Color.orange);
+                                fireBuildingList.add(fireBuilding);
+                            }
+                        }
                     }
                     if(x>10 && fireBuildingList.size() != 0){
                         for (int i=0;i<fireBuildingList.size();i++){
-                            if (fireBuildingList.get(fireBuildingList.size() - 1).getNeighbours() != null){
-                                neighboursList.add(fireBuildingList.get(fireBuildingList.size() - 1).getNeighbours());
-                            }
+                            neighboursList.add(fireBuildingList.get(fireBuildingList.size() - 1).addNeighbourFire(buildingList,fireBuildingList.get(fireBuildingList.size() - 1)));
                             System.out.println("neighboursList =" + neighboursList);
                         }
                         Random s = new Random();
                         if (neighboursList.size()>0){
                             a = neighboursList.get(s.nextInt(neighboursList.size()));
                             Building b = a.get(s.nextInt(a.size()));
-                            fireBuildingList.add(b);
-                            System.out.println("fireBuildingList = " + fireBuildingList);
+                            if (b.getFire()==false && b.getName()!= "Hall d'arrivée" && b.getName() != "Pompiers"){
+                                b.setFire(true);
+                                b.setColorBuilding(Color.orange);
+                                fireBuildingList.add(b);
+                                System.out.println("fireBuildingList = " + fireBuildingList);
+                            }
+                            if (b.getFire()==true && b.getName()!= "Hall d'arrivée" && b.getName() != "Pompiers"){
+                                System.out.println(b.getName() + " est en feu, des personnes succombent dans l'incendie !");
+                                //baisse de la population dans ce batiment
+                            }
                         }
                         if (neighboursList.size()==0){
                             System.out.println("erreur : la taille de la liste des voisins est vide");

@@ -8,11 +8,11 @@ import java.util.ArrayList;
  */
 public class Zone {
 
-    private ArrayList<Actor> actors; // LA LISTE DES ACTORS DANS LA ZONE
-    private String name; // LE NOM DE LA ZONE
+    protected ArrayList<Actor> actors; // LA LISTE DES ACTORS DANS LA ZONE
+    protected String name; // LE NOM DE LA ZONE
 
     public Zone(String pname) {
-        actors = new ArrayList<Actor>();
+        actors = new ArrayList();
         this.name = pname;
     }
 

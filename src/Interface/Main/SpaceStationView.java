@@ -3,6 +3,7 @@ package Interface.Main;
 import GameObjects.Zones.Building;
 import GameObjects.Zones.Buildings.Hangar;
 import Interface.MainPanel;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -11,21 +12,23 @@ public class SpaceStationView extends MainPanel {
 
     private static final String IPANELNAME = "Buildings";
 
-    private ArrayList<Building> neighbours;
+    private final ArrayList<Building> neighbours;
 
     private int rbWidth = 0;
-
+    
     private static final int numBuildings = 24;
 
     private static final int HALLARRIVE = 17;
-
-    private ArrayList<Building> listBuilding;
-    private ArrayList<Hangar> listHangars;
-    private String[] namesBuildings;
-    private int[] posBuildings;
-    private int[] maxCapBuilding;
-    private int[] tail;
-    private int[] head;
+    
+    private int fireBuildingNumber=0;
+    
+    private final ArrayList<Building> listBuilding;
+    private final ArrayList<Hangar> listHangars;
+    private final String[] namesBuildings;
+    private final int[] posBuildings;
+    private final int[] maxCapBuilding;
+    private final int[] tail;
+    private final int[] head;
 
     public SpaceStationView(String n, int sW, int mW, int tH, int tW, String sound) {
         super(n, sW, mW, tW, tH, Building.class, IPANELNAME, sound);
@@ -64,24 +67,20 @@ public class SpaceStationView extends MainPanel {
     @Override
     public void draw(Graphics2D g) {
         super.draw(g);
-        int coordX = 0;
-        int coordY = 0;
-        int coordXb = 0;
-        int coordYb = 0;
         g.setStroke(PASSIVE_STROKE);
         for (int j = 0; j <= tail.length - 1; j++) {
-            coordX = listBuilding.get(tail[j]).getPosX() + (listBuilding.get(tail[j]).getWidth() / 2);
-            coordY = listBuilding.get(tail[j]).getPosY() + (listBuilding.get(tail[j]).getHeight() / 2);
-            coordXb = listBuilding.get(head[j]).getPosX() + (listBuilding.get(head[j]).getWidth() / 2);
-            coordYb = listBuilding.get(head[j]).getPosY() + (listBuilding.get(head[j]).getWidth() / 2);
+            int coordX = listBuilding.get(tail[j]).getPosX() + (listBuilding.get(tail[j]).getWidth() / 2);
+            int coordY = listBuilding.get(tail[j]).getPosY() + (listBuilding.get(tail[j]).getHeight() / 2);
+            int coordXb = listBuilding.get(head[j]).getPosX() + (listBuilding.get(head[j]).getWidth() / 2);
+            int coordYb = listBuilding.get(head[j]).getPosY() + (listBuilding.get(head[j]).getWidth() / 2);
 
             g.drawLine(coordX, coordY, coordXb, coordYb);
         }
 
         int fontSize = tWidth / 100;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-        for (int z = 0; z < listBuilding.size(); z++) {
-            listBuilding.get(z).draw(g);
+        for (Building b : listBuilding) {
+            b.draw(g);
         }
         g.setStroke(ACTIVE_STROKE);
     }
@@ -93,19 +92,30 @@ public class SpaceStationView extends MainPanel {
         if (isSliding) {
             slideMap();
         }
+        
+        for (Building b : listBuilding) {
+            Color colorBuilding = b.getColorBuilding();
+            if (colorBuilding == Color.orange){
+                fireBuildingNumber++;
+            }
+        }
+        if(fireBuildingNumber >= 2*listBuilding.size()/3){
+            gameOver = true;
+        }
+        fireBuildingNumber = 0;
     }
 
     public void slideMap() {
         if (detailBarOn && isSliding) {
-            for (int i = 0; i < listBuilding.size(); i++) {
-                if (listBuilding.get(i).getPosX() - this.rightBarWidth + rbWidth > listBuilding.get(i).getInitPosX() - (tWidth - (tWidth / 5)) / 10) {
-                    listBuilding.get(i).setPosX(listBuilding.get(i).getPosX() - this.rightBarWidth + rbWidth);
+            for (Building b : listBuilding) {
+                if (b.getPosX() - this.rightBarWidth + rbWidth > b.getInitPosX() - (tWidth - (tWidth / 5)) / 10) {
+                    b.setPosX(b.getPosX() - this.rightBarWidth + rbWidth);
                 }
             }
         } else {
-            for (int i = 0; i < listBuilding.size(); i++) {
-                if (listBuilding.get(i).getPosX() < listBuilding.get(i).getInitPosX()) {
-                    listBuilding.get(i).setPosX(listBuilding.get(i).getPosX() - this.rightBarWidth + rbWidth);
+            for (Building b : listBuilding) {
+                if (b.getPosX() < b.getInitPosX()) {
+                    b.setPosX(b.getPosX() - this.rightBarWidth + rbWidth);
                 }
             }
 
@@ -120,5 +130,4 @@ public class SpaceStationView extends MainPanel {
     public ArrayList<Hangar> getListHangars() {
         return listHangars;
     }
-
 }

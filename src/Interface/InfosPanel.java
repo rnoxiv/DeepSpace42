@@ -29,7 +29,7 @@ public class InfosPanel {
     private ArrayList<Ressource> ressourcesList;
     private ArrayList<Building> buildingsList;
 
-    private boolean isShown, shieldOn = false, info = false;
+    private boolean isShown, info = false;
 
     protected Delay attDelay, shieldDelay, shieldTime;
 
@@ -49,7 +49,7 @@ public class InfosPanel {
         attDelay.terminate();
     }
 
-    public void setClassList(Class c) {
+    private void setClassList(Class c) {
         if (c == Ship.class) {
             this.classList = VEHICLE;
         } else if (c == Building.class) {
@@ -193,7 +193,7 @@ public class InfosPanel {
             int textHeightT = (int) (g.getFont().getStringBounds(na, frc).getHeight());
             int textWidthT = (int) (g.getFont().getStringBounds(na, frc).getWidth());
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize);
-            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize() != "ENORME") {
+            if (vehiclesList.get(i).getInfo() && !"ENORME".equals(vehiclesList.get(i).getSize())) {
                 String passengers = "passengers : " + vehiclesList.get(i).getPassagers().size();
                 String size = "size : " + vehiclesList.get(i).getSize();
                 String acceptOrReject = "A - Accept / R - Reject / W - Wait";
@@ -225,7 +225,7 @@ public class InfosPanel {
                 }
 
             }
-            if (vehiclesList.get(i).getInfo() && vehiclesList.get(i).getSize() == "ENORME") {
+            if (vehiclesList.get(i).getInfo() && "ENORME".equals(vehiclesList.get(i).getSize())) {
                 String rayonAsteroid = "rayon : " + vehiclesList.get(i).getSide();
                 String size = "size : " + vehiclesList.get(i).getSize();
                 String eliminateOrShield = "E - Eliminate";
@@ -267,7 +267,9 @@ public class InfosPanel {
         for (int i = 0; i < buildingsList.size(); i++) {
             if (i == curSelect) {
                 g.setColor(new Color(15, 185, 120));
-            } else {
+            } else if (buildingsList.get(i).getFire()){
+                g.setColor(Color.red);
+            }else{
                 g.setColor(Color.GREEN);
             }
 
@@ -301,11 +303,7 @@ public class InfosPanel {
     
     public void handleInput() {
         if (Keys.isPressed(Keys.CTRL)) {
-            if(info){
-                info = false;
-            }else{
-                info = true;
-            }
+            info = !info;
             if (this.classList == BUILDING) {
                 if (this.buildingsList.get(curSelect).getInfo()) {
                     this.buildingsList.get(curSelect).showInfo(false);
@@ -334,7 +332,6 @@ public class InfosPanel {
             if (this.classList == BUILDING) {
                 this.buildingsList.get(curSelect).setSelected(false);
                 this.buildingsList.get(curSelect).showInfo(false);
-                this.buildingsList.get(curSelect).setColorBuilding(Color.GREEN);
                 if (curSelect > 0) {
                     curSelect--;
                     this.buildingsList.get(curSelect).setSelected(true);
@@ -366,7 +363,6 @@ public class InfosPanel {
             if (this.classList == BUILDING) {
                 this.buildingsList.get(curSelect).setSelected(false);
                 this.buildingsList.get(curSelect).showInfo(false);
-                this.buildingsList.get(curSelect).setColorBuilding(Color.GREEN);
                 if (curSelect < buildingsList.size() - 1) {
                     curSelect++;
                     this.buildingsList.get(curSelect).setSelected(true);
@@ -423,7 +419,7 @@ public class InfosPanel {
         }
 
         if (Keys.isPressed(Keys.E)) {
-            if (this.classList == VEHICLE && vehiclesList.get(curSelect).getSize() == "ENORME") {
+            if (this.classList == VEHICLE && "ENORME".equals(vehiclesList.get(curSelect).getSize())) {
                 if (!this.vehiclesList.get(curSelect).getHasChosen() && attDelay.isOver()) {
                     this.vehiclesList.get(curSelect).setVisible(false);
                     this.vehiclesList.get(curSelect).showInfo(false);

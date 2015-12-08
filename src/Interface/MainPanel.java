@@ -107,7 +107,7 @@ public class MainPanel {
         this.isSliding = true;
     }
 
-    public boolean getGameOver(boolean b) {
+    public boolean getGameOver() {
         return gameOver;
     }
 

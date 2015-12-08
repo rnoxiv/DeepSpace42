@@ -24,8 +24,6 @@ public class RadarView extends MainPanel {
 
     private static final String IPANELNAME = "Vehicles";
 
-    private int eventCountAddVehicle, addVehicleEventMaxTime, waitEvent, waitEventMaxTime;
-
     private boolean asteroid = false;
 
     private final ArrayList<Ship> listVehicles;
@@ -43,13 +41,13 @@ public class RadarView extends MainPanel {
      */
     private GradientPaint gradient;
 
-    private Zone space;
+    private final Zone space;
 
-    private Line2D.Float line = new Line2D.Float();
-    private Line2D.Float lineRadar = new Line2D.Float();
-    private Arc2D.Float arc = new Arc2D.Float();
-    private Rectangle2D arcRect = new Rectangle2D.Float();
-    private Ellipse2D.Float ellipse = new Ellipse2D.Float();
+    private final Line2D.Float line = new Line2D.Float();
+    private final Line2D.Float lineRadar = new Line2D.Float();
+    private final Arc2D.Float arc = new Arc2D.Float();
+    private final Rectangle2D arcRect = new Rectangle2D.Float();
+    private final Ellipse2D.Float ellipse = new Ellipse2D.Float();
     private Rectangle station;
     /**
      * Radar position
@@ -68,7 +66,8 @@ public class RadarView extends MainPanel {
     /**
      * Radar angle
      */
-    private double angle = 0, da = 8 * Math.PI / 1000;
+    private double angle = 0;
+    private final double da = 8 * Math.PI / 1000;
 
     public RadarView(String n, Zone z, int sW, int mW, int tH, int tW, String sound) {
         super(n, sW, mW, tW, tH, Ship.class, IPANELNAME, sound);
@@ -80,11 +79,7 @@ public class RadarView extends MainPanel {
         init();
     }
 
-    public void init() {
-        eventCountAddVehicle = 0;
-        addVehicleEventMaxTime = 50;
-        waitEvent = 0;
-        waitEventMaxTime = 50;
+    private void init() {
 
         shieldDiam = 0;
 
@@ -113,45 +108,23 @@ public class RadarView extends MainPanel {
         if (isSliding) {
             slideRadar();
         }
-        //eventAddVehicleToMap();
+        
         checkDocking();
-        //checkWaiting();
         checkAsteroidDestroyed();
-
-        if (shieldOn) {
-
-            currentShieldTime -= consumeRate;
-            if (currentShieldTime <= 0) {
-                shieldOn = false;
-            }
-
-            if (shieldDiam < tWidth / 10) {
-                shieldDiam++;
-            } else {
-                shieldDiam = tWidth / 10;
-            }
-
-            for (int i = 0; i < listAsteroids.size(); i++) {
-                if (var.Collision(shield, listAsteroids.get(i).vehicleCollision())) {
-                    listAsteroids.get(i).setDestroyed(true);
+        
+        shieldMechanism();
+        
+        if(!listAsteroids.isEmpty()){
+            for(int i = 0; i<listAsteroids.size();i++){
+                for(int j = 0; j < listVehicles.size();j++){
+                    if((listAsteroids.get(i) != listVehicles.get(j) ) && var.Collision(listAsteroids.get(i).vehicleCollision(), listVehicles.get(j).vehicleCollision())){
+                        this.iPanel.removeVehicleFromList(listVehicles.get(j));
+                        listVehicles.remove(listVehicles.get(j));
+                    }
                 }
             }
-
-        } else {
-            currentShieldTime += restoreRate;
-            if (currentShieldTime >= totalShieldTime) {
-                currentShieldTime = totalShieldTime;
-            }
-            
-            if (shieldDiam > 0) {
-                shieldDiam--;
-            } else {
-                shieldDiam = 0;
-            }
         }
-
-        shield = new Area(new Ellipse2D.Double((int) (centerX) - shieldDiam / 2, (int) (centerY) - shieldDiam / 2, shieldDiam, shieldDiam));
-
+        
         if (asteroid) {
             createAsteroid();
         }
@@ -188,8 +161,8 @@ public class RadarView extends MainPanel {
         line.setLine(centerX, radarY, centerX, radarY + diameter);
         g.draw(line);
 
-        for (Ship v : listVehicles) {
-            v.draw(g);
+        for (int i = 0; i< listVehicles.size();i++) {
+            listVehicles.get(i).draw(g);
         }
         
         g.setColor(Color.GREEN);
@@ -213,7 +186,44 @@ public class RadarView extends MainPanel {
         g.setTransform(backTransform);
 
     }
+    
+    public void shieldMechanism(){
+        
+        if (shieldOn) {
 
+            currentShieldTime -= consumeRate;
+            if (currentShieldTime <= 0) {
+                shieldOn = false;
+            }
+
+            if (shieldDiam < tWidth / 10) {
+                shieldDiam++;
+            } else {
+                shieldDiam = tWidth / 10;
+            }
+
+            for (Ship listAsteroid : listAsteroids) {
+                if (var.Collision(shield, listAsteroid.vehicleCollision())) {
+                    listAsteroid.setDestroyed(true);
+                }
+            }
+
+        } else {
+            currentShieldTime += restoreRate;
+            if (currentShieldTime >= totalShieldTime) {
+                currentShieldTime = totalShieldTime;
+            }
+            
+            if (shieldDiam > 0) {
+                shieldDiam--;
+            } else {
+                shieldDiam = 0;
+            }
+        }
+
+        shield = new Area(new Ellipse2D.Double((int) (centerX) - shieldDiam / 2, (int) (centerY) - shieldDiam / 2, shieldDiam, shieldDiam));
+    }
+    
     public void setAsteroid(boolean b) {
         this.asteroid = b;
     }
@@ -336,8 +346,7 @@ public class RadarView extends MainPanel {
     }
 
     public void checkAsteroidDestroyed() {
-        for (int i = 0; i < listAsteroids.size(); i++) {
-            Ship v = listAsteroids.get(i);
+        for (Ship v : listAsteroids) {
             if (v.getDestroyed()) {
                 v.setIsOnRadar(false);
                 iPanel.removeVehicleFromList(v);
@@ -362,7 +371,7 @@ public class RadarView extends MainPanel {
                 listToDock.add(listVehicles.get(i));
                 listVehicles.remove(listVehicles.get(i));
             }
-            if (listVehicles.get(i).getSize() == "ENORME" && var.Collision(listVehicles.get(i).vehicleCollision(), stationCollision())) {
+            if ("ENORME".equals(listVehicles.get(i).getSize()) && var.Collision(listVehicles.get(i).vehicleCollision(), stationCollision())) {
                 System.out.println("Simulation terminée, un asteroide s'est écrasé sur la station Deep Space 42");
                 gameOver = true;
             }
@@ -376,15 +385,6 @@ public class RadarView extends MainPanel {
 //                int time = 50;
 //                waitEvent(v, time);
 //            }
-//        }
-//    }
-
-//    public void eventAddVehicleToMap() {
-//        eventCountAddVehicle++;
-//        if (eventCountAddVehicle == addVehicleEventMaxTime) {
-//            createVehicle(var.randNum(0, 2));
-//            addVehicleEventMaxTime = var.randNum(300, 1000);
-//            eventCountAddVehicle = 0;
 //        }
 //    }
 //
