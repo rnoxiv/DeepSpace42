@@ -13,6 +13,7 @@ import javax.swing.Timer;
 public class FireEvent extends Evenement{
  
     private int x=0;
+    private int y=0;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private int tWidth = (int) screenSize.getWidth();
     private int mWidth = tWidth - tWidth / 5;
@@ -37,6 +38,13 @@ public class FireEvent extends Evenement{
                     if(x<=10 && fireBuildingList.size() != 0){
                         for (int i=0;i<fireBuildingList.size();i++){
                             System.out.println("Attention ! " + fireBuildingList.get(i).getName() + " en feu !");
+                            if (fireBuildingList.get(i).getCurrentCapacity()>=5){
+                                fireBuildingList.get(i).setCapacity(fireBuildingList.get(i).getCurrentCapacity()-5);
+                            }
+                            if (fireBuildingList.get(i).getCurrentCapacity()<=0){
+                                fireBuildingList.get(i).setCapacity(0);
+                                System.out.println(fireBuildingList.get(i).getName() + " ne contient plus aucun habitant");
+                            }
                         }
                     }
                     if(x<=10 && fireBuildingList.size() == 0){
@@ -44,7 +52,9 @@ public class FireEvent extends Evenement{
                         if (fireBuilding.getName() != "Hall d'arrivée" && fireBuilding.getName() != "Pompiers"){
                             if (fireBuilding.getFire() == true){
                                 System.out.println(fireBuilding.getName() + " est en feu, des personnes succombent dans l'incendie !");
-                                //baisse de la population dans ce batiment
+                                if (fireBuilding.getCurrentCapacity()>=20){
+                                    fireBuilding.setCapacity(fireBuilding.getCurrentCapacity()-20);
+                                }
                             }
                             if (fireBuilding.getFire() == false){
                                 System.out.println("Attention ! " + fireBuilding.getName() + " en feu !!!");
@@ -57,7 +67,7 @@ public class FireEvent extends Evenement{
                     if(x>10 && fireBuildingList.size() != 0){
                         for (int i=0;i<fireBuildingList.size();i++){
                             neighboursList.add(fireBuildingList.get(fireBuildingList.size() - 1).addNeighbourFire(buildingList,fireBuildingList.get(fireBuildingList.size() - 1)));
-                            System.out.println("neighboursList =" + neighboursList);
+                            //System.out.println("neighboursList =" + neighboursList);
                         }
                         Random s = new Random();
                         if (neighboursList.size()>0){
@@ -67,11 +77,17 @@ public class FireEvent extends Evenement{
                                 b.setFire(true);
                                 b.setColorBuilding(Color.orange);
                                 fireBuildingList.add(b);
-                                System.out.println("fireBuildingList = " + fireBuildingList);
+                                //System.out.println("fireBuildingList = " + fireBuildingList);
                             }
                             if (b.getFire()==true && b.getName()!= "Hall d'arrivée" && b.getName() != "Pompiers"){
                                 System.out.println(b.getName() + " est en feu, des personnes succombent dans l'incendie !");
-                                //baisse de la population dans ce batiment
+                                if (b.getCurrentCapacity()>=20){
+                                    b.setCapacity(b.getCurrentCapacity()-20);
+                                }
+                                if (b.getCurrentCapacity()<=0){
+                                    b.setCapacity(0);
+                                    System.out.println(b.getName() + " ne contient plus aucun habitant");
+                                }
                             }
                         }
                         if (neighboursList.size()==0){
@@ -84,4 +100,9 @@ public class FireEvent extends Evenement{
         });
         timer1.start();
     }
+    
+    public int getY(){
+        return this.y;
+    }
+    
 }

@@ -15,14 +15,15 @@ public class SpaceStationView extends MainPanel {
 
     private final ArrayList<Building> neighbours;
 
+    private int OperatorOnFire = 0;
     private int rbWidth = 0;
-    
+
     private static final int numBuildings = 24;
 
     private static final int HALLARRIVE = 17;
-    
-    private int fireBuildingNumber=0;
-    
+
+    private int fireBuildingNumber = 0;
+
     private final ArrayList<Building> listBuilding;
     private final ArrayList<Hangar> listHangars;
     private final String[] namesBuildings;
@@ -36,7 +37,7 @@ public class SpaceStationView extends MainPanel {
 
         namesBuildings = new String[]{"COMMAND ROOM", "CINEMA", "BEDROOMS", "POLICE", "PRISON", "HOSTEL", "BAR", "BEDROOMS", "FIRE DEPARTMENT", "RESTAURANT", "MAIN HALL", "SHOPS", "GARDENS", "HOSPITAL", "WAREHOUSES",
             "ARMS DEALER", "ENGINE ROOM", "ARRIVALS/DEPARTURES", "DEFENCE ROOM", "DOCK A", "DOCK B", "DOCK C", "DOCK D", "DOCK E"};
-        
+
         posBuildings = new int[]{width / 2, height / 8, width / 6, height / 4, width / 3, height / 8, 2 * width / 3, height / 8, 5 * width / 6, height / 4, width / 6, 3 * height / 8, width / 3, height / 4, 2 * width / 3, height / 4, 5 * width / 6, 3 * height / 8, width / 6, height / 2, width / 2, height / 2, 5 * width / 6, height / 2, width / 6, 5 * height / 8, width / 3, 5 * height / 8, 2 * width / 3, 5 * height / 8, 5 * width / 6, 5 * height / 8, width / 6, 3 * height / 4, width / 2, 3 * height / 4, 5 * width / 6, 3 * height / 4, width / 6, 7 * height / 8, width / 3, 7 * height / 8, width / 2, 7 * height / 8, 2 * width / 3, 7 * height / 8, 5 * width / 6, 7 * height / 8};
 
         maxCapBuilding = new int[]{1, 1000, 2000, 500, 500, 1000, 500, 2000, 500, 1000, 1000, 2000, 4000, 500, 500, 1000, 2000, 1000, 1000, 1500, 500, 750, 500, 1000};
@@ -93,14 +94,21 @@ public class SpaceStationView extends MainPanel {
         if (isSliding) {
             slideMap();
         }
-        
+
         for (Building b : listBuilding) {
-            Color colorBuilding = b.getColorBuilding();
-            if (colorBuilding == Color.orange){
+            if (b.getFire() == true) {
                 fireBuildingNumber++;
             }
+            if (b.getName() == "COMMAND ROOM" && b.getFire() == true) {
+                OperatorOnFire = OperatorOnFire + 1;
+                System.out.println("OperatorOnFire = " + OperatorOnFire);
+                if (OperatorOnFire >= 310 * 3 * 6) {
+                    gameOver = true;
+                }
+            }
         }
-        if(fireBuildingNumber >= 2*listBuilding.size()/3){
+        //System.out.println("fireBuildingNumber = " +fireBuildingNumber);
+        if (fireBuildingNumber >= 2 * listBuilding.size() / 3) {
             gameOver = true;
         }
         fireBuildingNumber = 0;

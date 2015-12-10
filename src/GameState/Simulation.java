@@ -230,8 +230,7 @@ public final class Simulation extends GameState {
                 } else {
                     mainPanel[curMainPanel].setDetailBar(false);
                 }
-                System.out.println("Simulation : test Entrée");
-            }
+            }   
 
             if (Keys.isPressed(Keys.LEFT)) {
                 JukeBox.stop(mainPanel[curMainPanel].getSound());

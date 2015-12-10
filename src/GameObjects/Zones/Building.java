@@ -131,7 +131,7 @@ public class Building extends Zone {
             }
         }
         Collections.sort(distanceList);
-        System.out.println("distanceList = " + distanceList);
+        //System.out.println("distanceList = " + distanceList);
         double firstB = distanceList.get(0);
         double secondB = distanceList.get(1);
         for (Building ab1 : ab) {
