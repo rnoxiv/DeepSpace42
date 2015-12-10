@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 
 public class Keys {
 	//number of Keys 
-	public static final int NUM_KEYS = 12;
+	public static final int NUM_KEYS = 23;
 	
         //arrays of the keys states
 	public static boolean keyState[] = new boolean[NUM_KEYS];
@@ -22,8 +22,18 @@ public class Keys {
 	public static final int W = 9;
         public static final int E = 10;
         public static final int S = 11;
+        public static final int N = 12;
+        public static final int UN = 13;
+        public static final int DE = 14;
+        public static final int TR = 15;
+        public static final int QU = 16;
+        public static final int CI = 17;
+        public static final int SI = 18;
+        public static final int SE = 19;
+        public static final int HU = 20;
+        public static final int NE = 21;
+        public static final int ZE = 22;
         
-	
 	public static void keySet(int i, boolean b) {
 		if(i == KeyEvent.VK_RIGHT) keyState[RIGHT] = b;
 		else if(i == KeyEvent.VK_LEFT) keyState[LEFT] = b;
@@ -37,12 +47,21 @@ public class Keys {
 		else if(i == KeyEvent.VK_W) keyState[W] = b;
                 else if(i == KeyEvent.VK_E) keyState[E] = b;
                 else if(i == KeyEvent.VK_S) keyState[S] = b;
+                else if(i == KeyEvent.VK_N) keyState[N] = b;
+                else if(i == KeyEvent.VK_NUMPAD1) keyState[UN] = b;
+                else if(i == KeyEvent.VK_NUMPAD2) keyState[DE] = b;
+                else if(i == KeyEvent.VK_NUMPAD3) keyState[TR] = b;
+                else if(i == KeyEvent.VK_NUMPAD4) keyState[QU] = b;
+                else if(i == KeyEvent.VK_NUMPAD5) keyState[CI] = b;
+                else if(i == KeyEvent.VK_NUMPAD6) keyState[SI] = b;
+                else if(i == KeyEvent.VK_NUMPAD7) keyState[SE] = b;
+                else if(i == KeyEvent.VK_NUMPAD8) keyState[HU] = b;
+                else if(i == KeyEvent.VK_NUMPAD9) keyState[NE] = b;
+                else if(i == KeyEvent.VK_NUMPAD0) keyState[ZE] = b;
 	}
 	
 	public static void update() {
-		for(int i = 0; i < NUM_KEYS; i++) {
-			prevKeyState[i] = keyState[i];
-		}
+            System.arraycopy(keyState, 0, prevKeyState, 0, NUM_KEYS);
 	}
 	
 	public static boolean isPressed(int i) {

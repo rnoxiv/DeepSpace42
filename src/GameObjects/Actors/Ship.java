@@ -20,14 +20,14 @@ public class Ship extends Actor {
     private final float GREEN_FIX = 1.0f;
     private Color clrVehicle;
 
-    private int wShip;
+    private final int wShip;
     //private double direction;
 
     private Image icon;
 
     private Variables var;
 
-    private Rectangle rdrDetectRect;
+    private final Rectangle rdrDetectRect;
 
     private boolean visible, isOnRadar, showInfo, dockingAccepted, hasChosen, docked, moving, destroyed;
 
@@ -286,7 +286,8 @@ public class Ship extends Actor {
     }
 
     // FAIT ATTERIR LE VaISEAU
-    public boolean dock() {
+
+        public boolean dock() {
         // DONNE LA PLACE DISPONIBLE DANS LE HANGAR DE DESTINATION
         int hangarUse = 0;
         for (int i = 0; i < this.getDestination().getShips().size(); i++) {

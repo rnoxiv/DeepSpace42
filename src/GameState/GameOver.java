@@ -24,6 +24,7 @@ public class GameOver extends GameState {
 
     private Image bgImg;
 
+    private int waitTime = 50, curWaitTime = 0;
     private boolean checked;
 
     public GameOver(GameStateManager gsm) {
@@ -50,21 +51,23 @@ public class GameOver extends GameState {
 
     @Override
     public void update() {
-        handleInput();
+        if (curWaitTime >= waitTime) {
+            handleInput();
+        }
         changeOpacity();
-        
+        curWaitTime++;
     }
 
     //gère l'affichage graphique de l'intro / menu
     @Override
     public void draw(Graphics2D g) {
         if (opacity < 0.009f) {
-                try{
-                    Thread.sleep(5000);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                gsm.setState(gsm.MENUSTATE);
+            try {
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            gsm.setState(gsm.MENUSTATE);
         }
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -90,7 +93,7 @@ public class GameOver extends GameState {
     public void changeOpacity() {
         if (checked) {
             opacity -= 0.005f;
-        }else{
+        } else {
             opacity += 0.005f;
             if (opacity > 0.99f) {
                 opacity = 0.99f;

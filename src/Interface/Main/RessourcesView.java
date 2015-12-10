@@ -36,7 +36,7 @@ public class RessourcesView extends MainPanel {
         listRessources = new ArrayList();
         listRessources.add(new Ressource("POPULATION", popMax, popMax/2, sWidth + width / 9, height / 5, width, height - 2 * topHeight));
         listRessources.add(new Ressource("EAU", 50000, 50000, sWidth + 2 * width / 9, height / 5, width, height - 2 * topHeight));
-        listRessources.add(new Ressource("NOURITURE", 20000, 20000, sWidth + 3 * width / 9, height / 5, width, height - 2 * topHeight));
+        listRessources.add(new Ressource("NOURRITURE", 20000, 20000, sWidth + 3 * width / 9, height / 5, width, height - 2 * topHeight));
         listRessources.add(new Ressource("OXYGENE", 10000, 10000, sWidth + 5 * width / 9, height / 5, width, height - 2 * topHeight));
         listRessources.add(new Ressource("ELECTRICITE", 50000, 50000, sWidth + 6 * width / 9, height / 5, width, height - 2 * topHeight));
         listRessources.add(new Ressource("ESSENCE", 50000, 50000, sWidth + 7 * width / 9, height / 5, width, height - 2 * topHeight));
@@ -80,7 +80,7 @@ public class RessourcesView extends MainPanel {
                 case "EAU":
                     float currentNewW =(listRessources.get(0).getCurrentcap())/50000;
                     float newValueW =listRessources.get(1).getCurrentcap() - currentNewW;
-                    listRessources.get(1).setCurrentcap((int)newValueW);
+                    listRessources.get(1).setCurrentcap(newValueW);
                     break;
                 case "ESSENCE":
                     float currentNewE =(currentHangar)/200000;

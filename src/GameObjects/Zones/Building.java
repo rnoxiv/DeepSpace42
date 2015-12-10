@@ -23,7 +23,7 @@ public class Building extends Zone {
     private final int maxCapacity, happiness, fontSize;
     private int  currentCapacity, width, height, posX, posY ;
 
-    private final int initPosX;
+    private final int initPosX, widthConst = 10;
 
     private boolean isFire = false;
     private boolean selected;
@@ -62,7 +62,7 @@ public class Building extends Zone {
         this.posX = x;
         this.posY = y;
         this.initPosX = x;
-        this.fontSize = w / 20;
+        this.fontSize = w / 22;
 
         this.showInfo = false;
 
@@ -85,15 +85,15 @@ public class Building extends Zone {
         int textWidth = (int) (g.getFont().getStringBounds(this.name, frc).getWidth());
         int textHeight = (int) (g.getFont().getStringBounds(this.name, frc).getHeight());
         g.setColor(Color.BLACK);
-        g.fillRect(this.posX - textWidth / 2, this.posY - textHeight, textWidth, 2 * textHeight);
+        g.fillRect(this.posX - textWidth / 2 -widthConst/2, this.posY - textHeight, textWidth+widthConst, 2 * textHeight);
         if(this.isFire){
             changeColor(g);
         }
         g.setColor(this.color);
-        g.drawRect(this.posX - textWidth / 2, this.posY - textHeight, textWidth, 2 * textHeight);
+        g.drawRect(this.posX - textWidth / 2 - widthConst/2, this.posY - textHeight, textWidth + widthConst, 2 * textHeight);
 //        g.drawString(name, posX + 10, posY + 45);
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-        g.drawString(this.name, this.posX - textWidth / 2, this.posY);
+        g.drawString(this.name, this.posX - textWidth / 2 + widthConst/4, this.posY+widthConst/4);
     }
     
     public void changeColor(Graphics2D g){
@@ -160,7 +160,14 @@ public class Building extends Zone {
             return true;
         }
     }
-
+    
+    public void sendUrgence(){
+        
+        System.out.println("URGENCE sent to " + this.name);
+        System.out.println("Building : test - A CODER");
+        
+    }
+    
     //FAIT UN LIEN ENTRE DES BATIMENTS
     public static void makeLink(ArrayList<Building> tails, ArrayList<Building> heads) {
         if (tails.size() == heads.size()) {

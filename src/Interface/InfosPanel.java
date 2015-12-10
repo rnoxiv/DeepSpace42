@@ -4,7 +4,6 @@ import GameObjects.Actors.Ship;
 import GameObjects.Zones.Building;
 import GameObjects.Ressource;
 import Handlers.Keys;
-import Utilities.Delay;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -29,9 +28,9 @@ public class InfosPanel {
     private ArrayList<Ressource> ressourcesList;
     private ArrayList<Building> buildingsList;
 
-    private boolean isShown, info = false;
+    private Ship cible;
 
-    protected Delay attDelay, shieldDelay, shieldTime;
+    private boolean isShown = false, info = false, urgence = false, sentUrgence = false, isAttacking = false;
 
     public InfosPanel(String n, int w, int tW, int h, int tH, Class c) {
         this.name = "Infos (" + n + ")";
@@ -39,14 +38,11 @@ public class InfosPanel {
         height = h;
         tWidth = tW;
         widthBox = width - 20;
-        this.isShown = false;
         setClassList(c);
         curSelect = 0;
         vehiclesList = new ArrayList<>();
         ressourcesList = new ArrayList<>();
         buildingsList = new ArrayList<>();
-        attDelay = new Delay(10000000);
-        attDelay.terminate();
     }
 
     private void setClassList(Class c) {
@@ -132,10 +128,10 @@ public class InfosPanel {
         }
 
     }
-    
-     public void drawRessources(Graphics2D g){
-        
-        int fontSize = width/20;
+
+    public void drawRessources(Graphics2D g) {
+
+        int fontSize = width / 20;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
         int boxInfoSize = 0;
         for (int i = 0; i < ressourcesList.size(); i++) {
@@ -152,7 +148,7 @@ public class InfosPanel {
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize);
             if (ressourcesList.get(i).getInfo()) {
                 String maxCap = "Maximum Capacity : " + ressourcesList.get(i).getMaxcap();
-                String curCap = "Current Capacity : " + ressourcesList.get(i).getCurrentcap();
+                String curCap = "Current Capacity : " + (int) ressourcesList.get(i).getCurrentcap();
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
 
@@ -162,16 +158,16 @@ public class InfosPanel {
                 int textWidthS = (int) (g.getFont().getStringBounds(curCap, frc).getWidth());
                 int textHeightA = 0;
                 int textWidthA = 0;
-                
-                int textHeight = textHeightP + textHeightS+textHeightA;
-                int textWidth = Math.max(textWidthP, textWidthS+textWidthA);
-                
+
+                int textHeight = textHeightP + textHeightS + textHeightA;
+                int textWidth = Math.max(textWidthP, textWidthS + textWidthA);
+
                 boxInfoSize = 2 * textHeight;
                 g.setStroke(new BasicStroke(1));
                 g.drawRect(tWidth - width + boxConst, height / 10 + (i + 3) * 2 * textHeightT + 5, widthBox, boxInfoSize);
                 g.drawString(maxCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize / 2);
                 g.drawString(curCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 5 + boxInfoSize / 2 + textHeightT / 2);
-                
+
             }
         }
     }
@@ -267,9 +263,9 @@ public class InfosPanel {
         for (int i = 0; i < buildingsList.size(); i++) {
             if (i == curSelect) {
                 g.setColor(new Color(15, 185, 120));
-            } else if (buildingsList.get(i).getFire()){
+            } else if (buildingsList.get(i).getFire()) {
                 g.setColor(Color.red);
-            }else{
+            } else {
                 g.setColor(Color.GREEN);
             }
 
@@ -279,7 +275,7 @@ public class InfosPanel {
             int textHeightT = (int) (g.getFont().getStringBounds(na, frc).getHeight());
             int textWidthT = (int) (g.getFont().getStringBounds(na, frc).getWidth());
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 1) * 2 * textHeightT + boxInfoSize); // 1 == > 3
-            if (buildingsList.get(i).getInfo()) {
+            if (buildingsList.get(i).getInfo() && !urgence) {
                 String capacity = "capacité : " + buildingsList.get(i).getCurrentCapacity() + " / " + buildingsList.get(i).getMaxCapacity();
                 String happiness = "happiness : " + buildingsList.get(i).getHappiness();
                 affinetransform = new AffineTransform();
@@ -300,7 +296,33 @@ public class InfosPanel {
         }
         g.setColor(Color.GREEN);
     }
-    
+
+    public void setUrgence(boolean b) {
+        this.urgence = b;
+    }
+
+    public void setIsAttacking(boolean b) {
+        this.isAttacking = b;
+    }
+
+    public void reInit() {
+        this.urgence = false;
+        this.sentUrgence = false;
+        this.isAttacking = false;
+    }
+
+    public boolean getUrgenceSent() {
+        return this.sentUrgence;
+    }
+
+    public boolean isAttacking() {
+        return this.isAttacking;
+    }
+
+    public Ship getCible() {
+        return this.cible;
+    }
+
     public void handleInput() {
         if (Keys.isPressed(Keys.CTRL)) {
             info = !info;
@@ -329,30 +351,30 @@ public class InfosPanel {
         }
 
         if (Keys.isPressed(Keys.UP)) {
-            if (this.classList == BUILDING) {
+            if (this.classList == BUILDING && !this.buildingsList.isEmpty()) {
                 this.buildingsList.get(curSelect).setSelected(false);
                 this.buildingsList.get(curSelect).showInfo(false);
                 if (curSelect > 0) {
                     curSelect--;
                     this.buildingsList.get(curSelect).setSelected(true);
-                    if(info){
+                    if (info) {
                         this.buildingsList.get(curSelect).showInfo(true);
                     }
                 }
-            } else if (this.classList == VEHICLE) {
+            } else if (this.classList == VEHICLE && !this.vehiclesList.isEmpty()) {
                 this.vehiclesList.get(curSelect).setVisible(false);
                 this.vehiclesList.get(curSelect).showInfo(false);
                 if (curSelect > 0) {
                     curSelect--;
-                    if(info){
+                    if (info) {
                         this.vehiclesList.get(curSelect).showInfo(true);
                     }
                 }
-            } else if (this.classList == RESSOURCE) {
+            } else if (this.classList == RESSOURCE && !this.ressourcesList.isEmpty()) {
                 this.ressourcesList.get(curSelect).showInfo(false);
                 if (curSelect > 0) {
                     curSelect--;
-                    if(info){
+                    if (info) {
                         this.ressourcesList.get(curSelect).showInfo(true);
                     }
                 }
@@ -360,30 +382,30 @@ public class InfosPanel {
         }
 
         if (Keys.isPressed(Keys.DOWN)) {
-            if (this.classList == BUILDING) {
+            if (this.classList == BUILDING && !this.buildingsList.isEmpty()) {
                 this.buildingsList.get(curSelect).setSelected(false);
                 this.buildingsList.get(curSelect).showInfo(false);
                 if (curSelect < buildingsList.size() - 1) {
                     curSelect++;
                     this.buildingsList.get(curSelect).setSelected(true);
-                    if(info){
+                    if (info) {
                         this.buildingsList.get(curSelect).showInfo(true);
                     }
                 }
-            } else if (this.classList == VEHICLE) {
+            } else if (this.classList == VEHICLE && !this.vehiclesList.isEmpty()) {
                 this.vehiclesList.get(curSelect).setVisible(false);
                 this.vehiclesList.get(curSelect).showInfo(false);
                 if (curSelect < vehiclesList.size() - 1) {
                     curSelect++;
-                    if(info){
+                    if (info) {
                         this.vehiclesList.get(curSelect).showInfo(true);
                     }
                 }
-            } else if (this.classList == RESSOURCE) {
+            } else if (this.classList == RESSOURCE && !this.ressourcesList.isEmpty()) {
                 this.ressourcesList.get(curSelect).showInfo(false);
                 if (curSelect < ressourcesList.size() - 1) {
                     curSelect++;
-                    if(info){
+                    if (info) {
                         this.ressourcesList.get(curSelect).showInfo(true);
                     }
                 }
@@ -418,16 +440,22 @@ public class InfosPanel {
             }
         }
 
-        if (Keys.isPressed(Keys.E)) {
-            if (this.classList == VEHICLE && "ENORME".equals(vehiclesList.get(curSelect).getSize())) {
-                if (!this.vehiclesList.get(curSelect).getHasChosen() && attDelay.isOver()) {
-                    this.vehiclesList.get(curSelect).setVisible(false);
-                    this.vehiclesList.get(curSelect).showInfo(false);
-                    this.vehiclesList.get(curSelect).setDestroyed(true);
-                    attDelay.restart();
-                }
+        if (Keys.isPressed(Keys.ENTER)) {
+            if (this.classList == BUILDING && urgence) {
+                this.buildingsList.get(curSelect).sendUrgence();
+                this.sentUrgence = true;
             }
         }
 
+        if (Keys.isPressed(Keys.E)) {
+            if (this.classList == VEHICLE && !this.vehiclesList.isEmpty()) {
+                if ("ENORME".equals(vehiclesList.get(curSelect).getSize())) {
+                    if (!this.vehiclesList.get(curSelect).getHasChosen()) {
+                        isAttacking = true;
+                        cible = this.vehiclesList.get(curSelect);
+                    }
+                }
+            }
+        }
     }
 }

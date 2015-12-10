@@ -2,6 +2,7 @@ package Interface.Main;
 
 import GameObjects.Zones.Building;
 import GameObjects.Zones.Buildings.Hangar;
+import Handlers.Keys;
 import Interface.MainPanel;
 import java.awt.Color;
 import java.awt.Font;
@@ -33,8 +34,8 @@ public class SpaceStationView extends MainPanel {
     public SpaceStationView(String n, int sW, int mW, int tH, int tW, String sound) {
         super(n, sW, mW, tW, tH, Building.class, IPANELNAME, sound);
 
-        namesBuildings = new String[]{"Salle de Commandement", "Cinema", "Dortoirs", "Police", "Prison", "Hôtel", "Bar", "Dortoirs", "Pompiers", "Restaurant", "Hall Principal", "Magasin", "Jardins", "Entrepôts", "Entrepôts",
-            "Vendeur d'armes", "Salle des machines", "Hall d'arrivée", "Salle de défense", "Hangar A", "Hangar B", "Hangar C", "Hangar D", "Hangar E"};
+        namesBuildings = new String[]{"COMMAND ROOM", "CINEMA", "BEDROOMS", "POLICE", "PRISON", "HOSTEL", "BAR", "BEDROOMS", "FIRE DEPARTMENT", "RESTAURANT", "MAIN HALL", "SHOPS", "GARDENS", "HOSPITAL", "WAREHOUSES",
+            "ARMS DEALER", "ENGINE ROOM", "ARRIVALS/DEPARTURES", "DEFENCE ROOM", "DOCK A", "DOCK B", "DOCK C", "DOCK D", "DOCK E"};
         
         posBuildings = new int[]{width / 2, height / 8, width / 6, height / 4, width / 3, height / 8, 2 * width / 3, height / 8, 5 * width / 6, height / 4, width / 6, 3 * height / 8, width / 3, height / 4, 2 * width / 3, height / 4, 5 * width / 6, 3 * height / 8, width / 6, height / 2, width / 2, height / 2, 5 * width / 6, height / 2, width / 6, 5 * height / 8, width / 3, 5 * height / 8, 2 * width / 3, 5 * height / 8, 5 * width / 6, 5 * height / 8, width / 6, 3 * height / 4, width / 2, 3 * height / 4, 5 * width / 6, 3 * height / 4, width / 6, 7 * height / 8, width / 3, 7 * height / 8, width / 2, 7 * height / 8, 2 * width / 3, 7 * height / 8, 5 * width / 6, 7 * height / 8};
 
@@ -108,7 +109,7 @@ public class SpaceStationView extends MainPanel {
     public void slideMap() {
         if (detailBarOn && isSliding) {
             for (Building b : listBuilding) {
-                if (b.getPosX() - this.rightBarWidth + rbWidth > b.getInitPosX() - (tWidth - (tWidth / 5)) / 10) {
+                if (b.getPosX() - this.rightBarWidth + rbWidth > b.getInitPosX() - (tWidth - (tWidth / 9)) / 10) { //(tWidth - (tWidth / 5)) / 10)
                     b.setPosX(b.getPosX() - this.rightBarWidth + rbWidth);
                 }
             }

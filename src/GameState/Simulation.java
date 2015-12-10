@@ -12,6 +12,7 @@ import Interface.Main.RessourcesView;
 import Interface.Main.SpaceStationView;
 import Interface.MainPanel;
 import Interface.MissionPanel;
+import Interface.callUrgencesPanel;
 import Utilities.Time;
 import Utilities.Variables;
 import java.awt.Color;
@@ -24,11 +25,15 @@ import javax.swing.Timer;
 
 public final class Simulation extends GameState {
 
+    private static final String[] missionMessages = {"Caution : Asteroid incomming!", "Warning : Fire!"};
+    private static final int ASTEROID = 0;
+    private static final int FIRE = 1;
+
     private int tWidth, tHeight, mWidth, sWidth, sHeight;
 
     private Zone space;
 
-    private boolean echap = false;
+    private boolean echap = false, call = false, fireEvent = false;
 
     //Gestion des MainPanels
     private int curMainPanel;
@@ -45,6 +50,7 @@ public final class Simulation extends GameState {
     private MissionPanel missionPanel;
     private DocksPanel docksPanel;
     private EchapPanel echapPanel;
+    private callUrgencesPanel callPanel;
 
     private Variables var;
 
@@ -55,17 +61,18 @@ public final class Simulation extends GameState {
         timer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int number = var.randNum(0, 99);
-                if (number >= 35 & number < 40) {
+                int number = var.randNum(0, 149);
+                if (number >= 35 & number < 100) { //40
                     AsteroidIncoming asteroid = new AsteroidIncoming();
                     asteroid.launch();
                     radarView.createAsteroid();
-                    missionPanel.addMision("Caution : Asteroid!");
+                    missionPanel.addMision(missionMessages[ASTEROID]);
                 }
-                if (number >= 30 & number < 35) {
+                if (number >= 30 & number < 35 & !fireEvent) {
                     FireEvent fire = new FireEvent(SSView.getListBuildings());
                     fire.launch();
-                    missionPanel.addMision("Caution : Fire!");
+                    missionPanel.addMision(missionMessages[FIRE]);
+                    fireEvent = true;
                 }
                 if (number >= 0 & number < 30) {
                     int numShips = var.randNum(0, 2);
@@ -98,6 +105,7 @@ public final class Simulation extends GameState {
         missionPanel = new MissionPanel("Missions", sWidth, tHeight);
         docksPanel = new DocksPanel("Docks", sWidth, tHeight);
         echapPanel = new EchapPanel(tWidth, tHeight);
+        callPanel = new callUrgencesPanel(tWidth, tHeight);
 
         docksPanel.setListBuilding(SSView.getListBuildings());
 
@@ -108,8 +116,8 @@ public final class Simulation extends GameState {
         mainPanel[RESSOURCES] = ReView;
         curMainPanel = RADAR;
 
-        JukeBox.loop("mainBG");
-        JukeBox.loop(mainPanel[curMainPanel].getSound());
+        //JukeBox.loop("mainBG");
+        //JukeBox.loop(mainPanel[curMainPanel].getSound());
     }
 
     @Override
@@ -129,6 +137,26 @@ public final class Simulation extends GameState {
                 echap = false;
                 echapPanel.reInit();
             }
+            if (call) {
+                callPanel.reInit();
+                call = !call;
+                echap = !echap;
+            }
+        }
+
+        if (call) {
+            SSView.setDetailBar(false);
+            if (callPanel.isGoodNum()) {
+                SSView.setDetailBar(true);
+                SSView.getIPanel().handleInput();
+                SSView.getIPanel().setUrgence(true);
+                if (SSView.getIPanel().getUrgenceSent()) {
+                    SSView.setDetailBar(false);
+                    SSView.getIPanel().reInit();
+                    callPanel.reInit();
+                    call = !call;
+                }
+            }
         }
 
         missionPanel.update();
@@ -141,9 +169,14 @@ public final class Simulation extends GameState {
             radarView.getListToDock().get(i).dock();
             radarView.removeFromListToDock(radarView.getListToDock().get(i));
         }
-        
+
         ReView.setShieldOn(radarView.getShieldOn());
-        
+
+        if (radarView.getMinusAsteroid() != 0) {
+            missionPanel.delMission(missionMessages[ASTEROID], radarView.getMinusAsteroid());
+            radarView.resetMinusAsteroid();
+        }
+
         handleInput();
 
     }
@@ -162,8 +195,12 @@ public final class Simulation extends GameState {
         g.fillRect(0, sHeight, sWidth, 2);
         g.drawRect(0, 0, tWidth - 1, tHeight - 1);
 
-        if (echap) {
+        if (echap && !call) {
             echapPanel.draw(g);
+        }
+
+        if (call && !echap) {
+            callPanel.draw(g);
         }
 
     }
@@ -172,6 +209,8 @@ public final class Simulation extends GameState {
     public void handleInput() {
         if (echap) {
             echapPanel.handleInput();
+        } else if (call) {
+            callPanel.handleInput();
         } else {
             mainPanel[curMainPanel].handleInput();
 
@@ -191,6 +230,7 @@ public final class Simulation extends GameState {
                 } else {
                     mainPanel[curMainPanel].setDetailBar(false);
                 }
+                System.out.println("Simulation : test Entrée");
             }
 
             if (Keys.isPressed(Keys.LEFT)) {
@@ -206,6 +246,10 @@ public final class Simulation extends GameState {
         if (Keys.isPressed(Keys.ECHAP)) {
             echap = !echap;
         }
+        if (Keys.isPressed(Keys.N) && curMainPanel == STATION) {
+            call = !call;
+        }
+
     }
 
 }
