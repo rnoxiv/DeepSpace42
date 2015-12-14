@@ -1,6 +1,6 @@
 package Interface;
 
-import GameObjects.Zones.Building;
+import GameObjects.Zones.Buildings.Dock;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -12,14 +12,14 @@ public class DocksPanel {
 
     private final String name;
     private final int posY, height, width;
-    private ArrayList<Building> buildingsList;
+    private ArrayList<Dock> docksList;
 
     public DocksPanel(String n, int sW, int tH) {
         name = n;
         width = sW;
         posY = tH / 2 + 1;
         height = tH / 2;
-        buildingsList = new ArrayList<>();
+        docksList = new ArrayList<>();
     }
 
     public void draw(Graphics2D g) {
@@ -31,14 +31,19 @@ public class DocksPanel {
         g.drawLine(width / 2 - sizeName / 2, posY + height / 9, width / 2 + sizeName / 2, posY + height / 9);
         
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-        for (int i = buildingsList.size() - 5; i < buildingsList.size(); i++) {
+        for (int i = 0; i < docksList.size(); i++) {
             
-            String infos = buildingsList.get(i).getName() + " : " + buildingsList.get(i).getCurrentCapacity() + " / " + buildingsList.get(i).getMaxCapacity();
+            int volShips = 0;
+            for(int j = 0; j< docksList.get(i).getShips().size();j++){
+                volShips+= docksList.get(i).getShips().get(j).getVolume();
+            }
+            
+            String infos = docksList.get(i).getName() + " : " + volShips + " / " + docksList.get(i).getMaxCapacity();
             AffineTransform affinetransform = new AffineTransform();
             FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
             int textWidth = (int) (g.getFont().getStringBounds(infos, frc).getWidth());
             int textHeight = (int) (g.getFont().getStringBounds(infos, frc).getHeight());
-            g.drawString(infos, width / 2 - textWidth / 2, height + height / 3 + (i - buildingsList.size()+4) * 2 * (textHeight+width/20));
+            g.drawString(infos, width / 2 - textWidth / 2, height + height / 3 + (i - docksList.size()+4) * 2 * (textHeight+width/20));
 
         }
 
@@ -48,8 +53,8 @@ public class DocksPanel {
 
     }
 
-    public void setListBuilding(ArrayList<Building> lB) {
-        buildingsList = lB;
+    public void setListBuilding(ArrayList<Dock> lB) {
+        docksList = lB;
     }
 
 }

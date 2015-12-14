@@ -1,0 +1,3 @@
+org.kodejava.example.swing.DocumentFilterExample$UppercaseDocumentFilter
+org.kodejava.example.swing.DocumentFilterExample
+org.kodejava.example.swing.DocumentFilterExample$1

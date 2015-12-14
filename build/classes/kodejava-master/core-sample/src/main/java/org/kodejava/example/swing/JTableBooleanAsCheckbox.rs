@@ -1,0 +1,3 @@
+org.kodejava.example.swing.JTableBooleanAsCheckbox$1
+org.kodejava.example.swing.JTableBooleanAsCheckbox$BooleanTableModel
+org.kodejava.example.swing.JTableBooleanAsCheckbox

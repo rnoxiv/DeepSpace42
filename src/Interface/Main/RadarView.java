@@ -297,7 +297,7 @@ public class RadarView extends MainPanel {
         listVehicles.add(v);
     }
 
-    public void createVehicle(int n) {
+    public void createVehicle(int n, Integer res) {
         for (int i = 0; i < n; i++) {
             int sp = var.randNum(1, 3);
             float speed = sp / 5000f;
@@ -323,10 +323,23 @@ public class RadarView extends MainPanel {
 
             int side = (int) (tWidth / 64);
 
+            int dir = var.randNum(1, 50);
+
             float dirX = centerX - 15 - posX;
             float dirY = centerY - 15 - posY;
 
-            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, new Color(0, 1.0f, 0, 0.0f)));
+            if (dir >= 45 && res == null) {
+                dirX = var.randNum(sWidth,tWidth-rightBarWidth) - posX;
+                dirY = var.randNum(topHeight, height) - posY;
+            }
+
+            Color color = new Color(0, 1.0f, 0, 0.0f);
+
+            if (res != null) {
+                color = new Color(0, 0, 1.0f, 0.0f);
+            }
+
+            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res));
         }
     }
 
@@ -358,7 +371,7 @@ public class RadarView extends MainPanel {
         float dirX = var.randNum(sWidth, tWidth - rightBarWidth) - (int) Asteroid.getRayonAsteroid() / 2 - posX;
         float dirY = var.randNum(topHeight, height) - (int) Asteroid.getRayonAsteroid() / 2 - posY;
 
-        Ship AsteroidVehicle = new Ship(space, speed, posX, posY, dirX, dirY, (int) Asteroid.getRayonAsteroid(), Asteroid.getColorAsteroid());
+        Ship AsteroidVehicle = new Ship(space, speed, posX, posY, dirX, dirY, (int) Asteroid.getRayonAsteroid(), Asteroid.getColorAsteroid(),null);
         AsteroidVehicle.setSize("ENORME");
         AsteroidVehicle.addpassagers(0);
         AsteroidVehicle.setId(" ???? - " + AsteroidVehicle.getSize());

@@ -1,13 +1,14 @@
 package Interface.Main;
 
 import GameObjects.Zones.Building;
-import GameObjects.Zones.Buildings.Hangar;
-import Handlers.Keys;
+import GameObjects.Zones.Buildings.Dock;
 import Interface.MainPanel;
+import Utilities.Variables;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SpaceStationView extends MainPanel {
 
@@ -15,17 +16,20 @@ public class SpaceStationView extends MainPanel {
 
     private final ArrayList<Building> neighbours;
 
-    private int OperatorOnFire = 0;
+    private Variables var = new Variables();
+
     private int rbWidth = 0;
 
     private static final int numBuildings = 24;
 
     private static final int HALLARRIVE = 17;
 
+    private ArrayList<Building> docksList = new ArrayList();
+
     private int fireBuildingNumber = 0;
 
     private final ArrayList<Building> listBuilding;
-    private final ArrayList<Hangar> listHangars;
+    private final ArrayList<Dock> listHangars;
     private final String[] namesBuildings;
     private final int[] posBuildings;
     private final int[] maxCapBuilding;
@@ -40,7 +44,7 @@ public class SpaceStationView extends MainPanel {
 
         posBuildings = new int[]{width / 2, height / 8, width / 6, height / 4, width / 3, height / 8, 2 * width / 3, height / 8, 5 * width / 6, height / 4, width / 6, 3 * height / 8, width / 3, height / 4, 2 * width / 3, height / 4, 5 * width / 6, 3 * height / 8, width / 6, height / 2, width / 2, height / 2, 5 * width / 6, height / 2, width / 6, 5 * height / 8, width / 3, 5 * height / 8, 2 * width / 3, 5 * height / 8, 5 * width / 6, 5 * height / 8, width / 6, 3 * height / 4, width / 2, 3 * height / 4, 5 * width / 6, 3 * height / 4, width / 6, 7 * height / 8, width / 3, 7 * height / 8, width / 2, 7 * height / 8, 2 * width / 3, 7 * height / 8, 5 * width / 6, 7 * height / 8};
 
-        maxCapBuilding = new int[]{1, 1000, 2000, 500, 500, 1000, 500, 2000, 500, 1000, 1000, 2000, 4000, 500, 500, 1000, 2000, 1000, 1000, 1500, 500, 750, 500, 1000};
+        maxCapBuilding = new int[]{1, 1000, 3000, 250, 500, 2000, 50, 3000, 300, 1000, 5000, 1000, 4000, 2500, 300, 50, 50, 1500, 1000, 1500, 500, 750, 500, 1000};
         tail = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
         head = new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 17, 10, 17, 17, 17, 17, 17, 17};
         //#ROP
@@ -55,7 +59,7 @@ public class SpaceStationView extends MainPanel {
             } else {
                 //test!
                 neighbours.add(listBuilding.get(HALLARRIVE));
-                Hangar hangar = new Hangar(namesBuildings[i], maxCapBuilding[i], sW + posBuildings[2 * i], topHeight + posBuildings[(2 * i) + 1], sWidth, topHeight, neighbours);
+                Dock hangar = new Dock(namesBuildings[i], maxCapBuilding[i], sW + posBuildings[2 * i], topHeight + posBuildings[(2 * i) + 1], sWidth, topHeight, neighbours);
                 listHangars.add(hangar);
                 listBuilding.add(hangar);
             }
@@ -87,6 +91,83 @@ public class SpaceStationView extends MainPanel {
         g.setStroke(ACTIVE_STROKE);
     }
 
+    public void peopleQuitDocksInBuildingDirection(String s) {
+        for (int i = 0; i < listBuilding.size(); i++) {
+            if (listBuilding.get(i).getName().equals(s) && listBuilding.get(i).getCurrentCapacity() != 0) {
+                int randCap = var.randNum(0, listBuilding.get(i).getCurrentCapacity() / 3);
+                int randCapacity = randCap + 1;
+                for (int j = 0; j < randCapacity; j++) {
+                    int newBuilding = var.randNum(0, listBuilding.size() - 1);
+                    if (listBuilding.get(i).getCurrentCapacity() > 0) {
+                        listBuilding.get(i).setCapacity(listBuilding.get(i).getCurrentCapacity() - 1);
+                    }
+                    if (listBuilding.get(newBuilding).getCurrentCapacity() < listBuilding.get(newBuilding).getMaxCapacity()) {
+                        listBuilding.get(newBuilding).setCapacity(listBuilding.get(newBuilding).getCurrentCapacity() + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    public ArrayList<Building> docksList() {
+        for (int l = 0; l < listBuilding.size(); l++) {
+            if ("DOCK A".equals(listBuilding.get(l).getName()) | "DOCK B".equals(listBuilding.get(l).getName()) | "DOCK C".equals(listBuilding.get(l).getName()) | "DOCK D".equals(listBuilding.get(l).getName()) | "DOCK E".equals(listBuilding.get(l).getName())) {
+                docksList.add(listBuilding.get(l));
+            }
+        }
+        return docksList;
+    }
+
+    public void peopleQuitBuildingInDocksDirection() {
+        for (int i = 0; i < listBuilding.size(); i++) {
+            if (listBuilding.get(i).getCurrentCapacity() >= listBuilding.get(i).getMaxCapacity() / 2) {
+                int randCapacity = var.randNum(1, listBuilding.get(i).getCurrentCapacity()) / 10;
+                listBuilding.get(i).setCapacity(listBuilding.get(i).getCurrentCapacity() - randCapacity);
+                for (int j = 0; j < randCapacity; j++) {
+                    Random s = new Random();
+                    Building b = docksList.get(s.nextInt(docksList.size()));
+                    if (b.getCurrentCapacity() < b.getMaxCapacity()) {
+                        b.setCapacity(b.getCurrentCapacity() + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    public void peopleQuitDocksInSpaceDirection() {
+        for (int i = 0; i < docksList.size(); i++) {
+            int randCap = var.randNum(0, docksList.get(i).getCurrentCapacity()) / (2*docksList.get(i).getMaxCapacity()/docksList.get(i).getCurrentCapacity());
+            docksList.get(i).setCapacity(docksList.get(i).getCurrentCapacity() - randCap);
+        }
+    }
+
+    public void peopleQuitBuildingInBuildingDirection() {
+        for (int i = 0; i < listBuilding.size(); i++) {
+            if (!"COMMAND ROOM".equals(listBuilding.get(i).getName()) | !"DOCK A".equals(listBuilding.get(i).getName()) | !"DOCK B".equals(listBuilding.get(i).getName()) | !"DOCK C".equals(listBuilding.get(i).getName()) | !"DOCK D".equals(listBuilding.get(i).getName()) | !"DOCK E".equals(listBuilding.get(i).getName())) {
+                int randCap = var.randNum(0, listBuilding.get(i).getCurrentCapacity()) / 10;
+                Random s = new Random();
+                Building b = listBuilding.get(s.nextInt(listBuilding.size()));
+                if (!"COMMAND ROOM".equals(b.getName()) | !"DOCK A".equals(b.getName()) | !"DOCK B".equals(b.getName()) | !"DOCK C".equals(b.getName()) | !"DOCK D".equals(b.getName()) | !"DOCK E".equals(b.getName())) {
+                    if (b.getCurrentCapacity() + randCap < b.getMaxCapacity()) {
+                        listBuilding.get(i).setCapacity(listBuilding.get(i).getCurrentCapacity() - randCap);
+                        b.setCapacity(b.getCurrentCapacity() + randCap);
+                    }
+                }
+            }
+        }
+    }
+
+    public void peopleTraffic() {
+        peopleQuitDocksInBuildingDirection("DOCK A");
+        peopleQuitDocksInBuildingDirection("DOCK B");
+        peopleQuitDocksInBuildingDirection("DOCK C");
+        peopleQuitDocksInBuildingDirection("DOCK D");
+        peopleQuitDocksInBuildingDirection("DOCK E");
+        peopleQuitBuildingInDocksDirection();
+        peopleQuitDocksInSpaceDirection();
+        peopleQuitBuildingInBuildingDirection();
+    }
+
     @Override
     public void update() {
         super.update();
@@ -96,18 +177,11 @@ public class SpaceStationView extends MainPanel {
         }
 
         for (Building b : listBuilding) {
-            if (b.getFire() == true) {
+            Color colorBuilding = b.getColorBuilding();
+            if (colorBuilding == Color.orange) {
                 fireBuildingNumber++;
             }
-            if (b.getName() == "COMMAND ROOM" && b.getFire() == true) {
-                OperatorOnFire = OperatorOnFire + 1;
-                System.out.println("OperatorOnFire = " + OperatorOnFire);
-                if (OperatorOnFire >= 310 * 3 * 6) {
-                    gameOver = true;
-                }
-            }
         }
-        //System.out.println("fireBuildingNumber = " +fireBuildingNumber);
         if (fireBuildingNumber >= 2 * listBuilding.size() / 3) {
             gameOver = true;
         }
@@ -136,7 +210,7 @@ public class SpaceStationView extends MainPanel {
         return listBuilding;
     }
 
-    public ArrayList<Hangar> getListHangars() {
+    public ArrayList<Dock> getListHangars() {
         return listHangars;
     }
 }

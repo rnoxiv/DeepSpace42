@@ -1,6 +1,7 @@
 package Interface;
 
 import GameObjects.Actors.Urgence;
+import GameObjects.Zone;
 import Handlers.Keys;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 public class callUrgencesPanel {
 
     private ArrayList<Urgence> urgences = new ArrayList();
+    private static final int FIREDepa = 0;
+    private Urgence uToSend;
 
     private static final String question1 = "Write down the urgence number you would like to call :";
     private static final String question2 = "Please select where to send help on the panel beside : ";
@@ -30,6 +33,8 @@ public class callUrgencesPanel {
         this.width = tW / 3;
         this.tHeight = tH;
         this.height = tH / 3;
+        
+        urgences.add(new Urgence(new Zone(""),"18",500));
     }
 
     public void draw(Graphics2D g) {
@@ -91,15 +96,21 @@ public class callUrgencesPanel {
         }
 
     }
-
+    
+    public Urgence urgenceToSend(){
+        return uToSend;
+    }
+    
     public void reInit() {
         number = "";
         goodNum = false;
     }
 
     private void select() {
-        for (String num : nums) {
-            if (number.equals(num)) {
+        for (Urgence u : urgences) {
+            if (number.equals(u.getNumber())) {
+                uToSend = u;
+                uToSend.setBusy(true);
                 goodNum = true;
             }
         }

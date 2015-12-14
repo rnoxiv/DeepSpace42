@@ -27,6 +27,7 @@ public class InfosPanel {
     private ArrayList<Ship> vehiclesList;
     private ArrayList<Ressource> ressourcesList;
     private ArrayList<Building> buildingsList;
+    private Building buildingUrgence;
 
     private Ship cible;
 
@@ -149,6 +150,7 @@ public class InfosPanel {
             if (ressourcesList.get(i).getInfo()) {
                 String maxCap = "Maximum Capacity : " + ressourcesList.get(i).getMaxcap();
                 String curCap = "Current Capacity : " + (int) ressourcesList.get(i).getCurrentcap();
+                String command = "C -Command";
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
 
@@ -156,17 +158,21 @@ public class InfosPanel {
                 int textHeightS = (int) (g.getFont().getStringBounds(curCap, frc).getHeight());
                 int textWidthP = (int) (g.getFont().getStringBounds(maxCap, frc).getWidth());
                 int textWidthS = (int) (g.getFont().getStringBounds(curCap, frc).getWidth());
-                int textHeightA = 0;
-                int textWidthA = 0;
-
-                int textHeight = textHeightP + textHeightS + textHeightA;
-                int textWidth = Math.max(textWidthP, textWidthS + textWidthA);
+                int textHeightC = 0;
+                if (!ressourcesList.get(i).getName().equals("POPULATION")) {
+                    textHeightC = (int) (g.getFont().getStringBounds(command, frc).getHeight());
+                }
+                int textHeight = textHeightP + textHeightS + textHeightC;
+                int textWidth = Math.max(textWidthP, textWidthS);
 
                 boxInfoSize = 2 * textHeight;
                 g.setStroke(new BasicStroke(1));
                 g.drawRect(tWidth - width + boxConst, height / 10 + (i + 3) * 2 * textHeightT + 5, widthBox, boxInfoSize);
                 g.drawString(maxCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize / 2);
                 g.drawString(curCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 5 + boxInfoSize / 2 + textHeightT / 2);
+                if (!ressourcesList.get(i).getName().equals("POPULATION")) {
+                    g.drawString(command, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 10 + boxInfoSize / 2 + textHeightT / 2 + textHeightC / 2);
+                }
 
             }
         }
@@ -222,7 +228,7 @@ public class InfosPanel {
 
             }
             if (vehiclesList.get(i).getInfo() && "ENORME".equals(vehiclesList.get(i).getSize())) {
-                String rayonAsteroid = "rayon : " + vehiclesList.get(i).getSide();
+                String rayonAsteroid = "radius : " + vehiclesList.get(i).getSide();
                 String size = "size : " + vehiclesList.get(i).getSize();
                 String eliminateOrShield = "E - Eliminate";
                 affinetransform = new AffineTransform();
@@ -276,7 +282,7 @@ public class InfosPanel {
             int textWidthT = (int) (g.getFont().getStringBounds(na, frc).getWidth());
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 1) * 2 * textHeightT + boxInfoSize); // 1 == > 3
             if (buildingsList.get(i).getInfo() && !urgence) {
-                String capacity = "capacité : " + buildingsList.get(i).getCurrentCapacity() + " / " + buildingsList.get(i).getMaxCapacity();
+                String capacity = "capacity : " + buildingsList.get(i).getCurrentCapacity() + " / " + buildingsList.get(i).getMaxCapacity();
                 String happiness = "happiness : " + buildingsList.get(i).getHappiness();
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
@@ -313,6 +319,10 @@ public class InfosPanel {
 
     public boolean getUrgenceSent() {
         return this.sentUrgence;
+    }
+    
+    public Building buildingInNeed(){
+        return this.buildingUrgence;
     }
 
     public boolean isAttacking() {
@@ -443,6 +453,7 @@ public class InfosPanel {
         if (Keys.isPressed(Keys.ENTER)) {
             if (this.classList == BUILDING && urgence) {
                 this.buildingsList.get(curSelect).sendUrgence();
+                this.buildingUrgence  = this.buildingsList.get(curSelect);
                 this.sentUrgence = true;
             }
         }
@@ -454,6 +465,14 @@ public class InfosPanel {
                         isAttacking = true;
                         cible = this.vehiclesList.get(curSelect);
                     }
+                }
+            }
+        }
+
+        if (Keys.isPressed(Keys.C)) {
+            if (this.classList == RESSOURCE) {
+                if (!"POPULATION".equals(this.ressourcesList.get(curSelect).getName())) {
+                    this.ressourcesList.get(curSelect).commandRessource();
                 }
             }
         }

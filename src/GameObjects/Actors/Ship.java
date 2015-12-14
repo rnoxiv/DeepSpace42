@@ -3,7 +3,7 @@ package GameObjects.Actors;
 import GameObjects.Actor;
 import GameObjects.Zone;
 import GameObjects.Zones.Building;
-import GameObjects.Zones.Buildings.Hangar;
+import GameObjects.Zones.Buildings.Dock;
 import Utilities.Variables;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -32,13 +32,15 @@ public class Ship extends Actor {
     private boolean visible, isOnRadar, showInfo, dockingAccepted, hasChosen, docked, moving, destroyed;
 
     private float vehicleX, vehicleY, directionX, directionY, speed, vOpacity = 0;
+    
+    private Integer res = null;
 
     // LES PASSAGERS DU VAISSEAU
     private ArrayList<Person> passagers;
     // LA TAILLE DU VAISSEAU ( GENRE XL L etc...)
     private String size;
     // LE HANGAR OU SE DIRIGE LE VAISSEAU
-    private Hangar destination;
+    private Dock destination;
     // L'ID QUI S'AFFICHERA DU VAISSEAUs
     private String id;
     // LA TAILE NUMERIQUE DU VAISSEAU
@@ -48,12 +50,13 @@ public class Ship extends Actor {
     private int angle;
     private int distance;
 
-    public Ship(Zone zone, float sp, float objX, float objY, float dirX, float dirY, int side, Color _clrVehicle) {
+    public Ship(Zone zone, float sp, float objX, float objY, float dirX, float dirY, int side, Color _clrVehicle, Integer _res) {
         super(zone);
         
         var = new Variables();
         this.clrVehicle = _clrVehicle;
         Random generator = new Random();
+        this.res=_res;
 
         // TAILLE DU VAISSEAU ALEATOIRE
         int iSize = generator.nextInt(12) + 1;
@@ -232,11 +235,11 @@ public class Ship extends Actor {
         this.passagers = passagers;
     }
 
-    public Hangar getDestination() {
+    public Dock getDestination() {
         return destination;
     }
 
-    public void setDestination(Hangar destination) {
+    public void setDestination(Dock destination) {
         this.destination = destination;
     }
 
@@ -286,8 +289,7 @@ public class Ship extends Actor {
     }
 
     // FAIT ATTERIR LE VaISEAU
-
-        public boolean dock() {
+    public boolean dock() {
         // DONNE LA PLACE DISPONIBLE DANS LE HANGAR DE DESTINATION
         int hangarUse = 0;
         for (int i = 0; i < this.getDestination().getShips().size(); i++) {
@@ -309,4 +311,11 @@ public class Ship extends Actor {
         return false;
     }
 
+    public Integer getRes() {
+        return res;
+    }
+
+    public void setRes(Integer res) {
+        this.res = res;
+    }
 }

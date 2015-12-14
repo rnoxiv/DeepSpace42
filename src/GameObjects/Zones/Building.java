@@ -280,7 +280,10 @@ public class Building extends Zone {
     
     public void setFire(boolean b){
         this.isFire = b;
-        if(!isFire) this.green = 0;
+        if(!this.isFire){
+            this.green = 0;
+            this.color = colorBasic;
+        }
     }
     
     public void setCapacity(int cc){
