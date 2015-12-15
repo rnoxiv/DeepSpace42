@@ -1,15 +1,16 @@
 package Evenements;
 
+import Utilities.Variables;
 import java.awt.Color;
 
 
-public class AsteroidIncoming extends Evenement{
-    
+public class AsteroidIncoming{
+    private Variables var = new Variables();
     public AsteroidIncoming(){
         launch();
     }
     
-    private double rayonAsteroid = loinormale(120,100);
+    private double rayonAsteroid = var.loinormale(120,100);
     private Color colorAsteroid;
     
     public void launch(){

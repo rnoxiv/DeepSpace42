@@ -1,11 +1,10 @@
 package GameObjects;
 
-import GameObjects.Actors.Ship;
+import Audio.JukeBox;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
 
 public class Ressource {
 
@@ -72,6 +71,7 @@ public class Ressource {
             this.currentCap = 0;
         } else if (this.currentCap <= capa) {
             this.color = red;
+            //JukeBox.play("lowRessource", 1);
         } else if (this.currentCap <= (5 * capa)) {
             this.color = orange;
         } else if (this.currentCap <= (10 * capa)) {

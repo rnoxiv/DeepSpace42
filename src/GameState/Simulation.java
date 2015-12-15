@@ -30,7 +30,7 @@ public final class Simulation extends GameState {
     private static final int ASTEROID = 0;
     private static final int FIRE = 1;
 
-    private Timer timer;
+    private final Timer timer;
 
     private int tWidth, tHeight, mWidth, sWidth, sHeight;
 
@@ -67,22 +67,26 @@ public final class Simulation extends GameState {
         timer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SSView.peopleTraffic();
                 int number = var.randNum(1, maxChoice);
                 if (number >= 1 & number < 5) {
                     AsteroidIncoming asteroid = new AsteroidIncoming();
                     asteroid.launch();
                     radarView.createAsteroid();
                     missionPanel.addMision(missionMessages[ASTEROID]);
+                    JukeBox.play("asteroid");
                 }
                 if (number >= 5 & number < 150 & !fireEvent) {
+                    fire = new FireEvent(SSView.getListBuildings());
                     fire.launch();
-                    missionPanel.addMision(missionMessages[FIRE]);
                     fireEvent = true;
+                    JukeBox.play("fire");
                 }
                 if (number >= 10 & number < 50) {
                     int numShips = var.randNum(0, 2);
                     radarView.createVehicle(numShips, null);
+                }
+                if(number >=50 & number < 100){
+                    SSView.peopleTraffic();
                 }
             }
         });
@@ -96,7 +100,14 @@ public final class Simulation extends GameState {
         space = new Zone("SPACE");
 
         JukeBox.load("/SFX/radar.mp3", "radar");
-        JukeBox.load("/SFX/amongTheStars.mp3", "mainBG");
+        JukeBox.load("/SFX/mainBG.mp3", "mainBG");
+        JukeBox.load("/SFX/AsteroidIncomming.mp3", "asteroid");
+        JukeBox.load("/SFX/FireDetected.mp3", "fire");
+        JukeBox.load("/SFX/LaserAmmo.mp3", "ammo");
+        JukeBox.load("/SFX/LowRessources.mp3", "lowRessource");
+        JukeBox.load("/SFX/ShieldActivated.mp3", "shieldOn");
+        JukeBox.load("/SFX/ShieldDeactivated.mp3", "shieldOff");
+        JukeBox.load("/SFX/WelcomeToDS42.mp3", "welcome");
 
         tWidth = (int) screenSize.getWidth();
         mWidth = tWidth - tWidth / 5;
@@ -122,8 +133,9 @@ public final class Simulation extends GameState {
         mainPanel[STATION] = SSView;
         mainPanel[RESSOURCES] = ReView;
         curMainPanel = RADAR;
-
-        //JukeBox.loop("mainBG");
+        
+        JukeBox.play("welcome");
+        JukeBox.loop("mainBG");
         //JukeBox.loop(mainPanel[curMainPanel].getSound());
     }
 
@@ -134,10 +146,11 @@ public final class Simulation extends GameState {
             mP.update();
             if (mP.getGameOver()) {
                 timer.stop();
+                fire.getTimer().stop();
                 gsm.setState(GameStateManager.GAMEOVERSTATE);
             }
         }
-
+        
         if (echap) {
             if (echapPanel.getEchap()) {
                 timer.stop();
@@ -147,44 +160,58 @@ public final class Simulation extends GameState {
                 echapPanel.reInit();
             }
             if (call) {
-                callPanel.reInit();
+                if (!callPanel.getUrgenceToSend().getBusy()) {
+                    callPanel.reInit();
+                }
                 call = !call;
                 echap = !echap;
             }
         }
-        int numBuildingInFire = 0;
+        int numBuildingOnFire = 0;
         for (Building bu : SSView.getListBuildings()) {
             if (bu.getFire()) {
-                numBuildingInFire++;
+                numBuildingOnFire++;
                 break;
             }
         }
-        if (fire.getLaunched() && numBuildingInFire == 0) {
+        
+        if(fire.getLaunched()){
+            missionPanel.addMision(missionMessages[FIRE]);
+            fire.setLaunched(false);
+        }
+        
+        if (!fire.getLaunched() && numBuildingOnFire == 0) {
             missionPanel.delMission(missionMessages[FIRE], 1);
             fireEvent = false;
         }
 
-        if (call) {
-            SSView.setDetailBar(false);
-            if (callPanel.isGoodNum()) {
-                SSView.setDetailBar(true);
-                SSView.getIPanel().handleInput();
-                SSView.getIPanel().setUrgence(true);
-                call = false;
-            }
+        if (call && callPanel.isGoodNum()) {
+            SSView.setDetailBar(true);
+            SSView.getIPanel().handleInput();
+            SSView.getIPanel().setUrgence(true);
         }
 
         if (SSView.getIPanel().getUrgenceSent()) {
-            if (callPanel.urgenceToSend().getBusy()) {
-                callPanel.urgenceToSend().inService();
+            if (callPanel.getUrgenceToSend().getBusy()) {
+                callPanel.getUrgenceToSend().inService();
             } else {
-                if ("18".equals(callPanel.urgenceToSend().getNumber())) {
+                if ("18".equals(callPanel.getUrgenceToSend().getNumber())) {
                     SSView.getIPanel().buildingInNeed().setFire(false);
+                    System.out.println(SSView.getIPanel().buildingInNeed().getName());
+                    fire.fireNeutralizedBuilding(SSView.getIPanel().buildingInNeed());
                 }
                 SSView.getIPanel().reInit();
                 callPanel.reInit();
+                call = false;
             }
-
+        }
+        
+        if(SSView.getIPanel().getPurge()){
+            ReView.setPurge(SSView.getIPanel().getPurge());
+            if(SSView.getIPanel().buildingInNeed().getFire()){
+                fire.fireNeutralizedBuilding(SSView.getIPanel().buildingInNeed());
+            }
+            SSView.getIPanel().setPurge(false);
         }
 
         missionPanel.update();
@@ -206,6 +233,11 @@ public final class Simulation extends GameState {
         if (ReView.getCommand() != null) {
             radarView.createVehicle(1, ReView.getCommand());
             ReView.resetCommand();
+        }
+
+        if (SSView.getShipInSpaceDirection()){
+            radarView.createVehicleFromDocks(1,null);
+            SSView.setShipInSpaceDirection(false);
         }
 
         ReView.setShieldOn(radarView.getShieldOn());

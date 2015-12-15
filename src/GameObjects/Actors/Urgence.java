@@ -2,20 +2,19 @@ package GameObjects.Actors;
 
 import GameObjects.Actor;
 import GameObjects.Zone;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Urgence extends Actor {
 
     private String number;
-    private boolean busy = false;
+    private boolean busy = false, started = false, done = false;
     private int time;
     private int used = 0;
-    private static final int usedMax = 10;
+    private static final int usedMax = 5;
     private int actualTime;
 
-    private ActionListener taskPerformer;
+    private TimerTask taskPerformer;
     private Timer timer;
 
     public Urgence(Zone zone, String _number, int _time) {
@@ -23,31 +22,35 @@ public class Urgence extends Actor {
         this.number = _number;
         this.time = _time;
 
-        taskPerformer = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                actualTime++;
-                System.out.println("Urgence in action , time left : " + actualTime + " / " + time);
-            }
-        };
-
-        timer = new Timer(1000 * (5 + used), taskPerformer);
+        timer = new Timer();
 
     }
 
     public void inService() {
-        timer = new Timer(1000 * (5 + used), taskPerformer);
-        timer.start();
-        if (this.actualTime >= this.time) {
-            timer.stop();
-            busy = !busy;
-            addUsed();
-            actualTime = 0;
-        }
-    }
+        if (!started) {
+            done = false;
+            taskPerformer = new TimerTask() {
+                @Override
+                public void run() {
+                    if (actualTime < time) {
+                        actualTime++;
+                        System.out.println("Urgence in action , time left : " + actualTime + " / " + time);
+                    } else {
+                        timer.cancel();
+                        busy = !busy;
+                        done = true;
+                        addUsed();
+                        actualTime = 0;
+                        started = false;
+                        timer = new Timer();
+                    }
+                }
+            };
 
-    private int getUsed() {
-        return this.used;
+            timer.scheduleAtFixedRate(taskPerformer, 0, (1000 * (1 + used)));
+            started = true;
+        }
+
     }
 
     public String getNumber() {
@@ -56,6 +59,14 @@ public class Urgence extends Actor {
 
     public boolean getBusy() {
         return this.busy;
+    }
+    
+    public boolean getOnTheirWay() {
+        return this.started;
+    }
+
+    public int getActualTime() {
+        return this.actualTime;
     }
 
     public int getTime() {

@@ -5,6 +5,7 @@ import GameObjects.Actors.Ship;
 import GameObjects.Zone;
 import Handlers.Keys;
 import Interface.MainPanel;
+import Utilities.JukeBox;
 import Utilities.Variables;
 import java.awt.Color;
 import java.awt.Font;
@@ -140,7 +141,11 @@ public class RadarView extends MainPanel {
         if (asteroid) {
             createAsteroid();
         }
-
+        
+        if(numMissiles==1){
+            JukeBox.play("ammo",1);
+        }
+        
         if (this.iPanel.isAttacking()) {
             if (numMissiles == 0) {
                 this.iPanel.reInit();
@@ -224,7 +229,6 @@ public class RadarView extends MainPanel {
     public void shieldMechanism() {
 
         if (shieldOn) {
-
             currentShieldTime -= consumeRate;
             if (currentShieldTime <= 0) {
                 shieldOn = false;
@@ -338,6 +342,29 @@ public class RadarView extends MainPanel {
             if (res != null) {
                 color = new Color(0, 0, 1.0f, 0.0f);
             }
+
+            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res));
+        }
+    }
+
+        public void createVehicleFromDocks(int n, Integer res) {
+        for (int i = 0; i < n; i++) {
+            int sp = var.randNum(1, 3);
+            float speed = sp / 5000f;
+            int randDirX = var.randNum(-1, 1);
+            int randDirY = var.randNum(-1, 1);
+            int posX = (int)centerX;
+            int posY = (int)centerY;
+            float dirX = randDirX*var.randNum(sWidth, tWidth - rightBarWidth);
+            float dirY = randDirY*var.randNum(topHeight, height);
+            if (dirX == 0 | dirY == 0){
+                dirX = dirX - var.randNum(sWidth, tWidth - rightBarWidth);
+                dirY = dirY + var.randNum(topHeight, height);
+            }
+
+            int side = (int) (tWidth / 64);
+
+            Color color = new Color(0, 1.0f, 1.0f, 0.0f);
 
             listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res));
         }
@@ -523,10 +550,10 @@ public class RadarView extends MainPanel {
         if (Keys.isPressed(Keys.S)) {
             if (!shieldOn) {
                 shieldOn = true;
-                System.out.println("Bouclier activé");
+                JukeBox.play("shieldOff",1);
             } else {
                 shieldOn = false;
-                System.out.println("Bouclier désactivé");
+                JukeBox.play("shieldOn", 1);
             }
 
         }

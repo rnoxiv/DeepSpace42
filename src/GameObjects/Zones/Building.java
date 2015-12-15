@@ -11,6 +11,7 @@ import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Building extends Zone {
 
@@ -71,10 +72,22 @@ public class Building extends Zone {
     }
 
     public void purge() {
+        this.currentCapacity = 0;
+        this.isFire = false;
     }
 
-    ;
     public void evacuate() {
+        Random rand = new Random();
+        int evacuateToBuilding = rand.nextInt(this.neighbours.size());
+        
+        if(this.neighbours.get(evacuateToBuilding).getCurrentCapacity() + this.currentCapacity > this.neighbours.get(evacuateToBuilding).getMaxCapacity()){
+            int diffCapacity = this.neighbours.get(evacuateToBuilding).getMaxCapacity() - this.neighbours.get(evacuateToBuilding).getCurrentCapacity();
+            this.neighbours.get(evacuateToBuilding).setCapacity(this.neighbours.get(evacuateToBuilding).getMaxCapacity());
+            this.currentCapacity -= diffCapacity;
+            evacuate();
+        }else{
+            this.neighbours.get(evacuateToBuilding).setCapacity(this.neighbours.get(evacuateToBuilding).getCurrentCapacity() + this.currentCapacity);
+        }
         this.currentCapacity = 0;
     }
 
@@ -97,35 +110,31 @@ public class Building extends Zone {
     }
     
     public void changeColor(Graphics2D g){
-        if(!orange && green <=140){
-            green++;
-            if(green == 140){
-                orange = true;
+        if(!this.orange && this.green <=140){
+            this.green++;
+            if(this.green >= 140){
+                this.orange = true;
             }
         }else{
-            green--;
-            if(green == 0){
-                orange = false;
+            this.green--;
+            if(this.green <= 2){
+                this.orange = false;
             }
         }
         
-        this.color = new Color(red, green, blue);
+        this.color = new Color(this.red, this.green, this.blue);
     }
     
     public ArrayList<Building> getNeighbours() {
-        return neighbours;
+        return this.neighbours;
     }
 
-    public void setNeighbours(ArrayList<Building> neighbours) {
-        this.neighbours = neighbours;
-    }
-
-    public ArrayList<Building> addNeighbourFire (ArrayList <Building> ab, Building b){
+    public void setNeighbour (ArrayList <Building> ab){
         List<Double> distanceList = new ArrayList();
         for (Building ab1 : ab) {
             float centerX = ab1.getPosX() + ab1.getWidth() / 2;
             float centerY = ab1.getPosY() + ab1.getHeight() / 2;
-            double distance = sqrt(abs((centerX-b.getPosX())*(centerX-b.getPosX())+(centerY-b.getPosY())*(centerY-b.getPosY())));
+            double distance = sqrt(abs((centerX-this.getPosX())*(centerX-this.getPosX())+(centerY-this.getPosY())*(centerY-this.getPosY())));
             if (distance != 0.0){
                 distanceList.add(distance);
             }
@@ -137,7 +146,7 @@ public class Building extends Zone {
         for (Building ab1 : ab) {
             float centerX = ab1.getPosX() + ab1.getWidth() / 2;
             float centerY = ab1.getPosY() + ab1.getHeight() / 2;
-            double distance = sqrt(abs((centerX-b.getPosX())*(centerX-b.getPosX())+(centerY-b.getPosY())*(centerY-b.getPosY())));
+            double distance = sqrt(abs((centerX-this.getPosX())*(centerX-this.getPosX())+(centerY-this.getPosY())*(centerY-this.getPosY())));
             if (distance == firstB) {
                 //b.addNeighbour(ab.get(j));
                 neighbours.add(ab1);
@@ -147,7 +156,6 @@ public class Building extends Zone {
                 neighbours.add(ab1);
             }
         }
-        return b.getNeighbours();
     }
     
     // RAJOUTE UN BATIMENT ADJACENT
@@ -159,13 +167,6 @@ public class Building extends Zone {
             this.neighbours.add(pNeighbour);
             return true;
         }
-    }
-    
-    public void sendUrgence(){
-        
-        System.out.println("URGENCE sent to " + this.name);
-        System.out.println("Building : test - A CODER");
-        
     }
     
     //FAIT UN LIEN ENTRE DES BATIMENTS

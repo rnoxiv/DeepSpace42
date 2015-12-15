@@ -17,7 +17,7 @@ public class RessourcesView extends MainPanel {
 
     private float currentHangar;
 
-    private boolean shieldOn = false;
+    private boolean shieldOn = false, purge = false;
 
     private Integer command = null;
 
@@ -34,7 +34,7 @@ public class RessourcesView extends MainPanel {
     private void init() {
 
         int popMax = 0;
-        for (int i = 0; i < listPop.size()-5; i++) {
+        for (int i = 0; i < listPop.size(); i++) {
                 popMax = popMax + listPop.get(i).getMaxCapacity();
         }
         listRessources = new ArrayList();
@@ -44,7 +44,6 @@ public class RessourcesView extends MainPanel {
         listRessources.add(new Ressource("OXYGENE", 10000, 10000, sWidth + 5 * width / 9, height / 5, width, height - 2 * topHeight));
         listRessources.add(new Ressource("ELECTRICITY", 50000, 50000, sWidth + 6 * width / 9, height / 5, width, height - 2 * topHeight));
         listRessources.add(new Ressource("GAS", 50000, 50000, sWidth + 7 * width / 9, height / 5, width, height - 2 * topHeight));
-        //System.out.println(listRessources.size());
     }
 
     @Override
@@ -59,8 +58,11 @@ public class RessourcesView extends MainPanel {
     public void update() {
         super.update();
         int curPop = 0;
-        for (int i = 0; i < this.listPop.size() - 5; i++) {
+        for (int i = 0; i < this.listPop.size(); i++) {
             curPop += this.listPop.get(i).getCurrentCapacity();
+        }
+        if(curPop <=1){
+            gameOver = true;
         }
         currentHangar = 0;
         for (int i = 0; i < listDocks.size(); i++) {
@@ -111,8 +113,14 @@ public class RessourcesView extends MainPanel {
                 listRessources.get(2).setCurrentcap(newValueN);
                 break;
             case "OXYGENE":
+                float purgeNeg =0;
+                if (purge){
+                    purgeNeg = listRessources.get(3).getMaxcap()/listPop.size();
+                    purge = false;
+                }
                 float currentNewO = (listRessources.get(0).getCurrentcap()) / 500000;
-                float newValueO = listRessources.get(3).getCurrentcap() - currentNewO;
+                float newValueO = listRessources.get(3).getCurrentcap() - currentNewO - purgeNeg;
+                purgeNeg = 0;
                 listRessources.get(3).setCurrentcap(newValueO);
                 break;
         }
@@ -152,7 +160,11 @@ public class RessourcesView extends MainPanel {
     public void setShieldOn(boolean b) {
         this.shieldOn = b;
     }
-
+    
+    public void setPurge(boolean b){
+        this.purge = b;
+    }
+    
     public Integer getCommand() {
         return command;
     }

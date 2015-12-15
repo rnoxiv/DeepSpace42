@@ -1,6 +1,7 @@
 package GameState;
 
 import Handlers.Keys;
+import Utilities.JukeBox;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -47,6 +48,9 @@ public class GameOver extends GameState {
 
         fontSize = Math.min(width, height) / 10;
         checked = false;
+        JukeBox.load("/SFX/GameOver.mp3", "over");
+        JukeBox.stop("mainBG");
+        JukeBox.play("over");
     }
 
     @Override
