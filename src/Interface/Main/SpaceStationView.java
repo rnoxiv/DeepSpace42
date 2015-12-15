@@ -4,7 +4,6 @@ import GameObjects.Zones.Building;
 import GameObjects.Zones.Buildings.Dock;
 import Interface.MainPanel;
 import Utilities.Variables;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -21,11 +20,12 @@ public class SpaceStationView extends MainPanel {
     private int rbWidth = 0;
 
     private int totalCapOut = 0;
-    
+
     private boolean shipInSpaceDirection = false;
-    
+
     private static final int numBuildings = 24;
 
+    private static final int COMMANDROOM = 0;
     private static final int HALLARRIVE = 17;
 
     private ArrayList<Building> docksList = new ArrayList();
@@ -69,13 +69,13 @@ public class SpaceStationView extends MainPanel {
             }
 
         }
-        
-        for(int i = 0; i< listBuilding.size();i++){
-            listBuilding.get(i).setNeighbour(listBuilding);
+
+        for (Building b : listBuilding) {
+            b.setNeighbour(listBuilding);
         }
-        
+
         listBuilding.get(0).setCapacity(1);
-        
+
         this.iPanel.setBuildingsList(listBuilding);
     }
 
@@ -100,7 +100,6 @@ public class SpaceStationView extends MainPanel {
         g.setStroke(ACTIVE_STROKE);
     }
 
-
     public ArrayList<Building> docksList() {
         for (int l = 0; l < listBuilding.size(); l++) {
             if ("DOCK A".equals(listBuilding.get(l).getName()) | "DOCK B".equals(listBuilding.get(l).getName()) | "DOCK C".equals(listBuilding.get(l).getName()) | "DOCK D".equals(listBuilding.get(l).getName()) | "DOCK E".equals(listBuilding.get(l).getName())) {
@@ -110,18 +109,16 @@ public class SpaceStationView extends MainPanel {
         return docksList;
     }
 
-
-
     public void peopleQuitDocksInSpaceDirection() {
         for (int i = 0; i < docksList.size(); i++) {
-            int randCap = var.randNum(0, docksList.get(i).getCurrentCapacity())/100;
-            if (docksList.get(i).getCurrentCapacity()>randCap){    
-            docksList.get(i).setCapacity(docksList.get(i).getCurrentCapacity() - randCap);
-        }
+            int randCap = var.randNum(0, docksList.get(i).getCurrentCapacity()) / 100;
+            if (docksList.get(i).getCurrentCapacity() > randCap) {
+                docksList.get(i).setCapacity(docksList.get(i).getCurrentCapacity() - randCap);
+            }
             totalCapOut = totalCapOut + randCap;
-    }
+        }
         double u = var.loinormale(30, 4);
-        if (totalCapOut>=u){
+        if (totalCapOut >= u) {
             shipInSpaceDirection = true;
             totalCapOut = 0;
         }
@@ -143,6 +140,19 @@ public class SpaceStationView extends MainPanel {
         }
     }
 
+    public void peopleDying() {
+
+        int randBuilding = var.randNum(1, listBuilding.size());
+        for (int i = 0; i < listBuilding.size(); i++) {
+            if (randBuilding == i) {
+                if (listBuilding.get(i).getCurrentCapacity() >= 2) {
+                    listBuilding.get(i).setCapacity(listBuilding.get(i).getCurrentCapacity() - 1);
+                }
+            }
+        }
+
+    }
+
     public void peopleTraffic() {
         peopleQuitDocksInSpaceDirection();
         peopleQuitBuildingInBuildingDirection();
@@ -151,18 +161,17 @@ public class SpaceStationView extends MainPanel {
     @Override
     public void update() {
         super.update();
-        
+
         if (isSliding) {
             slideMap();
         }
 
         for (Building b : listBuilding) {
-            Color colorBuilding = b.getColorBuilding();
-            if (colorBuilding == Color.orange) {
+            if (b.getFire()) {
                 fireBuildingNumber++;
             }
         }
-        if (fireBuildingNumber >= 2 * listBuilding.size() / 3) {
+        if (fireBuildingNumber >= 2 * listBuilding.size() / 3 || listBuilding.get(COMMANDROOM).getCurrentCapacity() == 0) {
             gameOver = true;
         }
         fireBuildingNumber = 0;
@@ -193,17 +202,17 @@ public class SpaceStationView extends MainPanel {
     public ArrayList<Dock> getListHangars() {
         return listHangars;
     }
-    
-    public boolean getShipInSpaceDirection(){
+
+    public boolean getShipInSpaceDirection() {
         return this.shipInSpaceDirection;
-}
-    
-    public void setShipInSpaceDirection(boolean b){
+    }
+
+    public void setShipInSpaceDirection(boolean b) {
         this.shipInSpaceDirection = b;
     }
-    
-    public int getTotalCapOut(){
+
+    public int getTotalCapOut() {
         return this.totalCapOut;
     }
-    
+
 }

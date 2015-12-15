@@ -1,4 +1,4 @@
-package GameObjects.Actors;
+    package GameObjects.Actors;
 
 import GameObjects.Actor;
 import GameObjects.Zone;
@@ -22,19 +22,18 @@ public class Urgence extends Actor {
         this.number = _number;
         this.time = _time;
 
-        timer = new Timer();
+        this.timer = new Timer();
 
     }
 
     public void inService() {
-        if (!started) {
-            done = false;
-            taskPerformer = new TimerTask() {
+        if (!this.started) {
+            this.done = false;
+            this.taskPerformer = new TimerTask() {
                 @Override
                 public void run() {
                     if (actualTime < time) {
                         actualTime++;
-                        System.out.println("Urgence in action , time left : " + actualTime + " / " + time);
                     } else {
                         timer.cancel();
                         busy = !busy;
@@ -47,14 +46,18 @@ public class Urgence extends Actor {
                 }
             };
 
-            timer.scheduleAtFixedRate(taskPerformer, 0, (1000 * (1 + used)));
-            started = true;
+            this.timer.scheduleAtFixedRate(this.taskPerformer, 0, (1000 * (1 + this.used)));
+            this.started = true;
         }
 
     }
 
     public String getNumber() {
         return this.number;
+    }
+    
+    public int getUsed() {
+        return this.used;
     }
 
     public boolean getBusy() {
@@ -74,13 +77,17 @@ public class Urgence extends Actor {
     }
 
     private void addUsed() {
-        if (used < usedMax) {
-            used++;
+        if (this.used < this.usedMax) {
+            this.used++;
         } else {
-            used = usedMax;
+            this.used = this.usedMax;
         }
     }
-
+    
+    public void setUsed(int i){
+        this.used = i;
+    }
+    
     public void setNumber(String _number) {
         this.number = _number;
     }

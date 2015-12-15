@@ -1,5 +1,6 @@
 package GameObjects.Zones;
 
+import GameObjects.Ressource;
 import GameObjects.Zone;
 import java.awt.Color;
 import java.awt.Font;
@@ -17,17 +18,19 @@ public class Building extends Zone {
 
     private String type;
 
-    private boolean showInfo;
+    private boolean showInfo, missile=false;
 
     private ArrayList<Building> neighbours = new ArrayList();
     
-    private final int maxCapacity, happiness, fontSize;
-    private int  currentCapacity, width, height, posX, posY ;
+    private final int maxCapacity,fontSize;
+    private int  currentCapacity, width, height, posX, posY;
+    
+    private float happiness;
 
     private final int initPosX, widthConst = 10;
 
     private boolean isFire = false;
-    private boolean selected;
+    private boolean selected,happinessLow=false;
     private Color color;
 
     private static final Color colorBasic = Color.green;
@@ -58,8 +61,8 @@ public class Building extends Zone {
         super(name);
 
         this.maxCapacity = maxCap;
-        this.currentCapacity = 200;
-        this.happiness = 0;
+        this.currentCapacity = (4*maxCap)/10;
+        this.happiness = 50;
         this.posX = x;
         this.posY = y;
         this.initPosX = x;
@@ -90,7 +93,54 @@ public class Building extends Zone {
         }
         this.currentCapacity = 0;
     }
-
+    
+    public boolean happiness(ArrayList<Ressource> _r){
+        int a=0;
+        int b=0;
+        for (int i=1;i<_r.size();i++){
+            a+=_r.get(i).getMaxcap();
+            b+=_r.get(i).getCurrentcap();
+        }
+        
+        if(this.currentCapacity<=0){
+            happiness=50;
+        }
+        else if((a/b)<0.3 || this.currentCapacity>((9*this.maxCapacity)/10)){
+            float fireHapbis=0;
+            if (isFire){
+                fireHapbis=0.1f;
+            }
+            happiness-=(0.01 + fireHapbis);
+            fireHapbis=0;
+        }
+        else if ((a/b)<0.5 || this.currentCapacity>((8*this.maxCapacity)/10)){
+            float fireHap=0;
+            if (isFire){
+                fireHap=0.1f;
+            }
+            happiness-=(0.0001+fireHap);
+            fireHap=0;
+        }
+        else{
+            if(isFire){
+                happiness-=0.01;
+            }
+            else{
+                happiness+=0.01;
+            }
+        }
+        if(happiness <=0){
+            this.happiness=0;
+        }
+        if (happiness>=100){
+            this.happiness=100;
+        }
+        if(happiness<25){
+            happinessLow=true;
+        }
+        return happinessLow;
+    }
+    
     public void draw(Graphics2D g) {
         g.setFont(new Font("TimesRoman", Font.PLAIN, this.fontSize));
         AffineTransform affinetransform = new AffineTransform();
@@ -115,11 +165,13 @@ public class Building extends Zone {
             if(this.green >= 140){
                 this.orange = true;
             }
-        }else{
+        }else if(green >= 0){
             this.green--;
-            if(this.green <= 2){
-                this.orange = false;
-            }
+        }
+        
+        if(green<0){
+            green = 1;
+            this.orange = false;
         }
         
         this.color = new Color(this.red, this.green, this.blue);
@@ -140,7 +192,6 @@ public class Building extends Zone {
             }
         }
         Collections.sort(distanceList);
-        //System.out.println("distanceList = " + distanceList);
         double firstB = distanceList.get(0);
         double secondB = distanceList.get(1);
         for (Building ab1 : ab) {
@@ -225,8 +276,12 @@ public class Building extends Zone {
         return this.maxCapacity;
     }
 
-    public int getHappiness() {
+    public float getHappiness() {
         return this.happiness;
+    }
+    
+    public boolean getMissile() {
+        return this.missile;
     }
 
     public boolean getSelected() {
@@ -281,14 +336,21 @@ public class Building extends Zone {
     
     public void setFire(boolean b){
         this.isFire = b;
-        if(!this.isFire){
-            this.green = 0;
+        if(!this.isFire && !this.selected){
             this.color = colorBasic;
+        }else if(!this.isFire && this.selected){
+            this.color = colorSelected;
         }
     }
     
     public void setCapacity(int cc){
          this.currentCapacity = cc;
      }
+    
+    public void setHappiness(boolean _b){this.happinessLow=_b;}
+    
+    public void setMissile(boolean _b){ 
+        this.missile=_b;
+    }
     
 }

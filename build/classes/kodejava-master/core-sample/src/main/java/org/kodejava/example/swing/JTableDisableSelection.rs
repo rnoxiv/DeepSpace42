@@ -1,3 +1,0 @@
-org.kodejava.example.swing.JTableDisableSelection$1
-org.kodejava.example.swing.JTableDisableSelection
-org.kodejava.example.swing.JTableDisableSelection$PremiereLeagueTableModel

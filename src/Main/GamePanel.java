@@ -8,14 +8,12 @@ import Utilities.JukeBox;
 import GameState.GameStateManager;
 import Handlers.Keys;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
@@ -83,7 +81,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             try {
                 Thread.sleep(wait);
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }

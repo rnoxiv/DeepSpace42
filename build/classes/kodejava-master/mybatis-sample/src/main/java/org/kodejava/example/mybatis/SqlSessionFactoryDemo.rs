@@ -1,1 +1,0 @@
-org.kodejava.example.mybatis.SqlSessionFactoryDemo

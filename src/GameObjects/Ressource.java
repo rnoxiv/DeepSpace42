@@ -1,6 +1,5 @@
 package GameObjects;
 
-import Audio.JukeBox;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
@@ -64,17 +63,17 @@ public class Ressource {
         g.drawString("0%", this.posX - (this.widthP / 2), this.posY + heightP + (heightP / 10));
         g.drawString("50%", this.posX - (this.widthP / 2), pStart - (4 * heightP / 10));
         g.drawString("100%", this.posX - (this.widthP / 2), this.posY + (heightP / 10));
-
+        
         if (this.currentCap <= 0) {
             changeOpacity();
             this.color = new Color(1f, 0, 0, opacity);
             this.currentCap = 0;
-        } else if (this.currentCap <= capa) {
+        } else if ((int)this.currentCap <= capa) {
             this.color = red;
             //JukeBox.play("lowRessource", 1);
-        } else if (this.currentCap <= (5 * capa)) {
+        } else if ((int)this.currentCap <= (5 * capa)) {
             this.color = orange;
-        } else if (this.currentCap <= (10 * capa)) {
+        } else if ((int)this.currentCap <= (10 * capa)) {
             this.color = green;
         }
 

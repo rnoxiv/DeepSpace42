@@ -278,16 +278,6 @@ public class Ship extends Actor {
         }
     }
 
-    // DECRIT LE VAISSEAU
-    public void description() {
-        System.out.println("Je suis le vaisseau " + this.getId() + " de classe " + this.getSize());
-        System.out.println("Mon volume est de " + this.getVolume());
-        System.out.println("J'ai Ã  mon bord les passagers suivants :");
-        for (int i = 0; i < this.getPassagers().size(); i++) {
-            this.getPassagers().get(i).description();
-        }
-    }
-
     // FAIT ATTERIR LE VaISEAU
     public boolean dock() {
         // DONNE LA PLACE DISPONIBLE DANS LE HANGAR DE DESTINATION

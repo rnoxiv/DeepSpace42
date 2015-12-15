@@ -21,6 +21,8 @@ public class RessourcesView extends MainPanel {
 
     private Integer command = null;
 
+    private int missile;
+
     private static final String IPANELNAME = "Ressources";
 
     public RessourcesView(String n, int sW, int mW, int tH, int tW, String sound, ArrayList<Building> l, ArrayList<Dock> h) {
@@ -35,7 +37,7 @@ public class RessourcesView extends MainPanel {
 
         int popMax = 0;
         for (int i = 0; i < listPop.size(); i++) {
-                popMax = popMax + listPop.get(i).getMaxCapacity();
+            popMax = popMax + listPop.get(i).getMaxCapacity();
         }
         listRessources = new ArrayList();
         listRessources.add(new Ressource("POPULATION", popMax, 0, sWidth + width / 9, height / 5, width, height - 2 * topHeight));
@@ -61,20 +63,20 @@ public class RessourcesView extends MainPanel {
         for (int i = 0; i < this.listPop.size(); i++) {
             curPop += this.listPop.get(i).getCurrentCapacity();
         }
-        if(curPop <=1){
+        if (curPop <= 1) {
             gameOver = true;
         }
         currentHangar = 0;
         for (int i = 0; i < listDocks.size(); i++) {
             for (int j = 0; j < listDocks.get(i).getShips().size(); j++) {
-                currentHangar += (float)listDocks.get(i).getShips().get(j).getVolume();
+                currentHangar += (float) listDocks.get(i).getShips().get(j).getVolume();
             }
         }
         listRessources.get(0).setCurrentcap(curPop);
         for (int i = 0; i < this.listRessources.size(); i++) {
             evolve(i);
             listRessources.get(i).coolDown();
-            if (listRessources.get(i).getCreateShip()){
+            if (listRessources.get(i).getCreateShip()) {
                 command = i;
             }
         }
@@ -94,9 +96,12 @@ public class RessourcesView extends MainPanel {
                 listRessources.get(1).setCurrentcap(newValueW);
                 break;
             case "GAS":
+                float missCons = 0;
+                missCons = 5000 * (float) missile;
                 float currentNewE = (currentHangar) / 50000;
-                float newValueE = listRessources.get(5).getCurrentcap() - currentNewE;
+                float newValueE = listRessources.get(5).getCurrentcap() - currentNewE - missCons;
                 listRessources.get(5).setCurrentcap(newValueE);
+                missile = 0;
                 break;
             case "ELECTRICITY":
                 float shieldCons = 0;
@@ -113,9 +118,9 @@ public class RessourcesView extends MainPanel {
                 listRessources.get(2).setCurrentcap(newValueN);
                 break;
             case "OXYGENE":
-                float purgeNeg =0;
-                if (purge){
-                    purgeNeg = listRessources.get(3).getMaxcap()/listPop.size();
+                float purgeNeg = 0;
+                if (purge) {
+                    purgeNeg = listRessources.get(3).getMaxcap() / listPop.size();
                     purge = false;
                 }
                 float currentNewO = (listRessources.get(0).getCurrentcap()) / 500000;
@@ -160,11 +165,15 @@ public class RessourcesView extends MainPanel {
     public void setShieldOn(boolean b) {
         this.shieldOn = b;
     }
-    
-    public void setPurge(boolean b){
+
+    public void setPurge(boolean b) {
         this.purge = b;
     }
-    
+
+    public void setMissile(int _m) {
+        this.missile = _m;
+    }
+
     public Integer getCommand() {
         return command;
     }

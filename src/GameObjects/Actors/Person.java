@@ -60,11 +60,7 @@ public class Person extends Actor {
     public void setColere(int colere) {
         this.anger = colere;
     }
-    //QUI EST CETTE PERSONNE
-    public void description() {
-        System.out.println("Nom : " + getFirstName() + " " + getLastName());
-        System.out.println("Colere : " + Integer.toString(this.anger));
-    }
+
     // DEPLACE UNE PERSONNE VERS UNE NOUVELLE ZONE SI IL Y A DE LA PLACE
     public boolean movePerson(Building destination) {
         if (destination.getActors().size() < destination.getMaxCapacity()) {

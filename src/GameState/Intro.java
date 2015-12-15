@@ -223,7 +223,7 @@ public class Intro extends GameState {
             JukeBox.stop("bgIntro2");
             gsm.setState(GameStateManager.SIMULATIONSTATE);
         } else if (currentSelection == 1) {
-            //gsm.setState(GameStateManager.HELPSTATE);
+            gsm.setState(GameStateManager.HELPSTATE);
         } else if (currentSelection == 2) {
             System.exit(0);
         }

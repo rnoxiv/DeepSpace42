@@ -1,2 +1,0 @@
-org.kodejava.example.swing.TabbedPaneKeyboardShortcut
-org.kodejava.example.swing.TabbedPaneKeyboardShortcut$1

@@ -1,3 +1,0 @@
-org.kodejava.example.swing.JColorChooserColorSelection$1
-org.kodejava.example.swing.JColorChooserColorSelection$ColorSelection
-org.kodejava.example.swing.JColorChooserColorSelection

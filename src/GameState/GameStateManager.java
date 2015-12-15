@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 public class GameStateManager {
 
-    private GameState[] gameStates;
+    private final GameState[] gameStates;
     private int currentState;
 
     private static final int NUMGAMESTATES = 6;
@@ -35,9 +35,9 @@ public class GameStateManager {
             gameStates[state] = new Intro(this);
         } else if (state == GAMEOVERSTATE) {
             gameStates[state] = new GameOver(this);
+        } else if (state == HELPSTATE) {
+            gameStates[state] = new Help(this);
         }
-//                else if(state == HELPSTATE)
-//			gameStates[state] = new HelpState(this);
     }
 
     private void unloadState(int state) {
@@ -61,12 +61,12 @@ public class GameStateManager {
             gameStates[currentState].draw(g);
         }
     }
-    
+
     public Font loadFont() {
-        try{
-        InputStream is = getClass().getResourceAsStream("/FONTS/spaceAge.ttf");
-        subFont = Font.createFont(Font.TRUETYPE_FONT, is);
-        }catch(Exception e){
+        try {
+            InputStream is = getClass().getResourceAsStream("/FONTS/spaceAge.ttf");
+            subFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

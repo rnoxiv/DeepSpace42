@@ -141,11 +141,11 @@ public class RadarView extends MainPanel {
         if (asteroid) {
             createAsteroid();
         }
-        
-        if(numMissiles==1){
-            JukeBox.play("ammo",1);
+
+        if (numMissiles == 1) {
+            JukeBox.play("ammo", 1);
         }
-        
+
         if (this.iPanel.isAttacking()) {
             if (numMissiles == 0) {
                 this.iPanel.reInit();
@@ -272,6 +272,8 @@ public class RadarView extends MainPanel {
     }
 
     public void slideRadar() {
+        float lastCX = centerX;
+        float lastCY = centerY;
         radius = Math.min(width, mainHeight) / 2f - 5f;
         diameter = 2 * radius;
         centerX = sWidth + width / 2f;
@@ -289,10 +291,15 @@ public class RadarView extends MainPanel {
 
         gradient = new GradientPaint(centerX, centerY - radius / 8f, FRONT_ACTIVE_RADAR_TRANSPARENT_PAINT, centerX, centerY, FRONT_RADAR_PAINT, false);
 
+        float dx = centerX - lastCX;
+        float dy = centerY - lastCY;
+
         for (int i = 0; i < listVehicles.size(); i++) {
             Ship v = listVehicles.get(i);
             float vX = v.getObjectX();
-            v.setObjectX(width - vX);
+            float vY = v.getObjectY();
+            v.setObjectX(vX + dx);
+            v.setObjectY(vY + dy);
         }
 
     }
@@ -333,7 +340,7 @@ public class RadarView extends MainPanel {
             float dirY = centerY - 15 - posY;
 
             if (dir >= 45 && res == null) {
-                dirX = var.randNum(sWidth,tWidth-rightBarWidth) - posX;
+                dirX = var.randNum(sWidth, tWidth - rightBarWidth) - posX;
                 dirY = var.randNum(topHeight, height) - posY;
             }
 
@@ -347,17 +354,17 @@ public class RadarView extends MainPanel {
         }
     }
 
-        public void createVehicleFromDocks(int n, Integer res) {
+    public void createVehicleFromDocks(int n, Integer res) {
         for (int i = 0; i < n; i++) {
             int sp = var.randNum(1, 3);
             float speed = sp / 5000f;
             int randDirX = var.randNum(-1, 1);
             int randDirY = var.randNum(-1, 1);
-            int posX = (int)centerX;
-            int posY = (int)centerY;
-            float dirX = randDirX*var.randNum(sWidth, tWidth - rightBarWidth);
-            float dirY = randDirY*var.randNum(topHeight, height);
-            if (dirX == 0 | dirY == 0){
+            int posX = (int) centerX;
+            int posY = (int) centerY;
+            float dirX = randDirX * var.randNum(sWidth, tWidth - rightBarWidth);
+            float dirY = randDirY * var.randNum(topHeight, height);
+            if (dirX == 0 | dirY == 0) {
                 dirX = dirX - var.randNum(sWidth, tWidth - rightBarWidth);
                 dirY = dirY + var.randNum(topHeight, height);
             }
@@ -398,7 +405,7 @@ public class RadarView extends MainPanel {
         float dirX = var.randNum(sWidth, tWidth - rightBarWidth) - (int) Asteroid.getRayonAsteroid() / 2 - posX;
         float dirY = var.randNum(topHeight, height) - (int) Asteroid.getRayonAsteroid() / 2 - posY;
 
-        Ship AsteroidVehicle = new Ship(space, speed, posX, posY, dirX, dirY, (int) Asteroid.getRayonAsteroid(), Asteroid.getColorAsteroid(),null);
+        Ship AsteroidVehicle = new Ship(space, speed, posX, posY, dirX, dirY, (int) Asteroid.getRayonAsteroid(), Asteroid.getColorAsteroid(), null);
         AsteroidVehicle.setSize("ENORME");
         AsteroidVehicle.addpassagers(0);
         AsteroidVehicle.setId(" ???? - " + AsteroidVehicle.getSize());
@@ -457,32 +464,15 @@ public class RadarView extends MainPanel {
 
         for (int i = 0; i < listAsteroids.size(); i++) {
             if (var.Collision(listAsteroids.get(i).vehicleCollision(), stationCollision())) {
-                System.out.println("Simulation terminée, un asteroide s'est écrasé sur la station Deep Space 42");
                 gameOver = true;
             }
         }
     }
-    //
-    //    public void checkWaiting() {
-    //        for (Ship v : listVehicles) {
-    //            if (!v.isMoving()) {
-    //                int time = 50;
-    //                waitEvent(v, time);
-    //            }
-    //        }
-    //    }
-    //
-    //    public void waitEvent(Ship v, int t) {
-    //        waitEvent++;
-    //        if (waitEvent == t) {
-    //            v.setIsMoving(true);
-    //        }
-    //    }
 
     public void radarScan() {
-        for (Ship v : listVehicles) {
-            v.radarBeamCollisionCheck(lineRadar);
-            v.move();
+        for (int i=0; i<listVehicles.size();i++) {
+            listVehicles.get(i).radarBeamCollisionCheck(lineRadar);
+            listVehicles.get(i).move();
         }
 
         angle += da;
@@ -501,6 +491,14 @@ public class RadarView extends MainPanel {
 
     public int getMinusAsteroid() {
         return minusAsteroid;
+    }
+
+    public int getNumMissile() {
+        return this.numMissiles;
+    }
+
+    public void setNumMissile(int _m) {
+        this.numMissiles = _m;
     }
 
     public void resetMinusAsteroid() {
@@ -526,21 +524,21 @@ public class RadarView extends MainPanel {
         int sizeShieldName = "SHIELD".length() * fontSize;
 
         g.drawString("SHIELD", sWidth + 7 * (width + rightBarWidth) / 8 - sizeShieldName / 4, topHeight / 4);
-
-        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, topHeight / 8, (int) (totalShieldTime * (width + rightBarWidth)/20), topHeight / 8);
         g.setColor(Color.blue);
-        g.fillRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, topHeight / 8, (int) (currentShieldTime * (width + rightBarWidth)/20), topHeight / 8);
-
+        g.fillRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, topHeight / 8, (int) (currentShieldTime * (width + rightBarWidth) / 20), topHeight / 8);
+        g.setColor(Color.GREEN);
+        g.setStroke(PASSIVE_STROKE);
+        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, topHeight / 8, (int) (totalShieldTime * (width + rightBarWidth) / 20), topHeight / 8);
         //Draw Missiles infos on top of the screen
         int sizeMissileName = "LASER".length() * fontSize;
-        g.setColor(Color.GREEN);
         g.drawString("LASER", sWidth + 7 * (width + rightBarWidth) / 8 - sizeMissileName / 4, 3 * topHeight / 4);
         g.setColor(Color.blue);
         g.fillRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, 5 * topHeight / 8, (int) (numMissiles * (width + rightBarWidth) / 60), topHeight / 8);
         g.setColor(Color.GREEN);
-        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, 5 * topHeight / 8, (width + rightBarWidth)/60, topHeight / 8);
-        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, 5 * topHeight / 8, (width + rightBarWidth)/30, topHeight / 8);
-        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, 5 * topHeight / 8, (width + rightBarWidth)/20, topHeight / 8);
+        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, 5 * topHeight / 8, (width + rightBarWidth) / 60, topHeight / 8);
+        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, 5 * topHeight / 8, (width + rightBarWidth) / 30, topHeight / 8);
+        g.drawRect(sWidth + 7 * (width + rightBarWidth) / 8 + sizeShieldName / 2, 5 * topHeight / 8, (width + rightBarWidth) / 20, topHeight / 8);
+        g.setStroke(ACTIVE_STROKE);
     }
 
     @Override
@@ -550,7 +548,7 @@ public class RadarView extends MainPanel {
         if (Keys.isPressed(Keys.S)) {
             if (!shieldOn) {
                 shieldOn = true;
-                JukeBox.play("shieldOff",1);
+                JukeBox.play("shieldOff", 1);
             } else {
                 shieldOn = false;
                 JukeBox.play("shieldOn", 1);

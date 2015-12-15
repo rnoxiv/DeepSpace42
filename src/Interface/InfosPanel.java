@@ -283,7 +283,7 @@ public class InfosPanel {
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 1) * 2 * textHeightT + boxInfoSize); // 1 == > 3
             if (buildingsList.get(i).getInfo() && !urgence) {
                 String capacity = "capacity : " + buildingsList.get(i).getCurrentCapacity() + " / " + buildingsList.get(i).getMaxCapacity();
-                String happiness = "happiness : " + buildingsList.get(i).getHappiness();
+                String happiness = "angerness : " + (int)buildingsList.get(i).getHappiness();
                 String evacuateAndPurge = "T - Evacuate  /  P - Purge";
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
@@ -294,14 +294,14 @@ public class InfosPanel {
                 int textHeightC = 0;
                 int textWidthC = 0;
                 if (!buildingsList.get(i).getName().equals("COMMAND ROOM")) {
-                    if(buildingsList.get(i).getName().equals("ARMS DEALER")){
+                    if (buildingsList.get(i).getName().equals("ARMS DEALER")) {
                         evacuateAndPurge += "  /  B - Buy Missiles";
                     }
                     textWidthC = (int) (g.getFont().getStringBounds(evacuateAndPurge, frc).getWidth());
                     textHeightC = (int) (g.getFont().getStringBounds(evacuateAndPurge, frc).getHeight());
                 }
 
-                int textHeight = textHeightP + textHeightS + textHeightC-5;
+                int textHeight = textHeightP + textHeightS + textHeightC - 5;
                 int textWidth = Math.max(textWidthP, textWidthS);
                 textWidth = Math.max(textWidth, textWidthC);
                 boxInfoSize = 2 * textHeight;
@@ -320,11 +320,11 @@ public class InfosPanel {
     public void setUrgence(boolean b) {
         this.urgence = b;
     }
-    
-    public void setPurge(boolean b){
+
+    public void setPurge(boolean b) {
         this.purge = b;
     }
-    
+
     public void setIsAttacking(boolean b) {
         this.isAttacking = b;
     }
@@ -338,8 +338,8 @@ public class InfosPanel {
     public boolean getUrgenceSent() {
         return this.sentUrgence;
     }
-    
-    public Building buildingInNeed(){
+
+    public Building buildingInNeed() {
         return this.buildingUrgence;
     }
 
@@ -350,7 +350,7 @@ public class InfosPanel {
     public Ship getCible() {
         return this.cible;
     }
-    
+
     public boolean getPurge() {
         return this.purge;
     }
@@ -474,22 +474,24 @@ public class InfosPanel {
 
         if (Keys.isPressed(Keys.ENTER)) {
             if (this.classList == BUILDING && urgence) {
-                this.buildingUrgence  = this.buildingsList.get(curSelect);
+                this.buildingUrgence = this.buildingsList.get(curSelect);
                 this.sentUrgence = true;
             }
         }
-        
+
         if (Keys.isPressed(Keys.T)) {
             if (this.classList == BUILDING) {
                 this.buildingsList.get(curSelect).evacuate();
             }
         }
-        
+
         if (Keys.isPressed(Keys.P)) {
             if (this.classList == BUILDING) {
-                this.buildingsList.get(curSelect).purge();
-                this.buildingUrgence  = this.buildingsList.get(curSelect);
-                purge = true;
+                if(!"COMMAND ROOM".equals(this.buildingsList.get(curSelect).getName())){
+                    this.buildingsList.get(curSelect).purge();
+                    this.buildingUrgence  = this.buildingsList.get(curSelect);
+                    purge = true;
+                }
             }
         }
 
@@ -508,6 +510,14 @@ public class InfosPanel {
             if (this.classList == RESSOURCE) {
                 if (!"POPULATION".equals(this.ressourcesList.get(curSelect).getName())) {
                     this.ressourcesList.get(curSelect).commandRessource();
+                }
+            }
+        }
+
+        if (Keys.isPressed(Keys.B)) {
+            if (this.classList == BUILDING) {
+                if ("ARMS DEALER".equals(this.buildingsList.get(curSelect).getName())) {
+                    this.buildingsList.get(curSelect).setMissile(true);
                 }
             }
         }

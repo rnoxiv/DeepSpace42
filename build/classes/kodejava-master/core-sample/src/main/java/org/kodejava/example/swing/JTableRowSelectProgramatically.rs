@@ -1,6 +1,0 @@
-org.kodejava.example.swing.JTableRowSelectProgramatically
-org.kodejava.example.swing.JTableRowSelectProgramatically$1
-org.kodejava.example.swing.JTableRowSelectProgramatically$MyTableModel
-org.kodejava.example.swing.JTableRowSelectProgramatically$2
-org.kodejava.example.swing.JTableRowSelectProgramatically$3
-org.kodejava.example.swing.JTableRowSelectProgramatically$4
