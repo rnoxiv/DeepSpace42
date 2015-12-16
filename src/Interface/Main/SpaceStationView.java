@@ -31,6 +31,7 @@ public class SpaceStationView extends MainPanel {
     private ArrayList<Building> docksList = new ArrayList();
 
     private int fireBuildingNumber = 0;
+    private int angryBuildingNumber =0;
 
     private final ArrayList<Building> listBuilding;
     private final ArrayList<Dock> listHangars;
@@ -170,11 +171,17 @@ public class SpaceStationView extends MainPanel {
             if (b.getFire()) {
                 fireBuildingNumber++;
             }
+            if (b.getHappiness()<=15f) {
+                angryBuildingNumber++;
+            }
         }
-        if (fireBuildingNumber >= 2 * listBuilding.size() / 3 || listBuilding.get(COMMANDROOM).getCurrentCapacity() == 0) {
+        
+        
+        if (fireBuildingNumber >= 2 * listBuilding.size() / 3 || listBuilding.get(COMMANDROOM).getCurrentCapacity() == 0 || angryBuildingNumber >= 2 * listBuilding.size() / 3) {
             gameOver = true;
         }
         fireBuildingNumber = 0;
+        angryBuildingNumber = 0;
     }
 
     public void slideMap() {
@@ -209,10 +216,6 @@ public class SpaceStationView extends MainPanel {
 
     public void setShipInSpaceDirection(boolean b) {
         this.shipInSpaceDirection = b;
-    }
-
-    public int getTotalCapOut() {
-        return this.totalCapOut;
     }
 
 }

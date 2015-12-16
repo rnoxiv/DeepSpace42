@@ -5,6 +5,7 @@ import Evenements.FightEvent;
 import Evenements.FireEvent;
 import GameObjects.Zone;
 import GameObjects.Zones.Building;
+import Handlers.Arduino;
 import Utilities.JukeBox;
 import Handlers.Keys;
 import Interface.DocksPanel;
@@ -22,6 +23,9 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Timer;
 
 public final class Simulation extends GameState {
@@ -63,9 +67,13 @@ public final class Simulation extends GameState {
 
     private Variables var;
 
-    public Simulation(GameStateManager gsm) {
+    public Arduino obj;
+
+    public Simulation(GameStateManager gsm) throws IOException, InterruptedException {
         super(gsm);
         init();
+        obj = new Arduino();
+        obj.initialize();
         fire = new FireEvent(SSView.getListBuildings());
         fight = new FightEvent(SSView.getListBuildings());
 
@@ -79,22 +87,27 @@ public final class Simulation extends GameState {
                     radarView.createAsteroid();
                     missionPanel.addMision(missionMessages[ASTEROID]);
                     JukeBox.play("asteroid");
+                    try {
+                        obj.turnOnLed(3);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 if (number >= 5 & number < 10 & !fireEvent) {
                     fire = new FireEvent(SSView.getListBuildings());
                     fireEvent = true;
                 }
-                if (number >= 10 & number < 100 & !fightEvent) {
+                if (number >= 10 & number < 15 & !fightEvent) {
                     fight = new FightEvent(SSView.getListBuildings());
                     fightEvent = true;
                 }
-                if (number >= 115 & number < 50) {
+                if (number >= 15 & number < 60) {
                     int numShips = var.randNum(0, 2);
                     radarView.createVehicle(numShips, null);
                 }
-                if (number >= 50 & number < 100) {
-                    SSView.peopleTraffic();
-                }
+                SSView.peopleTraffic();
             }
         });
         timer.start();
@@ -110,6 +123,7 @@ public final class Simulation extends GameState {
         JukeBox.load("/SFX/mainBG.mp3", "mainBG");
         JukeBox.load("/SFX/AsteroidIncomming.mp3", "asteroid");
         JukeBox.load("/SFX/FireDetected.mp3", "fire");
+        JukeBox.load("/SFX/FightDetected.mp3", "fight");
         JukeBox.load("/SFX/LaserAmmo.mp3", "ammo");
         JukeBox.load("/SFX/LowRessources.mp3", "lowRessource");
         JukeBox.load("/SFX/ShieldActivated.mp3", "shieldOn");
@@ -152,7 +166,13 @@ public final class Simulation extends GameState {
             mP.update();
             if (mP.getGameOver()) {
                 timer.stop();
-                gsm.setState(GameStateManager.GAMEOVERSTATE);
+                try {
+                    gsm.setState(GameStateManager.GAMEOVERSTATE);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         int numBuildingOnFire = 0;
@@ -161,39 +181,69 @@ public final class Simulation extends GameState {
             if (bu.getFire()) {
                 numBuildingOnFire++;
             }
-            if(bu.getFight()){
+            if (bu.getFight()) {
                 numBuildingFighting++;
             }
         }
 
         if (fireEvent && !fire.getLaunched()) {
             fire.launch();
-        } else if (fire.getFireStarted() && fire.getFirstFire()) {
+        } else if (fire.getStarted() && fire.getFirstLoop()) {
             missionPanel.addMision(missionMessages[FIRE]);
-            fire.initFirstFire();
-        } else if (fire.getLaunched() && numBuildingOnFire == 0 && fire.getFireStarted()) {
+            try {
+                obj.turnOnLed(1);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            fire.initFirstLoop();
+        } else if (fire.getLaunched() && numBuildingOnFire == 0 && fire.getStarted()) {
             missionPanel.delMission(missionMessages[FIRE], 1);
             fire.getTimer().cancel();
-            fire.initFireSystem();
+            fire.initSystem();
             fireEvent = false;
+            try {
+                obj.turnOffLed(1);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+
         if (fightEvent && !fight.getLaunched()) {
             fight.launch();
-        } else if(fight.getFightStarted() && fight.getFirstFight()){
+        } else if (fight.getStarted() && fight.getFirstLoop()) {
             missionPanel.addMision(missionMessages[FIGHT]);
-            fight.initFirstFight();
-        }else if (fight.getLaunched() && numBuildingFighting == 0 && fight.getFightStarted()) {
+            try {
+                obj.turnOnLed(4);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            fight.initFirstLoop();
+        } else if (fight.getLaunched() && numBuildingFighting == 0 && fight.getStarted()) {
             missionPanel.delMission(missionMessages[FIGHT], 1);
             fight.getTimer().cancel();
-            fight.initFightSystem();
+            fight.initSystem();
             fightEvent = false;
+            try {
+                obj.turnOffLed(4);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+
         if (echap) {
             if (echapPanel.getEchap()) {
                 timer.stop();
-                gsm.setState(GameStateManager.MENUSTATE);
+                try {
+                    gsm.setState(GameStateManager.MENUSTATE);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else if (echapPanel.getStay()) {
                 echap = false;
                 echapPanel.reInit();
@@ -214,16 +264,43 @@ public final class Simulation extends GameState {
         }
 
         if (SSView.getIPanel().getUrgenceSent()) {
+            if (callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.FIREDepa))) {
+                try {
+                    obj.turnOnLed(8);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.POLICE))) {
+                try {
+                    obj.turnOnLed(7);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             if (callPanel.getUrgenceToSend().getBusy()) {
                 callPanel.getUrgenceToSend().inService();
             } else {
                 if (callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.FIREDepa))) {
                     SSView.getIPanel().buildingInNeed().setFire(false);
-                    fire.fireNeutralizedBuilding(SSView.getIPanel().buildingInNeed());
-                }else if(callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.POLICE))){
+                    fire.neutralizedBuilding(SSView.getIPanel().buildingInNeed());
+                    try {
+                        obj.turnOffLed(8);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.POLICE))) {
                     SSView.getIPanel().buildingInNeed().setFight(false);
-                    fight.fightNeutralizedBuilding(SSView.getIPanel().buildingInNeed());
-                }else if(callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.AMBULANCE))){
+                    fight.neutralizedBuilding(SSView.getIPanel().buildingInNeed());
+                    try {
+                        obj.turnOffLed(7);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 SSView.getIPanel().reInit();
                 callPanel.reInit();
@@ -234,13 +311,45 @@ public final class Simulation extends GameState {
         if (SSView.getIPanel().getPurge()) {
             ReView.setPurge(SSView.getIPanel().getPurge());
             if (SSView.getIPanel().buildingInNeed().getFire()) {
-                fire.fireNeutralizedBuilding(SSView.getIPanel().buildingInNeed());
+                fire.neutralizedBuilding(SSView.getIPanel().buildingInNeed());
             }
             SSView.getIPanel().setPurge(false);
         }
 
         missionPanel.update();
         docksPanel.update();
+
+        if (!radarView.getEmpty()) {
+            try {
+                obj.turnOnLed(9);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            try {
+                    obj.turnOffLed(9);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
+
+        if (radarView.getNumMissile() != 0) {
+            try {
+                obj.turnOnLed(8);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                obj.turnOffLed(6);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
         if (SSView.getListBuildings().get(15).getMissile()) {
             ReView.setMissile(3 - (radarView.getNumMissile()));
@@ -250,7 +359,6 @@ public final class Simulation extends GameState {
 
         for (int i = 0; i < SSView.getListBuildings().size(); i++) {
             if (SSView.getListBuildings().get(i).happiness(ReView.getListRessources())) {
-                SSView.peopleQuitBuildingInBuildingDirection();
                 SSView.getListBuildings().get(i).setHappiness(false);
             }
         }
@@ -280,6 +388,30 @@ public final class Simulation extends GameState {
         }
 
         ReView.setShieldOn(radarView.getShieldOn());
+
+        if (radarView.getShieldOn()) {
+            try {
+                obj.turnOnLed(5);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                obj.turnOffLed(5);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if (radarView.getListAsteroids().isEmpty()) {
+            try {
+                obj.turnOffLed(3);
+            } catch (IOException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
         if (radarView.getMinusAsteroid() != 0) {
             missionPanel.delMission(missionMessages[ASTEROID], radarView.getMinusAsteroid());

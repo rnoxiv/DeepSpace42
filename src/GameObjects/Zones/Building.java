@@ -2,6 +2,7 @@ package GameObjects.Zones;
 
 import GameObjects.Ressource;
 import GameObjects.Zone;
+import Utilities.Variables;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -28,7 +29,8 @@ public class Building extends Zone {
     private float happiness;
 
     private final int initPosX, widthConst = 10;
-
+    private Variables var = new Variables();
+    
     private boolean isFire = false;
     private boolean isFight = false;
     private boolean selected, happinessLow = false;
@@ -45,7 +47,7 @@ public class Building extends Zone {
 
         this.maxCapacity = maxCap;
         this.currentCapacity = 0;
-        this.happiness = 0;
+        this.happiness = var.randNum(20,80);;
         this.posX = x;
         this.posY = y;
         this.initPosX = x;
@@ -59,10 +61,9 @@ public class Building extends Zone {
 
     public Building(String name, int maxCap, int x, int y, String type, int w, int h) {
         super(name);
-
         this.maxCapacity = maxCap;
         this.currentCapacity = (4 * maxCap) / 10;
-        this.happiness = 50;
+        this.happiness = var.randNum(20,80);
         this.posX = x;
         this.posY = y;
         this.initPosX = x;
@@ -95,45 +96,49 @@ public class Building extends Zone {
         this.currentCapacity = 0;
     }
 
-    public boolean happiness(ArrayList<Ressource> _r) {
-        int a = 0;
-        int b = 0;
-        for (int i = 1; i < _r.size(); i++) {
-            a += _r.get(i).getMaxcap();
-            b += _r.get(i).getCurrentcap();
+    public boolean happiness(ArrayList<Ressource> _r){
+        int a=0;
+        int b=0;
+        for (int i=1;i<_r.size();i++){
+            a+=_r.get(i).getMaxcap();
+            b+=_r.get(i).getCurrentcap();
         }
-
-        if (this.currentCapacity <= 0) {
-            happiness = 50;
-        } else if ((a / b) < 0.3 || this.currentCapacity > ((9 * this.maxCapacity) / 10)) {
-            float fireHapbis = 0;
-            if (isFire) {
-                fireHapbis = 0.1f;
+        
+        if(this.currentCapacity<=0){
+            happiness=0;
+        }
+        else if((a/b)<0.3 || this.currentCapacity>((9*this.maxCapacity)/10)){
+            float fireHapbis=0;
+            if (isFire || isFight){
+                fireHapbis=0.01f;
             }
-            happiness -= (0.01 + fireHapbis);
-            fireHapbis = 0;
-        } else if ((a / b) < 0.5 || this.currentCapacity > ((8 * this.maxCapacity) / 10)) {
-            float fireHap = 0;
-            if (isFire) {
-                fireHap = 0.1f;
+            happiness-=(0.001 + fireHapbis);
+            fireHapbis=0;
+        }
+        else if ((a/b)<0.5 || this.currentCapacity>((8*this.maxCapacity)/10)){
+            float fireHap=0;
+            if (isFire || isFight){
+                fireHap=0.01f;
             }
-            happiness -= (0.0001 + fireHap);
-            fireHap = 0;
-        } else {
-            if (isFire) {
-                happiness -= 0.01;
-            } else {
-                happiness += 0.01;
+            happiness-=(0.00001+fireHap);
+            fireHap=0;
+        }
+        else{
+            if(isFire || isFight){
+                happiness-=0.001;
+            }
+            else{
+                happiness+=0.001;
             }
         }
-        if (happiness <= 0) {
-            this.happiness = 0;
+        if(happiness <=0){
+            this.happiness=0;
         }
-        if (happiness >= 100) {
-            this.happiness = 100;
+        if (happiness>=100){
+            this.happiness=100;
         }
-        if (happiness < 25) {
-            happinessLow = true;
+        if(happiness<25){
+            happinessLow=true;
         }
         return happinessLow;
     }

@@ -1,5 +1,6 @@
 package GameState;
 
+import Handlers.Arduino;
 import Utilities.JukeBox;
 import Handlers.Keys;
 import java.awt.AlphaComposite;
@@ -12,11 +13,16 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class Intro extends GameState {
+
+    private Arduino obj;
 
     private int width, height, eventCount;
 
@@ -38,6 +44,7 @@ public class Intro extends GameState {
 
     public Intro(GameStateManager gsm) {
         super(gsm);
+        obj = new Arduino();
         subFont = gsm.loadFont();
         init();
     }
@@ -51,7 +58,6 @@ public class Intro extends GameState {
             bgImg = ImageIO.read(Intro.class.getResource("/IMG/bgIntro.jpg"));
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
         text = new ArrayList();
         text.add(title1);
@@ -70,8 +76,15 @@ public class Intro extends GameState {
         JukeBox.load("/SFX/menuselect.mp3", "menuselect");
         JukeBox.load("/SFX/menuoption.mp3", "menuoption");
         JukeBox.play("bgIntro1");
+        for (int i = 1; i < 10; i++) {
+            try {
+                obj.turnOnLed(i);
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-    
+
     @Override
     public void update() {
         handleInput();
@@ -94,8 +107,7 @@ public class Intro extends GameState {
             }
         }
     }
-    
-    
+
     //gère l'affichage graphique de l'intro / menu
     @Override
     public void draw(Graphics2D g) {
@@ -166,11 +178,11 @@ public class Intro extends GameState {
             }
         }
     }
-    
-    public void drawTitle(Graphics2D g){
-        
+
+    public void drawTitle(Graphics2D g) {
+
     }
-    
+
     //change l'opacité du message invitant les joueurs à rentrer dans l'état menu
     public void changeOpacity() {
         if (isDecreasing) {
@@ -188,7 +200,7 @@ public class Intro extends GameState {
         }
         clrObject = new Color(WHITE_FIX, WHITE_FIX, WHITE_FIX, objOpacity);
     }
-    
+
     //change opacité fond d'écran pour intro
     public void changeBgOpacity() {
         bgOpacity += 0.0005f;
@@ -216,15 +228,24 @@ public class Intro extends GameState {
         screenFilled = false;
         JukeBox.play("bgIntro1");
     }
-    
+
     //Actions selon choix joueur : lancer simulation, lancer Help, Quitter
     private void select() {
         if (currentSelection == 0) {
             JukeBox.stop("bgIntro2");
-            gsm.setState(GameStateManager.SIMULATIONSTATE);
-        } else if (currentSelection == 1) {
-            gsm.setState(GameStateManager.HELPSTATE);
-        } else if (currentSelection == 2) {
+            for (int i = 1; i < 10; i++) {
+                try {
+                    obj.turnOffLed(i);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            try {
+                gsm.setState(GameStateManager.SIMULATIONSTATE);
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else if (currentSelection == 2) {
             System.exit(0);
         }
     }

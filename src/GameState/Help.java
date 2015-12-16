@@ -4,6 +4,9 @@ import Handlers.Keys;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class Help extends GameState {
 
     private int width, height;
@@ -35,7 +38,11 @@ public class Help extends GameState {
     @Override
     public void handleInput() {
         if (Keys.isPressed(Keys.ECHAP)) {
-            gsm.setState(GameStateManager.MENUSTATE);
+            try {
+                gsm.setState(GameStateManager.MENUSTATE);
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

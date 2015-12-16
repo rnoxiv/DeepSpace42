@@ -4,6 +4,7 @@
 package GameState;
 
 import java.awt.Font;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class GameStateManager {
@@ -19,7 +20,7 @@ public class GameStateManager {
 
     private Font subFont;
 
-    public GameStateManager() {
+    public GameStateManager() throws IOException, InterruptedException {
 
         gameStates = new GameState[NUMGAMESTATES];
 
@@ -28,7 +29,7 @@ public class GameStateManager {
 
     }
 
-    private void loadState(int state) {
+    private void loadState(int state) throws IOException, InterruptedException {
         if (state == SIMULATIONSTATE) {
             gameStates[state] = new Simulation(this);
         } else if (state == MENUSTATE) {
@@ -44,7 +45,7 @@ public class GameStateManager {
         gameStates[state] = null;
     }
 
-    public void setState(int state) {
+    public void setState(int state) throws IOException, InterruptedException {
         unloadState(currentState);
         currentState = state;
         loadState(currentState);

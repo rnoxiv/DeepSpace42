@@ -14,6 +14,9 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
@@ -55,7 +58,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
     }
 
-    public void init() {
+    public void init() throws IOException, InterruptedException {
         image = new BufferedImage(tWidth, tHeight, BufferedImage.TYPE_INT_RGB);
         g = (Graphics2D) image.getGraphics();
         
@@ -66,7 +69,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     @Override
     public void run() {
-        init();
+        try {
+            init();
+        } catch (IOException ex) {
+            Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         while (running) {
             start = System.nanoTime();

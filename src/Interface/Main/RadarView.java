@@ -25,7 +25,7 @@ public class RadarView extends MainPanel {
 
     private static final String IPANELNAME = "Ships";
 
-    private boolean asteroid = false;
+    private boolean asteroid = false, empty = true;
 
     private final ArrayList<Ship> listVehicles;
     private final ArrayList<Ship> listAsteroids;
@@ -415,12 +415,15 @@ public class RadarView extends MainPanel {
     }
 
     public void checkVehicleOnRadar() {
+        int numVehicleOnRadar = 0;
         for (int i = 0; i < listVehicles.size(); i++) {
             Ship v = listVehicles.get(i);
             double distance = var.calculateDistanceFromPoint(centerX, centerY, v.getObjectX(), v.getObjectY());
             if (distance <= radius) {
                 v.setIsOnRadar(true);
                 iPanel.addVehicle(v);
+                empty = false;
+                numVehicleOnRadar++;
             } else if (v.getIsOnRadar() && distance > radius) {
                 v.setIsOnRadar(false);
                 iPanel.removeVehicleFromList(v);
@@ -429,6 +432,9 @@ public class RadarView extends MainPanel {
                 }
                 listVehicles.remove(v);
             }
+        }
+        if(numVehicleOnRadar == 0){
+            empty = true;
         }
     }
 
@@ -484,11 +490,19 @@ public class RadarView extends MainPanel {
     public ArrayList<Ship> getListToDock() {
         return listToDock;
     }
-
+    
+    public ArrayList<Ship> getListAsteroids(){
+        return listAsteroids;
+    }
+    
     public boolean getShieldOn() {
         return this.shieldOn;
     }
-
+    
+    public boolean getEmpty(){
+        return empty;
+    }
+    
     public int getMinusAsteroid() {
         return minusAsteroid;
     }

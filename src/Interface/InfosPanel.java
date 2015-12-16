@@ -4,7 +4,6 @@ import GameObjects.Actors.Ship;
 import GameObjects.Zones.Building;
 import GameObjects.Ressource;
 import Handlers.Keys;
-import Interface.Main.RessourcesView;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;

@@ -12,6 +12,9 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class GameOver extends GameState {
@@ -25,7 +28,8 @@ public class GameOver extends GameState {
 
     private Image bgImg;
 
-    private int waitTime = 50, curWaitTime = 0;
+    private final int waitTime = 50; 
+    private int curWaitTime = 0;
     private boolean checked;
 
     public GameOver(GameStateManager gsm) {
@@ -43,7 +47,6 @@ public class GameOver extends GameState {
             bgImg = ImageIO.read(Intro.class.getResource("/IMG/bgIntro.jpg"));
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         fontSize = Math.min(width, height) / 10;
@@ -69,9 +72,12 @@ public class GameOver extends GameState {
             try {
                 Thread.sleep(5000);
             } catch (Exception e) {
-                e.printStackTrace();
             }
-            gsm.setState(gsm.MENUSTATE);
+            try {
+                gsm.setState(GameStateManager.MENUSTATE);
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);

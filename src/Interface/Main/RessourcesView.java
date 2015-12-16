@@ -14,14 +14,14 @@ public class RessourcesView extends MainPanel {
     private ArrayList<Ressource> listRessources;
     private ArrayList<Building> listPop;
     private ArrayList<Dock> listDocks;
-    
+
     public static final int POPULATION = 0;
     public static final int WATER = 1;
     public static final int FOOD = 2;
     public static final int OXYGENE = 3;
     public static final int ELECTRICITY = 4;
     public static final int GAS = 5;
-    
+
     private float currentHangar;
 
     private boolean shieldOn = false, purge = false;
@@ -29,6 +29,8 @@ public class RessourcesView extends MainPanel {
     private Integer command = null;
 
     private int missile;
+
+    private int popMax = 0;
 
     private static final String IPANELNAME = "Ressources";
 
@@ -42,7 +44,6 @@ public class RessourcesView extends MainPanel {
 
     private void init() {
 
-        int popMax = 0;
         for (int i = 0; i < listPop.size(); i++) {
             popMax = popMax + listPop.get(i).getMaxCapacity();
         }
@@ -70,7 +71,7 @@ public class RessourcesView extends MainPanel {
         for (int i = 0; i < this.listPop.size(); i++) {
             curPop += this.listPop.get(i).getCurrentCapacity();
         }
-        if (curPop <= 1) {
+        if (curPop <= popMax/250) {
             gameOver = true;
         }
         currentHangar = 0;

@@ -4,48 +4,32 @@ import GameObjects.Zones.Building;
 import Utilities.JukeBox;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
 import java.util.TimerTask;
 
-public class FireEvent {
-
-    private int x = 0;
-    private final int y = 0;
-    private final ArrayList<Building> buildingList;
-
-    ArrayList<ArrayList<Building>> neighboursList = new ArrayList();
-    ArrayList<Building> a = new ArrayList();
-    ArrayList<Building> fireBuildingList = new ArrayList();
-
-    private Timer timerFire;
-    private TimerTask taskPerformer;
-    
-    private boolean fireStarted = false, launched = false, firstFire = false;
+public class FireEvent extends Evenement{
 
     public FireEvent(ArrayList<Building> l) {
-        buildingList = l;
+        super(l);
         
-        timerFire = new Timer();
-        
-        taskPerformer = new TimerTask() {
+        this.taskPerformer = new TimerTask() {
             @Override
             public void run() {
                 x = x + 1;
                 Random r = new Random();
                 if (x % 2 == 0) {
-                    if (x <= 10 && !fireBuildingList.isEmpty()) {
-                        for (int i = 0; i < fireBuildingList.size(); i++) {
-                            System.out.println("Attention ! " + fireBuildingList.get(i).getName() + " en feu !");
-                            if (fireBuildingList.get(i).getCurrentCapacity() >= 5) {
-                                fireBuildingList.get(i).setCapacity(fireBuildingList.get(i).getCurrentCapacity() - 5);
+                    if (x <= 10 && !buildingListEvent.isEmpty()) {
+                        for (int i = 0; i < buildingListEvent.size(); i++) {
+                            System.out.println("Attention ! " + buildingListEvent.get(i).getName() + " en feu !");
+                            if (buildingListEvent.get(i).getCurrentCapacity() >= 5) {
+                                buildingListEvent.get(i).setCapacity(buildingListEvent.get(i).getCurrentCapacity() - 5);
                             }
-                            if (fireBuildingList.get(i).getCurrentCapacity() <= 0) {
-                                fireBuildingList.get(i).setCapacity(0);
-                                System.out.println(fireBuildingList.get(i).getName() + " ne contient plus aucun habitant");
+                            if (buildingListEvent.get(i).getCurrentCapacity() <= 0) {
+                                buildingListEvent.get(i).setCapacity(0);
+                                System.out.println(buildingListEvent.get(i).getName() + " ne contient plus aucun habitant");
                             }
                         }
                     }
-                    if (x <= 10 && fireBuildingList.isEmpty()) {
+                    if (x <= 10 && buildingListEvent.isEmpty()) {
                         Building fireBuilding = buildingList.get(r.nextInt(buildingList.size()));
                         if (!"ARRIVALS/DEPARTURES".equals(fireBuilding.getName()) && !"FIRE DEPARTMENT".equals(fireBuilding.getName())) {
                             if (fireBuilding.getFire()) {
@@ -57,16 +41,16 @@ public class FireEvent {
                             if (!fireBuilding.getFire()) {
                                 System.out.println("Attention ! " + fireBuilding.getName() + " en feu !!!");
                                 fireBuilding.setFire(true);
-                                fireBuildingList.add(fireBuilding);
-                                fireStarted = true;
-                                firstFire = true;
+                                buildingListEvent.add(fireBuilding);
+                                started = true;
+                                firstLoop = true;
                                 JukeBox.play("fire");
                             }
                         }
                     }
-                    if (x > 10 && !fireBuildingList.isEmpty()) {
-                        for (int i = 0; i < fireBuildingList.size(); i++) {
-                            neighboursList.add(fireBuildingList.get(fireBuildingList.size() - 1).getNeighbours());
+                    if (x > 10 && !buildingListEvent.isEmpty()) {
+                        for (int i = 0; i < buildingListEvent.size(); i++) {
+                            neighboursList.add(buildingListEvent.get(buildingListEvent.size() - 1).getNeighbours());
                         }
                         Random s = new Random();
                         if (neighboursList.size() > 0) {
@@ -74,7 +58,7 @@ public class FireEvent {
                             Building b = a.get(s.nextInt(a.size()));
                             if (b.getFire() == false && !"ARRIVALS/DEPARTURES".equals(b.getName()) && !"FIRE DEPARTMENT".equals(b.getName())) {
                                 b.setFire(true);
-                                fireBuildingList.add(b);
+                                buildingListEvent.add(b);
                             }
                             if (b.getFire() == true && !"ARRIVALS/DEPARTURES".equals(b.getName()) && !"FIRE DEPARTMENT".equals(b.getName())) {
                                 if (b.getCurrentCapacity() >= 20) {
@@ -89,41 +73,6 @@ public class FireEvent {
                     }
                 }
             }
-        }
-    }
-    
-    public boolean getLaunched() {
-        return launched;
-    }
-
-    public void initFireSystem() {
-        launched = false;
-        fireStarted = false;
-        timerFire = new Timer();
-    }
-    
-    public boolean getFireStarted() {
-        return fireStarted;
-    }
-    
-    public boolean getFirstFire() {
-        return firstFire;
-    }
-    
-    public void initFirstFire(){
-        firstFire = false;
-    }
-    
-    public void launch() {
-        timerFire.scheduleAtFixedRate(taskPerformer,0,5000);
-        launched = true;
-    }
-    
-    public void fireNeutralizedBuilding(Building b) {
-        this.fireBuildingList.remove(b);
-    }
-
-    public Timer getTimer() {
-        return timerFire;
+        };
     }
 }

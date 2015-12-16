@@ -3,17 +3,17 @@ package Evenements;
 import Utilities.Variables;
 import java.awt.Color;
 
-
+//CREE UN ASTEROID DE TAILLE ALEATOIRE!
 public class AsteroidIncoming{
-    private Variables var = new Variables();
+    private final Variables var = new Variables();
     public AsteroidIncoming(){
         launch();
     }
     
-    private double rayonAsteroid = var.loinormale(120,100);
+    private final double rayonAsteroid = var.loinormale(120,100);
     private Color colorAsteroid;
     
-    public void launch(){
+    private void launch(){
         colorAsteroid = Color.red;
     }
     

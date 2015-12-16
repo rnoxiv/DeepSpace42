@@ -25,9 +25,9 @@ public class callUrgencesPanel {
     private static final String question1 = "Write down the urgence number you would like to call :";
     private static final String question2 = "Please select where to send help on the panel beside : ";
     private static final String urgenceSentMessage = "Urgences are dispatching, please wait end of operation : ";
-    private static final String numAvailable = "Ambulance : 15  /  Police : 17  /  Fire Department : 18";
+    private static final String numAvailable = "Police : 17  /  Fire Department : 18";
     private static final String call = "Call!";
-    private static final String[] nums = {"15", "17", "18"};
+    private static final String[] nums = {"17", "18"};
     private String number = "";
     private static final int MAX_NUM = 1;
 
