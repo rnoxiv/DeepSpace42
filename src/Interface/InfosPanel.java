@@ -4,6 +4,7 @@ import GameObjects.Actors.Ship;
 import GameObjects.Zones.Building;
 import GameObjects.Ressource;
 import Handlers.Keys;
+import Interface.Main.RessourcesView;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -159,7 +160,7 @@ public class InfosPanel {
                 int textWidthP = (int) (g.getFont().getStringBounds(maxCap, frc).getWidth());
                 int textWidthS = (int) (g.getFont().getStringBounds(curCap, frc).getWidth());
                 int textHeightC = 0;
-                if (!ressourcesList.get(i).getName().equals("POPULATION")) {
+                if (!ressourcesList.get(i).getName().equals("POPULATION") && ressourcesList.get(i).getCanCommand()) {
                     textHeightC = (int) (g.getFont().getStringBounds(command, frc).getHeight());
                 }
                 int textHeight = textHeightP + textHeightS + textHeightC;
@@ -170,7 +171,7 @@ public class InfosPanel {
                 g.drawRect(tWidth - width + boxConst, height / 10 + (i + 3) * 2 * textHeightT + 5, widthBox, boxInfoSize);
                 g.drawString(maxCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize / 2);
                 g.drawString(curCap, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 5 + boxInfoSize / 2 + textHeightT / 2);
-                if (!ressourcesList.get(i).getName().equals("POPULATION")) {
+                if (!ressourcesList.get(i).getName().equals("POPULATION") && ressourcesList.get(i).getCanCommand()) {
                     g.drawString(command, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 10 + boxInfoSize / 2 + textHeightT / 2 + textHeightC / 2);
                 }
 
@@ -198,7 +199,7 @@ public class InfosPanel {
             if (vehiclesList.get(i).getInfo() && !"ENORME".equals(vehiclesList.get(i).getSize())) {
                 String passengers = "passengers : " + vehiclesList.get(i).getPassagers().size();
                 String size = "size : " + vehiclesList.get(i).getSize();
-                String acceptOrReject = "A - Accept / R - Reject / W - Wait";
+                String acceptOrReject = "A - Accept / R - Reject";
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
 
@@ -269,10 +270,14 @@ public class InfosPanel {
         for (int i = 0; i < buildingsList.size(); i++) {
             if (i == curSelect) {
                 g.setColor(new Color(15, 185, 120));
-            } else if (buildingsList.get(i).getFire()) {
-                g.setColor(Color.red);
-            } else {
+            }else {
                 g.setColor(Color.GREEN);
+            }
+            
+            if (buildingsList.get(i).getFire()) {
+                g.setColor(Color.red);
+            } else if (buildingsList.get(i).getFight()) {
+                g.setColor(Color.blue);
             }
 
             String na = buildingsList.get(i).getName();
@@ -283,7 +288,7 @@ public class InfosPanel {
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 1) * 2 * textHeightT + boxInfoSize); // 1 == > 3
             if (buildingsList.get(i).getInfo() && !urgence) {
                 String capacity = "capacity : " + buildingsList.get(i).getCurrentCapacity() + " / " + buildingsList.get(i).getMaxCapacity();
-                String happiness = "angerness : " + (int)buildingsList.get(i).getHappiness();
+                String happiness = "happiness : " + (int)buildingsList.get(i).getHappiness() + " / 100";
                 String evacuateAndPurge = "T - Evacuate  /  P - Purge";
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
@@ -464,14 +469,6 @@ public class InfosPanel {
             }
         }
 
-        if (Keys.isPressed(Keys.W)) {
-            if (this.classList == VEHICLE) {
-                if (!this.vehiclesList.get(curSelect).getHasChosen()) {
-                    this.vehiclesList.get(curSelect).setIsMoving(false);
-                }
-            }
-        }
-
         if (Keys.isPressed(Keys.ENTER)) {
             if (this.classList == BUILDING && urgence) {
                 this.buildingUrgence = this.buildingsList.get(curSelect);
@@ -508,7 +505,7 @@ public class InfosPanel {
 
         if (Keys.isPressed(Keys.C)) {
             if (this.classList == RESSOURCE) {
-                if (!"POPULATION".equals(this.ressourcesList.get(curSelect).getName())) {
+                if (!"POPULATION".equals(this.ressourcesList.get(curSelect).getName()) && (this.ressourcesList.get(curSelect).getCanCommand())) {
                     this.ressourcesList.get(curSelect).commandRessource();
                 }
             }

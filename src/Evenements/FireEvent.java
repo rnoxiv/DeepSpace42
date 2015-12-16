@@ -2,8 +2,6 @@ package Evenements;
 
 import GameObjects.Zones.Building;
 import Utilities.JukeBox;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -13,7 +11,6 @@ public class FireEvent {
 
     private int x = 0;
     private final int y = 0;
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final ArrayList<Building> buildingList;
 
     ArrayList<ArrayList<Building>> neighboursList = new ArrayList();

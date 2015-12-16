@@ -14,7 +14,14 @@ public class RessourcesView extends MainPanel {
     private ArrayList<Ressource> listRessources;
     private ArrayList<Building> listPop;
     private ArrayList<Dock> listDocks;
-
+    
+    public static final int POPULATION = 0;
+    public static final int WATER = 1;
+    public static final int FOOD = 2;
+    public static final int OXYGENE = 3;
+    public static final int ELECTRICITY = 4;
+    public static final int GAS = 5;
+    
     private float currentHangar;
 
     private boolean shieldOn = false, purge = false;

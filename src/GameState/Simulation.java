@@ -1,6 +1,7 @@
 package GameState;
 
 import Evenements.AsteroidIncoming;
+import Evenements.FightEvent;
 import Evenements.FireEvent;
 import GameObjects.Zone;
 import GameObjects.Zones.Building;
@@ -25,9 +26,10 @@ import javax.swing.Timer;
 
 public final class Simulation extends GameState {
 
-    private static final String[] missionMessages = {"Caution : Asteroid incomming!", "Warning : Fire!"};
+    private static final String[] missionMessages = {"Caution : Asteroid incomming!", "Warning : Fire!", "A fight has begun !"};
     private static final int ASTEROID = 0;
     private static final int FIRE = 1;
+    private static final int FIGHT = 2;
 
     private final Timer timer;
 
@@ -35,7 +37,7 @@ public final class Simulation extends GameState {
 
     private Zone space;
 
-    private boolean echap = false, call = false, fireEvent = false;
+    private boolean echap = false, call = false, fireEvent = false, fightEvent = false;
 
     private final int maxChoice = 150;
 
@@ -47,6 +49,8 @@ public final class Simulation extends GameState {
     private static final int RESSOURCES = 2;
 
     private FireEvent fire;
+    private FightEvent fight;
+
     private RadarView radarView;
     private SpaceStationView SSView;
     private RessourcesView ReView;
@@ -63,6 +67,8 @@ public final class Simulation extends GameState {
         super(gsm);
         init();
         fire = new FireEvent(SSView.getListBuildings());
+        fight = new FightEvent(SSView.getListBuildings());
+
         timer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -74,11 +80,15 @@ public final class Simulation extends GameState {
                     missionPanel.addMision(missionMessages[ASTEROID]);
                     JukeBox.play("asteroid");
                 }
-                if (number >= 5 & number < 150 & !fireEvent) {
+                if (number >= 5 & number < 10 & !fireEvent) {
                     fire = new FireEvent(SSView.getListBuildings());
                     fireEvent = true;
                 }
-                if (number >= 10 & number < 50) {
+                if (number >= 10 & number < 100 & !fightEvent) {
+                    fight = new FightEvent(SSView.getListBuildings());
+                    fightEvent = true;
+                }
+                if (number >= 115 & number < 50) {
                     int numShips = var.randNum(0, 2);
                     radarView.createVehicle(numShips, null);
                 }
@@ -142,30 +152,44 @@ public final class Simulation extends GameState {
             mP.update();
             if (mP.getGameOver()) {
                 timer.stop();
-                //fire.getTimer().stop();
                 gsm.setState(GameStateManager.GAMEOVERSTATE);
             }
         }
         int numBuildingOnFire = 0;
+        int numBuildingFighting = 0;
         for (Building bu : SSView.getListBuildings()) {
             if (bu.getFire()) {
                 numBuildingOnFire++;
-                break;
+            }
+            if(bu.getFight()){
+                numBuildingFighting++;
             }
         }
 
         if (fireEvent && !fire.getLaunched()) {
             fire.launch();
-        } else if(fire.getFireStarted() && fire.getFirstFire()){
+        } else if (fire.getFireStarted() && fire.getFirstFire()) {
             missionPanel.addMision(missionMessages[FIRE]);
             fire.initFirstFire();
-        }else if (fire.getLaunched() && numBuildingOnFire == 0 && fire.getFireStarted()) {
+        } else if (fire.getLaunched() && numBuildingOnFire == 0 && fire.getFireStarted()) {
             missionPanel.delMission(missionMessages[FIRE], 1);
-            fireEvent = false;
             fire.getTimer().cancel();
             fire.initFireSystem();
+            fireEvent = false;
         }
-
+        
+        if (fightEvent && !fight.getLaunched()) {
+            fight.launch();
+        } else if(fight.getFightStarted() && fight.getFirstFight()){
+            missionPanel.addMision(missionMessages[FIGHT]);
+            fight.initFirstFight();
+        }else if (fight.getLaunched() && numBuildingFighting == 0 && fight.getFightStarted()) {
+            missionPanel.delMission(missionMessages[FIGHT], 1);
+            fight.getTimer().cancel();
+            fight.initFightSystem();
+            fightEvent = false;
+        }
+        
         if (echap) {
             if (echapPanel.getEchap()) {
                 timer.stop();
@@ -175,7 +199,7 @@ public final class Simulation extends GameState {
                 echapPanel.reInit();
             }
             if (call) {
-                if (!callPanel.getUrgenceToSend().getBusy()) {
+                if (!SSView.getIPanel().getUrgenceSent()) {
                     callPanel.reInit();
                 }
                 call = !call;
@@ -193,9 +217,13 @@ public final class Simulation extends GameState {
             if (callPanel.getUrgenceToSend().getBusy()) {
                 callPanel.getUrgenceToSend().inService();
             } else {
-                if ("18".equals(callPanel.getUrgenceToSend().getNumber())) {
+                if (callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.FIREDepa))) {
                     SSView.getIPanel().buildingInNeed().setFire(false);
                     fire.fireNeutralizedBuilding(SSView.getIPanel().buildingInNeed());
+                }else if(callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.POLICE))){
+                    SSView.getIPanel().buildingInNeed().setFight(false);
+                    fight.fightNeutralizedBuilding(SSView.getIPanel().buildingInNeed());
+                }else if(callPanel.getUrgenceToSend().equals(callPanel.getUrgences().get(callPanel.AMBULANCE))){
                 }
                 SSView.getIPanel().reInit();
                 callPanel.reInit();

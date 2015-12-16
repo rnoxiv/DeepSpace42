@@ -15,7 +15,11 @@ import java.util.TimerTask;
 public class callUrgencesPanel {
 
     private ArrayList<Urgence> urgences = new ArrayList();
-    private static final int FIREDepa = 0;
+    
+    public static final int FIREDepa = 0;
+    public static final int POLICE = 1;
+    public static final int AMBULANCE = 2;
+    
     private Urgence uToSend;
 
     private static final String question1 = "Write down the urgence number you would like to call :";
@@ -40,7 +44,10 @@ public class callUrgencesPanel {
         this.tHeight = tH;
         this.height = tH / 3;
         this.widthCoolDown = width / 2;
+        
         urgences.add(new Urgence(new Zone(""), "18", 10));
+        urgences.add(new Urgence(new Zone(""), "17", 7));
+        
         uToSend = urgences.get(FIREDepa);
         
         taskPerformer = new TimerTask() {
@@ -77,19 +84,22 @@ public class callUrgencesPanel {
 
         int fontSize = Math.min(width, height) / 15;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-        if (goodNum && urgences.get(FIREDepa).getOnTheirWay()) {
+        
+        if (goodNum && uToSend.getOnTheirWay()) {
             int textWidth = (int) (g.getFont().getStringBounds(urgenceSentMessage, frc).getWidth());
             int textHeight = (int) (g.getFont().getStringBounds(urgenceSentMessage, frc).getHeight());
             int heightQuestion = tHeight / 2 - textHeight / 2;
             g.drawString(urgenceSentMessage, tWidth / 2 - textWidth / 2, heightQuestion);
             g.drawRect(tWidth / 2 - widthCoolDown / 2, tHeight / 2 + height / 8, widthCoolDown, height / 4);
             g.setColor(Color.BLUE);
-            g.fillRect(tWidth / 2 - widthCoolDown / 2 + 2, tHeight / 2 + height / 8 + 1, (widthCoolDown * urgences.get(FIREDepa).getActualTime() / urgences.get(FIREDepa).getTime()) - 1, height / 4 - 1);
-        } else if (goodNum && !urgences.get(FIREDepa).getOnTheirWay()) {
+            g.fillRect(tWidth / 2 - widthCoolDown / 2 + 2, tHeight / 2 + height / 8 + 1, (widthCoolDown * uToSend.getActualTime() / uToSend.getTime()) - 1, height / 4 - 1);
+        
+        } else if (goodNum && !uToSend.getOnTheirWay()) {
             int textWidth = (int) (g.getFont().getStringBounds(question2, frc).getWidth());
             int textHeight = (int) (g.getFont().getStringBounds(question2, frc).getHeight());
             int heightQuestion = tHeight / 2 - textHeight / 2;
             g.drawString(question2, tWidth / 2 - textWidth / 2, heightQuestion);
+        
         } else {
             int textWidth = (int) (g.getFont().getStringBounds(question1, frc).getWidth());
             int textHeight = (int) (g.getFont().getStringBounds(question1, frc).getHeight());
@@ -129,7 +139,11 @@ public class callUrgencesPanel {
         }
 
     }
-
+    
+    public ArrayList<Urgence> getUrgences(){
+        return this.urgences;
+    }
+    
     public Urgence getUrgenceToSend() {
         return uToSend;
     }

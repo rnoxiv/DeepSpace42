@@ -15,12 +15,12 @@ public class Ressource {
 
     private boolean createShip = false;
 
-    private boolean command = false;
+    private boolean command = false, canCommand = true;
     protected static final float restoreRate = 0.0001f;
     protected static final float totalCommandTime = 1f;
     protected float currentCommandTime = totalCommandTime;
 
-    private boolean showInfo;
+    private boolean showInfo = false;
 
     private static final Color green = new Color(0, 255, 0);
     private static final Color red = new Color(255, 0, 0);
@@ -40,11 +40,9 @@ public class Ressource {
         this.initPosX = this.posX;
         this.posY = _y;
         this.widthP = _w / 15;
-        heightP = 2 * _h / 3;
+        this.heightP = 2 * _h / 3;
         this.color = green;
         this.opacity = 0;
-
-        this.showInfo = false;
     }
 
     public void draw(Graphics2D g) {
@@ -97,16 +95,17 @@ public class Ressource {
     }
 
     public void coolDown() {
-        if (currentCommandTime != totalCommandTime) {
+        if (this.currentCommandTime != this.totalCommandTime) {
             this.currentCommandTime += this.restoreRate;
-            if (currentCommandTime >= totalCommandTime) {
-                currentCommandTime = totalCommandTime;
+            if (this.currentCommandTime >= this.totalCommandTime) {
+                this.currentCommandTime = this.totalCommandTime;
+                this.canCommand = true;
             }
         }
     }
 
     public void commandRessource() {
-        if (currentCommandTime == totalCommandTime) {
+        if (this.currentCommandTime == this.totalCommandTime) {
             this.command = true;
         }
 
@@ -114,21 +113,22 @@ public class Ressource {
             this.currentCommandTime = 0.00000000001f;
             this.createShip = true;
             this.command = false;
+            this.canCommand = false;
         }
     }
 
     public void changeOpacity() {
-        if (isDecreasing) {
-            opacity -= 0.01;
-            if (opacity < 0.05f) {
-                opacity = 0.05f;
-                isDecreasing = false;
+        if (this.isDecreasing) {
+            this.opacity -= 0.01;
+            if (this.opacity < 0.05f) {
+                this.opacity = 0.05f;
+                this.isDecreasing = false;
             }
         } else {
-            opacity += 0.01;
-            if (opacity > 0.98f) {
-                opacity = 0.99f;
-                isDecreasing = true;
+            this.opacity += 0.01;
+            if (this.opacity > 0.98f) {
+                this.opacity = 0.99f;
+                this.isDecreasing = true;
             }
         }
     }
@@ -202,6 +202,10 @@ public class Ressource {
     }
 
     public boolean getCommand() {
+        return this.command;
+    }
+    
+    public boolean getCanCommand() {
         return this.command;
     }
 
