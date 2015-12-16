@@ -468,7 +468,7 @@ public final class Simulation extends GameState {
                 //JukeBox.loop(mainPanel[curMainPanel].getSound());
             }
 
-            if (Keys.isPressed(Keys.ENTER)) {
+            if (Keys.isPressed(Keys.Y)) {
                 boolean isDetailBarOn = mainPanel[curMainPanel].getDetailBarOn();
                 if (!isDetailBarOn) {
                     mainPanel[curMainPanel].setDetailBar(true);
