@@ -1,11 +1,11 @@
 package Evenements;
 
-import Utilities.Variables;
+import Utilities.Functions;
 import java.awt.Color;
 
 //CREE UN ASTEROID DE TAILLE ALEATOIRE!
 public class AsteroidIncoming{
-    private final Variables var = new Variables();
+    private final Functions var = new Functions();
     public AsteroidIncoming(){
         launch();
     }

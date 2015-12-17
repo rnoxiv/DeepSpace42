@@ -206,7 +206,7 @@ public class Ressource {
     }
     
     public boolean getCanCommand() {
-        return this.command;
+        return this.canCommand;
     }
 
     public void setCommand(boolean _b) {

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class Variables {
+public class Functions {
 
     private final String lexic = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
 
@@ -24,7 +24,7 @@ public class Variables {
     
     private Color mainColor = GREEN;
 
-    public Variables() {
+    public Functions() {
 
     }
 

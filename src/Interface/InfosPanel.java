@@ -63,9 +63,10 @@ public class InfosPanel {
     public void update() {
         if (classList == BUILDING) {
         } else if (classList == VEHICLE) {
-
+            if(vehiclesList.isEmpty()){
+                info = false;
+            }
         } else if (classList == RESSOURCE) {
-
         }
     }
 
@@ -88,12 +89,21 @@ public class InfosPanel {
         for (int i = 0; i < vehiclesList.size(); i++) {
             if (vehiclesList.get(i) == v) {
                 v.setVisible(false);
+                v.showInfo(false);
                 vehiclesList.remove(v);
-                if (i == 0) {
+                if (curSelect == 0 || (i == 0 && curSelect == 0)) {
                     curSelect = 0;
                 } else {
-                    curSelect = i - 1;
+                    curSelect = curSelect - 1;
                 }
+                if (info && !this.vehiclesList.isEmpty()) {
+                    this.vehiclesList.get(curSelect).setVisible(true);
+                    this.vehiclesList.get(curSelect).showInfo(true);
+                } else if(!this.vehiclesList.isEmpty()){
+                    this.vehiclesList.get(curSelect).setVisible(false);
+                    this.vehiclesList.get(curSelect).showInfo(false);
+                }
+
             }
         }
     }
@@ -159,6 +169,7 @@ public class InfosPanel {
                 int textWidthP = (int) (g.getFont().getStringBounds(maxCap, frc).getWidth());
                 int textWidthS = (int) (g.getFont().getStringBounds(curCap, frc).getWidth());
                 int textHeightC = 0;
+                System.out.println(ressourcesList.get(i).getCanCommand());
                 if (!ressourcesList.get(i).getName().equals("POPULATION") && ressourcesList.get(i).getCanCommand()) {
                     textHeightC = (int) (g.getFont().getStringBounds(command, frc).getHeight());
                 }
@@ -209,7 +220,7 @@ public class InfosPanel {
                 int textHeightA = 0;
                 int textWidthA = 0;
 
-                if (!vehiclesList.get(i).getHasChosen()) {
+                if (!vehiclesList.get(i).getHasChosen() && vehiclesList.get(i).getTowardSS()) {
                     textHeightA = (int) (g.getFont().getStringBounds(acceptOrReject, frc).getHeight());
                     textWidthA = (int) (g.getFont().getStringBounds(acceptOrReject, frc).getWidth());
                 }
@@ -222,12 +233,12 @@ public class InfosPanel {
                 g.drawRect(tWidth - width + boxConst, height / 10 + (i + 3) * 2 * textHeightT + 5, widthBox, boxInfoSize);
                 g.drawString(passengers, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + boxInfoSize / 2);
                 g.drawString(size, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 5 + boxInfoSize / 2 + textHeightT / 2);
-                if (!vehiclesList.get(i).getHasChosen()) {
+                if (!vehiclesList.get(i).getHasChosen() && vehiclesList.get(i).getTowardSS()) {
                     g.drawString(acceptOrReject, tWidth - width / 2 - textWidth / 2, height / 10 + (i + 3) * 2 * textHeightT + 20 + boxInfoSize / 2 + textHeightT / 2 + textHeightA / 2);
                 }
 
             }
-            if (vehiclesList.get(i).getInfo() && "ENORME".equals(vehiclesList.get(i).getSize())) {
+            if (vehiclesList.get(i).getInfo() && "ENORME".equals(vehiclesList.get(i).getSize()) && vehiclesList.get(i) == vehiclesList.get(curSelect) ) {
                 String rayonAsteroid = "radius : " + vehiclesList.get(i).getSide();
                 String size = "size : " + vehiclesList.get(i).getSize();
                 String eliminate = "E - Eliminate";
@@ -269,10 +280,10 @@ public class InfosPanel {
         for (int i = 0; i < buildingsList.size(); i++) {
             if (i == curSelect) {
                 g.setColor(new Color(15, 185, 120));
-            }else {
+            } else {
                 g.setColor(Color.GREEN);
             }
-            
+
             if (buildingsList.get(i).getFire()) {
                 g.setColor(Color.red);
             } else if (buildingsList.get(i).getFight()) {
@@ -285,9 +296,9 @@ public class InfosPanel {
             int textHeightT = (int) (g.getFont().getStringBounds(na, frc).getHeight());
             int textWidthT = (int) (g.getFont().getStringBounds(na, frc).getWidth());
             g.drawString(na, tWidth - width / 2 - textWidthT / 2, height / 10 + (i + 1) * 2 * textHeightT + boxInfoSize); // 1 == > 3
-            if (buildingsList.get(i).getInfo() && !urgence) {
+            if (buildingsList.get(i).getInfo()) {
                 String capacity = "capacity : " + buildingsList.get(i).getCurrentCapacity() + " / " + buildingsList.get(i).getMaxCapacity();
-                String happiness = "happiness : " + (int)buildingsList.get(i).getHappiness() + " / 100";
+                String happiness = "happiness : " + (int) buildingsList.get(i).getHappiness() + " / 100";
                 String evacuateAndPurge = "T - Evacuate  /  P - Purge";
                 affinetransform = new AffineTransform();
                 frc = new FontRenderContext(affinetransform, true, true);
@@ -361,7 +372,7 @@ public class InfosPanel {
 
     public void handleInput() {
         if (Keys.isPressed(Keys.CTRL)) {
-            info = !info;
+            this.info = !this.info;
             if (this.classList == BUILDING) {
                 if (this.buildingsList.get(curSelect).getInfo()) {
                     this.buildingsList.get(curSelect).showInfo(false);
@@ -404,6 +415,7 @@ public class InfosPanel {
                     curSelect--;
                     if (info) {
                         this.vehiclesList.get(curSelect).showInfo(true);
+                        this.vehiclesList.get(curSelect).setVisible(true);
                     }
                 }
             } else if (this.classList == RESSOURCE && !this.ressourcesList.isEmpty()) {
@@ -435,6 +447,7 @@ public class InfosPanel {
                     curSelect++;
                     if (info) {
                         this.vehiclesList.get(curSelect).showInfo(true);
+                        this.vehiclesList.get(curSelect).setVisible(true);
                     }
                 }
             } else if (this.classList == RESSOURCE && !this.ressourcesList.isEmpty()) {
@@ -449,7 +462,7 @@ public class InfosPanel {
         }
 
         if (Keys.isPressed(Keys.A)) {
-            if (this.classList == VEHICLE) {
+            if (this.classList == VEHICLE && !"ENORME".equals(vehiclesList.get(curSelect).getSize())) {
                 if (!this.vehiclesList.get(curSelect).getHasChosen()) {
                     this.vehiclesList.get(curSelect).setHasChosen(true);
                     this.vehiclesList.get(curSelect).setDockingAccepted(true);
@@ -459,7 +472,7 @@ public class InfosPanel {
         }
 
         if (Keys.isPressed(Keys.R)) {
-            if (this.classList == VEHICLE) {
+            if (this.classList == VEHICLE && !"ENORME".equals(vehiclesList.get(curSelect).getSize())) {
                 if (!this.vehiclesList.get(curSelect).getHasChosen()) {
                     this.vehiclesList.get(curSelect).setHasChosen(true);
                     this.vehiclesList.get(curSelect).setDockingAccepted(false);
@@ -483,9 +496,9 @@ public class InfosPanel {
 
         if (Keys.isPressed(Keys.P)) {
             if (this.classList == BUILDING) {
-                if(!"COMMAND ROOM".equals(this.buildingsList.get(curSelect).getName())){
+                if (!"COMMAND ROOM".equals(this.buildingsList.get(curSelect).getName())) {
                     this.buildingsList.get(curSelect).purge();
-                    this.buildingUrgence  = this.buildingsList.get(curSelect);
+                    this.buildingUrgence = this.buildingsList.get(curSelect);
                     purge = true;
                 }
             }
@@ -494,10 +507,8 @@ public class InfosPanel {
         if (Keys.isPressed(Keys.E)) {
             if (this.classList == VEHICLE && !this.vehiclesList.isEmpty()) {
                 if ("ENORME".equals(vehiclesList.get(curSelect).getSize())) {
-                    if (!this.vehiclesList.get(curSelect).getHasChosen()) {
-                        isAttacking = true;
-                        cible = this.vehiclesList.get(curSelect);
-                    }
+                    isAttacking = true;
+                    cible = this.vehiclesList.get(curSelect);
                 }
             }
         }

@@ -1,6 +1,8 @@
 package GameState;
 
 import Handlers.Arduino;
+import static Handlers.Arduino.turnOffLed;
+import static Handlers.Arduino.turnOnLed;
 import Utilities.JukeBox;
 import Handlers.Keys;
 import java.awt.AlphaComposite;
@@ -14,6 +16,7 @@ import java.awt.Toolkit;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,6 +48,7 @@ public class Intro extends GameState {
     public Intro(GameStateManager gsm) {
         super(gsm);
         obj = new Arduino();
+        obj.initialize();
         subFont = gsm.loadFont();
         init();
     }
@@ -76,13 +80,19 @@ public class Intro extends GameState {
         JukeBox.load("/SFX/menuselect.mp3", "menuselect");
         JukeBox.load("/SFX/menuoption.mp3", "menuoption");
         JukeBox.play("bgIntro1");
-        for (int i = 1; i < 10; i++) {
-            try {
-                obj.turnOnLed(i);
-            } catch (IOException | InterruptedException ex) {
-                Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+
+        try {
+            for (int i = 1; i < 18; i++) {
+                try {
+                    turnOnLed(i);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Intro.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     @Override
@@ -233,19 +243,21 @@ public class Intro extends GameState {
     private void select() {
         if (currentSelection == 0) {
             JukeBox.stop("bgIntro2");
-            for (int i = 1; i < 10; i++) {
+
+            for (int i = 1; i < 18; i++) {
                 try {
-                    obj.turnOffLed(i);
+                    turnOffLed(i);
                 } catch (IOException ex) {
                     Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+
             try {
                 gsm.setState(GameStateManager.SIMULATIONSTATE);
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else if (currentSelection == 2) {
+        } else if (currentSelection == 2) {
             System.exit(0);
         }
     }

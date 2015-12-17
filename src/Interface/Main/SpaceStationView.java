@@ -3,7 +3,7 @@ package Interface.Main;
 import GameObjects.Zones.Building;
 import GameObjects.Zones.Buildings.Dock;
 import Interface.MainPanel;
-import Utilities.Variables;
+import Utilities.Functions;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class SpaceStationView extends MainPanel {
 
     private final ArrayList<Building> neighbours;
 
-    private Variables var = new Variables();
+    private Functions var = new Functions();
 
     private int rbWidth = 0;
 

@@ -4,7 +4,7 @@ import GameObjects.Actor;
 import GameObjects.Zone;
 import GameObjects.Zones.Building;
 import GameObjects.Zones.Buildings.Dock;
-import Utilities.Variables;
+import Utilities.Functions;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -21,15 +21,12 @@ public class Ship extends Actor {
     private Color clrVehicle;
 
     private final int wShip;
-    //private double direction;
 
-    private Image icon;
-
-    private Variables var;
+    private Functions var;
 
     private final Rectangle rdrDetectRect;
 
-    private boolean visible, isOnRadar, showInfo, dockingAccepted, hasChosen, docked, moving, destroyed;
+    private boolean visible = false, isOnRadar = false, showInfo = false, dockingAccepted = false, hasChosen = false, moving = true, destroyed = false, towardSS;
 
     private float vehicleX, vehicleY, directionX, directionY, speed, vOpacity = 0;
     
@@ -46,14 +43,10 @@ public class Ship extends Actor {
     // LA TAILE NUMERIQUE DU VAISSEAU
     private int volume;
 
-    // LES COORDONNEES POLAIRES DU VAISSEAU
-    private int angle;
-    private int distance;
-
-    public Ship(Zone zone, float sp, float objX, float objY, float dirX, float dirY, int side, Color _clrVehicle, Integer _res) {
+    public Ship(Zone zone, float sp, float objX, float objY, float dirX, float dirY, int side, Color _clrVehicle, Integer _res, boolean toward) {
         super(zone);
         
-        var = new Variables();
+        var = new Functions();
         this.clrVehicle = _clrVehicle;
         Random generator = new Random();
         this.res=_res;
@@ -91,24 +84,17 @@ public class Ship extends Actor {
         this.id = var.randomName() + " - " + this.size;
         //this.id = RandomStringUtils.randomAlphabetic(3).toUpperCase() + "-" + RandomStringUtils.randomNumeric(3) + "-" + this.size;
 
-        this.var = new Variables();
+        this.var = new Functions();
         this.vehicleX = objX;
         this.vehicleY = objY;
         this.speed = sp;
         this.directionX = dirX;
         this.directionY = dirY;
         this.wShip = side;
-
-        this.visible = false;
-        this.isOnRadar = false;
-        this.showInfo = false;
-        this.hasChosen = false;
-        this.docked = false;
-        this.moving = true;
-        this.dockingAccepted = false;
-        this.destroyed = false;
-
-        rdrDetectRect = new Rectangle(wShip, wShip);
+        
+        this.towardSS = toward;
+        
+        this.rdrDetectRect = new Rectangle(wShip, wShip);
 
     }
     
@@ -161,10 +147,6 @@ public class Ship extends Actor {
         return this.showInfo;
     }
 
-    public Image getIcon() {
-        return this.icon;
-    }
-
     public float getObjectX() {
         return this.vehicleX;
     }
@@ -184,10 +166,6 @@ public class Ship extends Actor {
         return this.destroyed;
     }
 
-    public boolean isMoving() {
-        return this.moving;
-    }
-
     public void setHasChosen(boolean b) {
         this.hasChosen = b;
     }
@@ -200,9 +178,6 @@ public class Ship extends Actor {
         this.vehicleY = _objectY;
     }
 
-    public void setDocked(boolean b) {
-        this.docked = b;
-    }
     public void setDestroyed(boolean b) {
         this.destroyed = b;
     }
@@ -257,6 +232,10 @@ public class Ship extends Actor {
 
     public int getSide(){
         return wShip;
+    }
+    
+    public boolean getTowardSS(){
+        return this.towardSS;
     }
     
     public void setSize(String size) {

@@ -6,7 +6,7 @@ import GameObjects.Zone;
 import Handlers.Keys;
 import Interface.MainPanel;
 import Utilities.JukeBox;
-import Utilities.Variables;
+import Utilities.Functions;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -34,7 +34,7 @@ public class RadarView extends MainPanel {
     private int minusAsteroid = 0, attackDelay = 0;
     private final static int attackMaxDelay = 20;
 
-    private final Variables var;
+    private final Functions var;
     private static final Color FRONT_RADAR_PAINT = Color.GREEN;
     private static final Color FRONT_PASSIVE_RADAR_PAINT = FRONT_RADAR_PAINT.darker().darker();
     private static final Color FRONT_ACTIVE_RADAR_PAINT = FRONT_RADAR_PAINT;
@@ -85,7 +85,7 @@ public class RadarView extends MainPanel {
         listVehicles = new ArrayList<>();
         listAsteroids = new ArrayList<>();
         listToDock = new ArrayList<>();
-        var = new Variables();
+        var = new Functions();
         init();
     }
 
@@ -338,10 +338,13 @@ public class RadarView extends MainPanel {
 
             float dirX = centerX - 15 - posX;
             float dirY = centerY - 15 - posY;
-
-            if (dir >= 45 && res == null) {
+            
+            boolean towardSS = true;
+            
+            if (dir >= 40 && res == null) {
                 dirX = var.randNum(sWidth, tWidth - rightBarWidth) - posX;
                 dirY = var.randNum(topHeight, height) - posY;
+                towardSS = false;
             }
 
             Color color = new Color(0, 1.0f, 0, 0.0f);
@@ -350,7 +353,7 @@ public class RadarView extends MainPanel {
                 color = new Color(0, 0, 1.0f, 0.0f);
             }
 
-            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res));
+            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res, towardSS));
         }
     }
 
@@ -373,7 +376,7 @@ public class RadarView extends MainPanel {
 
             Color color = new Color(0, 1.0f, 1.0f, 0.0f);
 
-            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res));
+            listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res, false));
         }
     }
 
@@ -405,7 +408,7 @@ public class RadarView extends MainPanel {
         float dirX = var.randNum(sWidth, tWidth - rightBarWidth) - (int) Asteroid.getRayonAsteroid() / 2 - posX;
         float dirY = var.randNum(topHeight, height) - (int) Asteroid.getRayonAsteroid() / 2 - posY;
 
-        Ship AsteroidVehicle = new Ship(space, speed, posX, posY, dirX, dirY, (int) Asteroid.getRayonAsteroid(), Asteroid.getColorAsteroid(), null);
+        Ship AsteroidVehicle = new Ship(space, speed, posX, posY, dirX, dirY, (int) Asteroid.getRayonAsteroid(), Asteroid.getColorAsteroid(), null, false);
         AsteroidVehicle.setSize("ENORME");
         AsteroidVehicle.addpassagers(0);
         AsteroidVehicle.setId(" ???? - " + AsteroidVehicle.getSize());
@@ -424,7 +427,7 @@ public class RadarView extends MainPanel {
                 iPanel.addVehicle(v);
                 empty = false;
                 numVehicleOnRadar++;
-            } else if (v.getIsOnRadar() && distance > radius) {
+            } else if ((v.getIsOnRadar() && distance > radius) || distance>3*radius) {
                 v.setIsOnRadar(false);
                 iPanel.removeVehicleFromList(v);
                 if ("ENORME".equals(listVehicles.get(i).getSize())) {
@@ -461,7 +464,6 @@ public class RadarView extends MainPanel {
             if (listVehicles.get(i).getDockingAccepted() && var.Collision(listVehicles.get(i).vehicleCollision(), stationCollision())) {
                 listVehicles.get(i).setIsOnRadar(false);
                 listVehicles.get(i).setIsMoving(false);
-                listVehicles.get(i).setDocked(true);
                 iPanel.removeVehicleFromList(listVehicles.get(i));
                 listToDock.add(listVehicles.get(i));
                 listVehicles.remove(listVehicles.get(i));

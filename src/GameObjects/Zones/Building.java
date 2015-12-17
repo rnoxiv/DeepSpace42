@@ -2,7 +2,7 @@ package GameObjects.Zones;
 
 import GameObjects.Ressource;
 import GameObjects.Zone;
-import Utilities.Variables;
+import Utilities.Functions;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -29,7 +29,7 @@ public class Building extends Zone {
     private float happiness;
 
     private final int initPosX, widthConst = 10;
-    private Variables var = new Variables();
+    private Functions var = new Functions();
     
     private boolean isFire = false;
     private boolean isFight = false;

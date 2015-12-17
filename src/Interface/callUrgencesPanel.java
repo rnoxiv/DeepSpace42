@@ -63,7 +63,7 @@ public class callUrgencesPanel {
     public void update() {
         for (Urgence u : urgences) {
             if (u.getUsed() > 0) {
-                timer.scheduleAtFixedRate(taskPerformer, 10, 5);
+                timer.scheduleAtFixedRate(taskPerformer, 0, 10);
             }else{
                 timer.cancel();
                 timer = new Timer();

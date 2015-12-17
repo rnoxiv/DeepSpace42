@@ -21,7 +21,9 @@ import java.util.Enumeration;
 public class Arduino implements SerialPortEventListener {
 
     SerialPort serialPort;
-    
+
+    private static int m;
+
     private static ArrayList<String> events = new ArrayList<>();
 
     /**
@@ -116,147 +118,116 @@ public class Arduino implements SerialPortEventListener {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine = input.readLine();
-                if(inputLine.equals("48")){
-                    Keys.keySet(KeyEvent.VK_P, true);
-                    sleep(10);
-                    Keys.keySet(80, false);
-                }
-                else if(inputLine.equals("31")){
+                System.out.println(inputLine);
+                if (inputLine.equals("31")) {
                     Keys.keySet(KeyEvent.VK_ENTER, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_ENTER, false);
-                }
-                else if(inputLine.equals("33")){
+                } else if (inputLine.equals("33")) {
                     Keys.keySet(KeyEvent.VK_ENTER, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_ENTER, false);
-                }
-                else if(inputLine.equals("35")){
+                } else if (inputLine.equals("35")) {
                     Keys.keySet(KeyEvent.VK_S, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_S, false);
-                }
-                else if(inputLine.equals("37")){
+                } else if (inputLine.equals("37")) {
                     Keys.keySet(KeyEvent.VK_C, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_C, false);
-                }
-                else if(inputLine.equals("39")){
+                } else if (inputLine.equals("39")) {
                     Keys.keySet(KeyEvent.VK_B, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_B, false);
-                }
-                else if(inputLine.equals("41")){
+                } else if (inputLine.equals("41")) {
                     Keys.keySet(KeyEvent.VK_E, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_E, false);
-                }
-                else if(inputLine.equals("43")){
+                } else if (inputLine.equals("43")) {
                     Keys.keySet(KeyEvent.VK_A, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_A, false);
-                }
-                else if(inputLine.equals("45")){
+                } else if (inputLine.equals("45")) {
                     Keys.keySet(KeyEvent.VK_N, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_N, false);
-                }
-                else if(inputLine.equals("47")){
+                } else if (inputLine.equals("47")) {
                     Keys.keySet(KeyEvent.VK_T, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_T, false);
-                }
-                else if(inputLine.equals("48")){
+                } else if (inputLine.equals("48")) {
                     Keys.keySet(KeyEvent.VK_CONTROL, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_CONTROL, false);
-                }
-                else if(inputLine.equals("49")){
+                } else if (inputLine.equals("49")) {
                     Keys.keySet(KeyEvent.VK_Y, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_Y, false);
-                }
-                else if(inputLine.equals("50")){
+                } else if (inputLine.equals("50")) {
                     Keys.keySet(KeyEvent.VK_P, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_P, false);
-                }
-                else if(inputLine.equals("HAUT1")){
+                } else if (inputLine.equals("HAUT1")) {
                     Keys.keySet(KeyEvent.VK_UP, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_UP, false);
-                }
-                else if(inputLine.equals("BAS1")){
+                } else if (inputLine.equals("BAS1")) {
                     Keys.keySet(KeyEvent.VK_DOWN, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_DOWN, false);
-                }
-                else if(inputLine.equals("HAUT2")){
+                } else if (inputLine.equals("HAUT2")) {
                     Keys.keySet(KeyEvent.VK_LEFT, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_LEFT, false);
-                }
-                else if(inputLine.equals("BAS2")){
+                } else if (inputLine.equals("BAS2")) {
                     Keys.keySet(KeyEvent.VK_RIGHT, true);
-                    sleep(10);
+                    sleep(20);
                     Keys.keySet(KeyEvent.VK_RIGHT, false);
-                }
-                else if(inputLine.equals("K1")){
+                } else if (inputLine.equals("K1")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD1, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD1, false);
-                }
-                else if(inputLine.equals("K2")){
+                } else if (inputLine.equals("K2")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD2, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD2, false);
-                }
-                else if(inputLine.equals("K3")){
+                } else if (inputLine.equals("K3")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD3, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD3, false);
-                }
-                else if(inputLine.equals("K4")){
+                } else if (inputLine.equals("K4")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD4, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD4, false);
-                }
-                else if(inputLine.equals("K5")){
+                } else if (inputLine.equals("K5")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD5, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD5, false);
-                }
-                else if(inputLine.equals("K6")){
+                } else if (inputLine.equals("K6")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD6, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD6, false);
-                }
-                else if(inputLine.equals("K7")){
+                } else if (inputLine.equals("K7")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD7, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD7, false);
-                }
-                else if(inputLine.equals("K8")){
+                } else if (inputLine.equals("K8")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD8, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD8, false);
-                }
-                else if(inputLine.equals("K9")){
+                } else if (inputLine.equals("K9")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD9, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD9, false);
-                }
-                else if(inputLine.equals("K0")){
+                } else if (inputLine.equals("K0")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD0, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_NUMPAD0, false);
-                }
-                else if(inputLine.equals("K*")){
+                } else if (inputLine.equals("K*")) {
                     Keys.keySet(KeyEvent.VK_MULTIPLY, true);
-                    sleep(10);
+                    sleep(25);
                     Keys.keySet(KeyEvent.VK_MULTIPLY, false);
                 }
-                System.out.println(inputLine);
                 addEvent(inputLine);
             } catch (Exception e) {
                 System.err.println(e.toString());
@@ -267,11 +238,11 @@ public class Arduino implements SerialPortEventListener {
     }
 
     public static synchronized void writeData(String data) {
-        System.out.println("Sent: " + data);
+        //System.out.println("Sent: " + data);
         try {
             output.write(data.getBytes());
         } catch (Exception e) {
-            System.out.println("could not write to port");
+            //System.out.println("could not write to port");
         }
     }
 
@@ -327,106 +298,133 @@ public class Arduino implements SerialPortEventListener {
     }
 
     public static void printLCD(int message) throws IOException {
+        clearLCD();
+        if (message == 1) { // WELCOME TO DEEP SPACE 42
+            writeData(Character.toString((char) 97));
+            writeData(Character.toString((char) 66));
+        } else if (message == 2) {// WARNING FIRE
 
-        switch (message) {
-            case 1:
-                output.write(65);
-                output.write(98);
-            case 2:
-                output.write(67);
-                output.write(98);
-            default:
+            writeData(Character.toString((char) 99));
+            writeData(Character.toString((char) 69));
+        } else if (message == 3) {// WARNING FIGHT
+
+            writeData(Character.toString((char) 99));
+            writeData(Character.toString((char) 70));
+        } else if (message == 4) {// ASTEROID INCOMING
+
+            writeData(Character.toString((char) 102));
+            writeData(Character.toString((char) 74));
+        } else if (message == 5) {// SHIP INCOMING
+
+            writeData(Character.toString((char) 102));
+            writeData(Character.toString((char) 73));
+        } else if (message == 6) {// SHIELD ON
+
+            writeData(Character.toString((char) 103));
+        } else if (message == 7) {// SHIP INCOMING
+
+            writeData(Character.toString((char) 104));
         }
+
+        m = message;
+    }
+
+    public int getMessage() {
+        return m;
     }
 
     public static void clearLCD() throws IOException {
-        writeData(Character.toString((char)126));
+        writeData(Character.toString((char) 126));
     }
 
     public static void turnOnLed(int message) throws IOException, InterruptedException {
 
-            if(message==1){
-                writeData(Character.toString((char)33));}
-            else if(message==2){
-                writeData(Character.toString((char)34));}
-            else if(message==3){
-                writeData(Character.toString((char)35));}
-            else if(message==4){
-                writeData(Character.toString((char)36));}
-            else if(message==5){
-                writeData(Character.toString((char)37));}
-            else if(message==6){
-                writeData(Character.toString((char)38));}
-            else if(message==7){
-                writeData(Character.toString((char)39));}
-            else if(message==8){
-                writeData(Character.toString((char)40));}
-            else if(message==9){
-                writeData(Character.toString((char)41));}
-            else if(message==10){
-                writeData(Character.toString((char)42));}
-            else if(message==11){
-                writeData(Character.toString((char)43));}
-            else if(message==12){
-                writeData(Character.toString((char)44));}
-            else if(message==13){
-                writeData(Character.toString((char)45));}
-            else if(message==14){
-                writeData(Character.toString((char)46));}
-            else if(message==15){
-                writeData(Character.toString((char)47));}
-            else if(message==16){
-                writeData(Character.toString((char)48));}
-            else if(message==17){
-                writeData(Character.toString((char)49));}
-        
-       writeData(Character.toString((char)34));
+        if (message == 1) {
+            writeData(Character.toString((char) 33));
+        } else if (message == 2) {
+            writeData(Character.toString((char) 34));
+        } else if (message == 3) {
+            writeData(Character.toString((char) 35));
+        } else if (message == 4) {
+            writeData(Character.toString((char) 36));
+        } else if (message == 5) {
+            writeData(Character.toString((char) 37));
+        } else if (message == 6) {
+            writeData(Character.toString((char) 38));
+        } else if (message == 7) {
+            writeData(Character.toString((char) 39));
+        } else if (message == 8) {
+            writeData(Character.toString((char) 40));
+        } else if (message == 9) {
+            writeData(Character.toString((char) 41));
+        } else if (message == 10) {
+            writeData(Character.toString((char) 42));
+        } else if (message == 11) {
+            writeData(Character.toString((char) 43));
+        } else if (message == 12) {
+            writeData(Character.toString((char) 44));
+        } else if (message == 13) {
+            writeData(Character.toString((char) 45));
+        } else if (message == 14) {
+            writeData(Character.toString((char) 46));
+        } else if (message == 15) {
+            writeData(Character.toString((char) 47));
+        } else if (message == 16) {
+            writeData(Character.toString((char) 48));
+        } else if (message == 17) {
+            writeData(Character.toString((char) 49));
+        }
+
+        writeData(Character.toString((char) 34));
     }
 
     public static void turnOffLed(int message) throws IOException {
 
-        if(message==1){
-                writeData(Character.toString((char)33));}
-            else if(message==2){
-                writeData(Character.toString((char)34));}
-            else if(message==3){
-                writeData(Character.toString((char)35));}
-            else if(message==4){
-                writeData(Character.toString((char)36));}
-            else if(message==5){
-                writeData(Character.toString((char)37));}
-            else if(message==6){
-                writeData(Character.toString((char)38));}
-            else if(message==7){
-                writeData(Character.toString((char)39));}
-            else if(message==8){
-                writeData(Character.toString((char)40));}
-            else if(message==9){
-                writeData(Character.toString((char)41));}
-            else if(message==10){
-                writeData(Character.toString((char)42));}
-            else if(message==11){
-                writeData(Character.toString((char)43));}
-            else if(message==12){
-                writeData(Character.toString((char)44));}
-            else if(message==13){
-                writeData(Character.toString((char)45));}
-            else if(message==14){
-                writeData(Character.toString((char)46));}
-            else if(message==15){
-                writeData(Character.toString((char)47));}
-            else if(message==16){
-                writeData(Character.toString((char)48));}
-            else if(message==17){
-                writeData(Character.toString((char)49));}
-        
-        writeData(Character.toString((char)33));
+        if (message == 1) {
+            writeData(Character.toString((char) 33));
+        } else if (message == 2) {
+            writeData(Character.toString((char) 34));
+        } else if (message == 3) {
+            writeData(Character.toString((char) 35));
+        } else if (message == 4) {
+            writeData(Character.toString((char) 36));
+        } else if (message == 5) {
+            writeData(Character.toString((char) 37));
+        } else if (message == 6) {
+            writeData(Character.toString((char) 38));
+        } else if (message == 7) {
+            writeData(Character.toString((char) 39));
+        } else if (message == 8) {
+            writeData(Character.toString((char) 40));
+        } else if (message == 9) {
+            writeData(Character.toString((char) 41));
+        } else if (message == 10) {
+            writeData(Character.toString((char) 42));
+        } else if (message == 11) {
+            writeData(Character.toString((char) 43));
+        } else if (message == 12) {
+            writeData(Character.toString((char) 44));
+        } else if (message == 13) {
+            writeData(Character.toString((char) 45));
+        } else if (message == 14) {
+            writeData(Character.toString((char) 46));
+        } else if (message == 15) {
+            writeData(Character.toString((char) 47));
+        } else if (message == 16) {
+            writeData(Character.toString((char) 48));
+        } else if (message == 17) {
+            writeData(Character.toString((char) 49));
+        }
+
+        writeData(Character.toString((char) 33));
     }
 
     public static void main(String[] args) throws Exception {
         Arduino main = new Arduino();
         main.initialize();
-        Thread t = new Thread() {
+        Thread t;
+        t = new Thread() {
+            @Override
             public void run() {
 //the following line will keep this app alive for 1000 seconds,
 //waiting for events to occur and responding to them (printing incoming messages to console).
