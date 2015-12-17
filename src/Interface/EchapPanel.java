@@ -12,7 +12,7 @@ public class EchapPanel {
     private String question = "You sure about leaving the Simulation mate?", title = "DEEP SPACE 42";
     private String[] options = {"Exit to Menu", "Quit", "Cancel"};
 
-    private boolean exit = false, stay = false;
+    private boolean exit = false, stay = false, leaveSimulation = false;
     ;
     
     protected int tWidth, width, tHeight, height, currentSelection = 0;
@@ -35,18 +35,18 @@ public class EchapPanel {
 
         AffineTransform affinetransform = new AffineTransform();
         FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
-        
+
         int fontSize = Math.min(width, height) / 10;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
         int textWidthT = (int) (g.getFont().getStringBounds(title, frc).getWidth());
         int textHeightT = (int) (g.getFont().getStringBounds(title, frc).getHeight());
-        int heightTitle = height-height/4+textHeightT/4;
-        g.drawString(title, width - textWidthT/2, heightTitle);
+        int heightTitle = height - height / 4 + textHeightT / 4;
+        g.drawString(title, width - textWidthT / 2, heightTitle);
         fontSize = Math.min(width, height) / 15;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
         int textWidth = (int) (g.getFont().getStringBounds(question, frc).getWidth());
         int textHeight = (int) (g.getFont().getStringBounds(question, frc).getHeight());
-        int heightQuestion = heightTitle + 2*textHeight;
+        int heightQuestion = heightTitle + 2 * textHeight;
         g.drawString(question, width - textWidth / 2, heightQuestion);
         for (int i = 0; i < options.length; i++) {
             if (i == currentSelection) {
@@ -58,7 +58,7 @@ public class EchapPanel {
             textWidth = (int) (g.getFont().getStringBounds(options[i], frc).getWidth());
 
             textHeight = (int) (g.getFont().getStringBounds(options[i], frc).getHeight());
-            g.drawString(options[i], width - width / 2 + (2 + i) * width / 6 - textWidth / 2, heightQuestion + 2*textHeight);
+            g.drawString(options[i], width - width / 2 + (2 + i) * width / 6 - textWidth / 2, heightQuestion + 2 * textHeight);
         }
     }
 
@@ -66,7 +66,7 @@ public class EchapPanel {
         if (currentSelection == 0) {
             exit = true;
         } else if (currentSelection == 1) {
-            System.exit(0);
+            leaveSimulation = true;
         } else if (currentSelection == 2) {
             stay = true;
         }
@@ -78,6 +78,10 @@ public class EchapPanel {
 
     public boolean getStay() {
         return stay;
+    }
+
+    public boolean getLeaveSimulation() {
+        return leaveSimulation;
     }
 
     public void reInit() {

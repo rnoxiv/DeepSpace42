@@ -6,6 +6,7 @@ import Evenements.FireEvent;
 import GameObjects.Zone;
 import GameObjects.Zones.Building;
 import Handlers.Arduino;
+import static Handlers.Arduino.turnOffLed;
 import Utilities.JukeBox;
 import Handlers.Keys;
 import Interface.DocksPanel;
@@ -248,6 +249,15 @@ public final class Simulation extends GameState {
             if (echapPanel.getEchap()) {
                 timerSimu.cancel();
                 timerSimu.purge();
+
+                for (int i = 1; i < 18; i++) {
+                    try {
+                        turnOffLed(i);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
                 try {
                     gsm.setState(GameStateManager.MENUSTATE);
                 } catch (IOException ex) {
@@ -258,6 +268,15 @@ public final class Simulation extends GameState {
             } else if (echapPanel.getStay()) {
                 echap = false;
                 echapPanel.reInit();
+            } else if (echapPanel.getLeaveSimulation()) {
+                for (int i = 1; i < 18; i++) {
+                    try {
+                        turnOffLed(i);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                System.exit(0);
             }
             if (call) {
                 if (!SSView.getIPanel().getUrgenceSent()) {

@@ -258,6 +258,13 @@ public class Intro extends GameState {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (currentSelection == 2) {
+            for (int i = 1; i < 18; i++) {
+                try {
+                    turnOffLed(i);
+                } catch (IOException ex) {
+                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             System.exit(0);
         }
     }

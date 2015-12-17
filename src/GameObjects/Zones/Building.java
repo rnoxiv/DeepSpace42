@@ -83,6 +83,9 @@ public class Building extends Zone {
 
     public void evacuate() {
         Random rand = new Random();
+        if(this.neighbours.isEmpty()){
+            return;
+        }
         int evacuateToBuilding = rand.nextInt(this.neighbours.size());
 
         if (this.neighbours.get(evacuateToBuilding).getCurrentCapacity() + this.currentCapacity > this.neighbours.get(evacuateToBuilding).getMaxCapacity()) {
