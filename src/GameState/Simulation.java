@@ -43,7 +43,7 @@ public final class Simulation extends GameState {
 
     private boolean echap = false, call = false, fireEvent = false, fightEvent = false;
 
-    private final int maxChoice = 150;
+    private final int maxChoice = 200;
 
     //Gestion des MainPanels
     private int curMainPanel;
@@ -82,8 +82,9 @@ public final class Simulation extends GameState {
         taskPerformerSimu = new TimerTask() {
             @Override
             public void run() {
+                System.out.println("test timer simu");
                 int number = var.randNum(1, maxChoice);
-                if (number >= 1 & number < 5) {
+                if (number >= 1 & number < 10) {
                     AsteroidIncoming asteroid = new AsteroidIncoming();
                     radarView.createAsteroid();
                     missionPanel.addMision(missionMessages[ASTEROID]);
@@ -96,16 +97,16 @@ public final class Simulation extends GameState {
                         Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                if (number >= 5 & number < 10 & !fireEvent) {
+                if (number >= 10 & number < 25 & !fireEvent) {
                     fire = new FireEvent(SSView.getListBuildings());
                     fireEvent = true;
                 }
-                if (number >= 10 & number < 60 & !fightEvent) {
+                if (number >= 25 & number < 40 & !fightEvent) {
                     fight = new FightEvent(SSView.getListBuildings());
                     fightEvent = true;
                 }
-                if (number >= 15 & number < 60) {
-                    int numShips = var.randNum(0, 2);
+                if (number >= 40 & number < 100) {
+                    int numShips = var.randNum(0, 1);
                     radarView.createVehicle(numShips, null);
                 }
                 SSView.peopleTraffic();

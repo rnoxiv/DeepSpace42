@@ -121,111 +121,111 @@ public class Arduino implements SerialPortEventListener {
                 System.out.println(inputLine);
                 if (inputLine.equals("31")) {
                     Keys.keySet(KeyEvent.VK_ENTER, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_ENTER, false);
                 } else if (inputLine.equals("33")) {
                     Keys.keySet(KeyEvent.VK_ENTER, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_ENTER, false);
                 } else if (inputLine.equals("35")) {
                     Keys.keySet(KeyEvent.VK_S, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_S, false);
                 } else if (inputLine.equals("37")) {
                     Keys.keySet(KeyEvent.VK_C, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_C, false);
                 } else if (inputLine.equals("39")) {
                     Keys.keySet(KeyEvent.VK_B, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_B, false);
                 } else if (inputLine.equals("41")) {
                     Keys.keySet(KeyEvent.VK_E, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_E, false);
                 } else if (inputLine.equals("43")) {
                     Keys.keySet(KeyEvent.VK_A, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_A, false);
                 } else if (inputLine.equals("45")) {
                     Keys.keySet(KeyEvent.VK_N, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_N, false);
                 } else if (inputLine.equals("47")) {
                     Keys.keySet(KeyEvent.VK_T, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_T, false);
                 } else if (inputLine.equals("48")) {
                     Keys.keySet(KeyEvent.VK_CONTROL, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_CONTROL, false);
                 } else if (inputLine.equals("49")) {
                     Keys.keySet(KeyEvent.VK_Y, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_Y, false);
                 } else if (inputLine.equals("50")) {
                     Keys.keySet(KeyEvent.VK_P, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_P, false);
                 } else if (inputLine.equals("HAUT1")) {
                     Keys.keySet(KeyEvent.VK_UP, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_UP, false);
                 } else if (inputLine.equals("BAS1")) {
                     Keys.keySet(KeyEvent.VK_DOWN, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_DOWN, false);
                 } else if (inputLine.equals("HAUT2")) {
                     Keys.keySet(KeyEvent.VK_LEFT, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_LEFT, false);
                 } else if (inputLine.equals("BAS2")) {
                     Keys.keySet(KeyEvent.VK_RIGHT, true);
-                    sleep(20);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_RIGHT, false);
                 } else if (inputLine.equals("K1")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD1, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD1, false);
                 } else if (inputLine.equals("K2")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD2, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD2, false);
                 } else if (inputLine.equals("K3")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD3, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD3, false);
                 } else if (inputLine.equals("K4")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD4, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD4, false);
                 } else if (inputLine.equals("K5")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD5, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD5, false);
                 } else if (inputLine.equals("K6")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD6, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD6, false);
                 } else if (inputLine.equals("K7")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD7, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD7, false);
                 } else if (inputLine.equals("K8")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD8, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD8, false);
                 } else if (inputLine.equals("K9")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD9, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD9, false);
                 } else if (inputLine.equals("K0")) {
                     Keys.keySet(KeyEvent.VK_NUMPAD0, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_NUMPAD0, false);
                 } else if (inputLine.equals("K*")) {
                     Keys.keySet(KeyEvent.VK_MULTIPLY, true);
-                    sleep(25);
+                    sleep(50);
                     Keys.keySet(KeyEvent.VK_MULTIPLY, false);
                 }
                 addEvent(inputLine);
