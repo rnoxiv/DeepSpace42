@@ -28,7 +28,7 @@ import javax.imageio.ImageIO;
 public class Intro extends GameState {
     
     // LIEN AVEC L'ARDUINO
-    private final Arduino obj;
+    //private final Arduino obj;
 
     private int width, height;
     
@@ -58,8 +58,8 @@ public class Intro extends GameState {
 
     public Intro(GameStateManager gsm) {
         super(gsm);
-        obj = new Arduino();
-        obj.initialize();
+        //obj = new Arduino();
+        //obj.initialize();
         subFont = gsm.loadFont();
         init();
     }
@@ -84,18 +84,19 @@ public class Intro extends GameState {
         JukeBox.load("/SFX/menuselect.mp3", "menuselect");
         JukeBox.load("/SFX/menuoption.mp3", "menuoption");
         JukeBox.play("bgIntro1");
-
-        try {
-            for (int i = 1; i < 18; i++) {
-                try {
-                    turnOnLed(i);
-                } catch (IOException ex) {
-                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Intro.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        //TEST ALLUMAGE LEDS
+//        try {
+//            for (int i = 1; i < 18; i++) {
+//                try {
+//                    turnOnLed(i);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Intro.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
     }
 
@@ -247,14 +248,15 @@ public class Intro extends GameState {
     private void select() {
         if (currentSelection == 0) {
             JukeBox.stop("bgIntro2");
-
-            for (int i = 1; i < 18; i++) {
-                try {
-                    turnOffLed(i);
-                } catch (IOException ex) {
-                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            
+            //ON ETEIND LES LEDS
+//            for (int i = 1; i < 18; i++) {
+//                try {
+//                    turnOffLed(i);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
 
             try {
                 gsm.setState(GameStateManager.SIMULATIONSTATE);
@@ -262,13 +264,14 @@ public class Intro extends GameState {
                 Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (currentSelection == 2) {
-            for (int i = 1; i < 18; i++) {
-                try {
-                    turnOffLed(i);
-                } catch (IOException ex) {
-                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            //ON ETEIND LES LEDS
+//            for (int i = 1; i < 18; i++) {
+//                try {
+//                    turnOffLed(i);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Simulation.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
             System.exit(0);
         }
     }
