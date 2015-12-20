@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     private Thread thread;
-    private boolean running;
+    private final boolean running;
     private GameStateManager gsm;
     
     //Thread
@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     // graphics
     private BufferedImage image;
     private Graphics2D g;
-    private int tWidth, tHeight;
+    private final int tWidth, tHeight;
     
     public GamePanel() {
         super();

@@ -1,3 +1,7 @@
+/**
+ * Gere les entrées/sorties claviers et permet de faire un lien avec l'Arduino
+ */
+
 package Handlers;
 
 import java.awt.event.KeyEvent;

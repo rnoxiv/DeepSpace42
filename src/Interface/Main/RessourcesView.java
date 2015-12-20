@@ -7,6 +7,7 @@ import Interface.MainPanel;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+//classe permettant l'affichage des ressources dans le mainPanel
 public class RessourcesView extends MainPanel {
 
     private int rbWidth = 0;
@@ -92,7 +93,8 @@ public class RessourcesView extends MainPanel {
             slideMap();
         }
     }
-
+    
+    //permet de gérer la flucuation des ressources
     public void evolve(int i) {
 
         switch (this.listRessources.get(i).getName()) {
@@ -142,7 +144,8 @@ public class RessourcesView extends MainPanel {
     public ArrayList<Ressource> getListRessources() {
         return listRessources;
     }
-
+    
+    //gère l'affichage du mainPanel selon que le panel Info est actif ou non
     public void slideMap() {
         if (detailBarOn && isSliding) {
             for (int i = 0; i < listRessources.size() - 3; i++) {

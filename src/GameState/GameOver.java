@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
+//ETAT DE GAMEOVER
 public class GameOver extends GameState {
 
     private int width, height;
@@ -25,10 +26,12 @@ public class GameOver extends GameState {
     private Font introFont, subFont;
     private float fontSize;
     private float opacity = 0.009f;
-
+    
+    //IMAGE DE FOND
     private Image bgImg;
-
-    private final int waitTime = 50; 
+    
+    //TEMPS D'ATTENTE MINIMAL
+    private final int waitTime = 100; 
     private int curWaitTime = 0;
     private boolean checked;
 

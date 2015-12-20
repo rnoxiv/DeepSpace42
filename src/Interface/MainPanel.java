@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 
+//gère l'affichage principal de la simulation, CAD l'affichage central
 public class MainPanel {
 
     protected static final Stroke PASSIVE_STROKE = new BasicStroke(0.8f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
@@ -65,19 +66,16 @@ public class MainPanel {
         }
     }
     
-    public int getTopHeight(){
-        return this.topHeight;
-    }
-    
     public void drawName(Graphics2D g) {
         int fontSize = (tWidth - sWidth) / 60;
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
         g.setColor(Color.GREEN);
-        int sizeName = this.getName().length() * fontSize;
-        g.drawString(this.getName(), sWidth + (width + rightBarWidth) / 2 - sizeName / 4, 2 * topHeight / 3);
+        int sizeName = this.name.length() * fontSize;
+        g.drawString(this.name, sWidth + (width + rightBarWidth) / 2 - sizeName / 4, 2 * topHeight / 3);
         
     }
-
+    
+    //affiche la barre latéral d'information
     public void showDetailBar() {
         if (rightBarWidth < maxRightBarWidth) {
             this.rightBarWidth += 10;
@@ -89,7 +87,8 @@ public class MainPanel {
             this.iPanel.setShown(true);
         }
     }
-
+    
+    //cache la barre latéral d'information
     public void hideDetailBar() {
         this.iPanel.setShown(false);
         if (rightBarWidth > 0) {
@@ -117,10 +116,6 @@ public class MainPanel {
 
     public boolean getDetailBarOn() {
         return this.detailBarOn;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public String getSound() {

@@ -7,7 +7,6 @@ import GameObjects.Zones.Buildings.Dock;
 import Utilities.Functions;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
@@ -15,21 +14,30 @@ import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Random;
 
+//CLASSE PERMETTANT LA CREATION VAISSEAU 
 public class Ship extends Actor {
 
+    //LA COULEUR DU VAISSEAU
     private final float GREEN_FIX = 1.0f;
     private Color clrVehicle;
 
-    private final int wShip;
-
+    //RANDOM
     private Functions var;
 
+    //RECTANGLE DE COLLISION POUR DETECTION 
     private final Rectangle rdrDetectRect;
-
-    private boolean visible = false, isOnRadar = false, showInfo = false, dockingAccepted = false, hasChosen = false, moving = true, destroyed = false, towardSS;
-
-    private float vehicleX, vehicleY, directionX, directionY, speed, vOpacity = 0;
+    private final int wShip;
     
+    //BOOLEANS GERANT LE VAISSEAU
+    private boolean visible = false, isOnRadar = false, showInfo = false, dockingAccepted = false, hasChosen = false, moving = true, destroyed = false;
+    //VERIFIE SI LE VAISSEAU SE DIRIGE VERS LA STATION SPATIALE
+    private final boolean towardSS;
+
+    //GERE LES MOUVEMENTS DU VAISSEAU
+    private final float directionX, directionY, speed;
+    private float vehicleX, vehicleY, vOpacity = 0;
+
+    //GERE LA MARCHANDISE DU VAISSEAU
     private Integer res = null;
 
     // LES PASSAGERS DU VAISSEAU
@@ -45,15 +53,15 @@ public class Ship extends Actor {
 
     public Ship(Zone zone, float sp, float objX, float objY, float dirX, float dirY, int side, Color _clrVehicle, Integer _res, boolean toward) {
         super(zone);
-        
+
         var = new Functions();
         this.clrVehicle = _clrVehicle;
         Random generator = new Random();
-        this.res=_res;
+        this.res = _res;
 
         // TAILLE DU VAISSEAU ALEATOIRE
         int iSize = generator.nextInt(12) + 1;
-        
+
         if (iSize <= 4) {
             this.size = "S";
             this.addpassagers(2);
@@ -72,8 +80,8 @@ public class Ship extends Actor {
         } else if (iSize <= 11) {
             this.size = "XL";
             this.addpassagers(45);
-            this.volume = 42; 
-            
+            this.volume = 42;
+
         } else {
             this.size = "C";
             this.addpassagers(4);
@@ -91,13 +99,14 @@ public class Ship extends Actor {
         this.directionX = dirX;
         this.directionY = dirY;
         this.wShip = side;
-        
+
         this.towardSS = toward;
-        
+
         this.rdrDetectRect = new Rectangle(wShip, wShip);
 
     }
-    
+
+    //DETECTION SUR LE RADAR 
     public void radarBeamCollisionCheck(Shape radarLine) {
         if (radarLine == null) {
             return;
@@ -105,28 +114,30 @@ public class Ship extends Actor {
 
         if (radarLine.intersects(rdrDetectRect) || visible) {
             vOpacity = GREEN_FIX;
-            clrVehicle = new Color(clrVehicle.getRed()/255, clrVehicle.getGreen()/255, clrVehicle.getBlue()/255, vOpacity);
+            clrVehicle = new Color(clrVehicle.getRed() / 255, clrVehicle.getGreen() / 255, clrVehicle.getBlue() / 255, vOpacity);
         } else {
             vOpacity -= 0.01;
             if (vOpacity < 0) {
                 vOpacity = 0;
             }
-            clrVehicle = new Color(clrVehicle.getRed()/255, clrVehicle.getGreen()/255, clrVehicle.getBlue()/255, vOpacity);
+            clrVehicle = new Color(clrVehicle.getRed() / 255, clrVehicle.getGreen() / 255, clrVehicle.getBlue() / 255, vOpacity);
         }
     }
 
     public void draw(Graphics g) {
         rdrDetectRect.setLocation((int) vehicleX, (int) vehicleY);
-        
+
         g.setColor(clrVehicle);
 
         g.fillOval(rdrDetectRect.x, rdrDetectRect.y, rdrDetectRect.width, rdrDetectRect.height);
     }
-
+    
+    //COLLISION BOX DU VAISSEAU
     public Area vehicleCollision() {
         return new Area(new Ellipse2D.Double((double) (this.vehicleX), (double) (this.vehicleY), (double) this.wShip, (double) this.wShip));
     }
-
+    
+    //GERE LES MOUVEMENTS DU VAISSEAU SUR LE RADAR
     public void move() {
         if (moving) {
             this.setObjectX(this.getObjectX() + this.speed * directionX);
@@ -162,6 +173,7 @@ public class Ship extends Actor {
     public boolean getHasChosen() {
         return this.hasChosen;
     }
+
     public boolean getDestroyed() {
         return this.destroyed;
     }
@@ -230,14 +242,14 @@ public class Ship extends Actor {
         return size;
     }
 
-    public int getSide(){
+    public int getSide() {
         return wShip;
     }
-    
-    public boolean getTowardSS(){
+
+    public boolean getTowardSS() {
         return this.towardSS;
     }
-    
+
     public void setSize(String size) {
         this.size = size;
     }
@@ -271,9 +283,7 @@ public class Ship extends Actor {
                 || (bestHall != null)
                 || ((bestHall.getMaxCapacity() - bestHall.getNumberOfActors()) >= this.getPassagers().size())) {
             this.setLocation(destination);
-            for (Person p : this.getPassagers()) {
-                this.destination.addActor(p);
-            }
+            this.destination.addCapacity(this.passagers.size());
             this.setPassagers(new ArrayList<Person>());
         }
 

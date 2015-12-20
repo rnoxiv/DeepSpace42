@@ -8,6 +8,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
+//classe créant la partie visuelle des hangars sur l'affichage
 public class DocksPanel {
 
     private final String name;
@@ -46,10 +47,6 @@ public class DocksPanel {
             g.drawString(infos, width / 2 - textWidth / 2, height + height / 3 + (i - docksList.size()+4) * 2 * (textHeight+width/20));
 
         }
-
-    }
-
-    public void update() {
 
     }
 

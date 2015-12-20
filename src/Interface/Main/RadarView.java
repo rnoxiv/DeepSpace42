@@ -21,6 +21,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+/**Panel principal lié au radar**/
 public class RadarView extends MainPanel {
 
     private static final String IPANELNAME = "Ships";
@@ -54,6 +55,7 @@ public class RadarView extends MainPanel {
     private final Rectangle2D arcRect = new Rectangle2D.Float();
     private final Ellipse2D.Float ellipse = new Ellipse2D.Float();
     private Rectangle station;
+    
     /**
      * Radar position
      */
@@ -73,6 +75,7 @@ public class RadarView extends MainPanel {
      * Missiles
      */
     private int numMissiles = 3;
+    
     /**
      * Radar angle
      */
@@ -203,12 +206,13 @@ public class RadarView extends MainPanel {
         for (int i = 0; i < listVehicles.size(); i++) {
             listVehicles.get(i).draw(g);
         }
-
+        
+        //affiche centre du radar : la station
         g.setColor(Color.GREEN);
-        //g.fillRect((int) centerX - 15, (int) centerY - 15, 30, 30);
         g.fillRect(station.x, station.y, station.width, station.height);
 
         g.setColor(FRONT_PASSIVE_RADAR_PAINT);
+        
         // backup de la rotation afin que l'écran ne bouge pas
         AffineTransform backTransform = g.getTransform();
 
@@ -225,7 +229,8 @@ public class RadarView extends MainPanel {
         g.setTransform(backTransform);
 
     }
-
+    
+    //gère la taille du shield et son affichage selon son activation
     public void shieldMechanism() {
 
         if (shieldOn) {
@@ -266,11 +271,14 @@ public class RadarView extends MainPanel {
     public void setAsteroid(boolean b) {
         this.asteroid = b;
     }
-
+    
+    
+    //collision box de la station
     public Area stationCollision() {
         return new Area(new Rectangle((int) (centerX - tWidth / 128), (int) (centerY - tWidth / 128), (int) tWidth / 64, (int) tWidth / 64));
     }
-
+    
+    //gère le déplacement des éléments présents sur le panel si l'info panel est activé
     public void slideRadar() {
         float lastCX = centerX;
         float lastCY = centerY;
@@ -307,7 +315,8 @@ public class RadarView extends MainPanel {
     public void addVehicle(Ship v) {
         listVehicles.add(v);
     }
-
+    
+    //crée un vaisseau aléatoire (ou pas)
     public void createVehicle(int n, Integer res) {
         for (int i = 0; i < n; i++) {
             int sp = var.randNum(1, 3);
@@ -356,7 +365,8 @@ public class RadarView extends MainPanel {
             listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res, towardSS));
         }
     }
-
+    
+    //crée un vaisseau sortant de la station
     public void createVehicleFromDocks(int n, Integer res) {
         for (int i = 0; i < n; i++) {
             int sp = var.randNum(1, 3);
@@ -379,7 +389,8 @@ public class RadarView extends MainPanel {
             listVehicles.add(new Ship(space, speed, posX, posY, dirX, dirY, side, color, res, false));
         }
     }
-
+    
+    //crée un Asteroid
     public void createAsteroid() {
         AsteroidIncoming Asteroid = new AsteroidIncoming();
         int sp = var.randNum(1, 2);
@@ -416,7 +427,8 @@ public class RadarView extends MainPanel {
         listAsteroids.add(AsteroidVehicle);
         asteroid = false;
     }
-
+    
+    //détermine si un vaisseau et sur le radar selon sa distance de la station
     public void checkVehicleOnRadar() {
         int numVehicleOnRadar = 0;
         for (int i = 0; i < listVehicles.size(); i++) {
@@ -440,7 +452,8 @@ public class RadarView extends MainPanel {
             empty = true;
         }
     }
-
+    
+    //vérifie si un Astéroid a été détruit
     public void checkAsteroidDestroyed() {
         for (int i = 0; i < listAsteroids.size(); i++) {
             Ship a = listAsteroids.get(i);
@@ -476,7 +489,8 @@ public class RadarView extends MainPanel {
             }
         }
     }
-
+    
+    //gère le radar, son balayage et l'affichage des éléments touchés par le balayage
     public void radarScan() {
         for (int i=0; i<listVehicles.size();i++) {
             listVehicles.get(i).radarBeamCollisionCheck(lineRadar);

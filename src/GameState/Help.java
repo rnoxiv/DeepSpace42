@@ -1,3 +1,7 @@
+/**
+ * Etat Help, non implémenté pour l'instant
+ */
+
 package GameState;
 
 import Handlers.Keys;

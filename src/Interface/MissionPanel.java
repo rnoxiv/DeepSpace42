@@ -7,6 +7,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
+//gère l'affichage des missions du jeux
 public class MissionPanel {
 
     private final String name;

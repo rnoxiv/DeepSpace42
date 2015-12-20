@@ -5,28 +5,21 @@ import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 
+//DEFINI UNE RESSOURCE, SA CAPACITE MAX, SA CAPACITE ACTUELLE, SA POSITION DANS L'AFFICHAGE, SON STATUT DE COMMANDE, ...
 public class Ressource {
 
     private String name;
 
-    private Color color;
-
-    private boolean isDecreasing = false;
-
-    private boolean createShip = false;
-
-    private boolean command = false, canCommand = true;
-    protected static final float restoreRate = 0.0001f;
-    protected static final float totalCommandTime = 1f;
-    protected float currentCommandTime = totalCommandTime;
-
-    private boolean showInfo = false;
+    private boolean command = false, canCommand = true, isDecreasing = false, createShip = false, showInfo = false;
+    private static final float restoreRate = 0.0001f;
+    private static final float totalCommandTime = 1f;
+    private float currentCommandTime = totalCommandTime,  opacity = 0, currentCap;
 
     private static final Color green = new Color(0, 255, 0);
     private static final Color red = new Color(255, 0, 0);
     private static final Color orange = new Color(255, 160, 0);
-    private float opacity, currentCap;
-
+    private Color color = green;
+    
     private final int initPosX;
 
     private int maxCap, posX, posY, widthP, heightP;
@@ -41,10 +34,10 @@ public class Ressource {
         this.posY = _y;
         this.widthP = _w / 15;
         this.heightP = 2 * _h / 3;
-        this.color = green;
-        this.opacity = 0;
     }
-
+    
+    
+    //AFFICHAGE DE LA RESSOURCE DANS LE PANEL RESSOURCE
     public void draw(Graphics2D g) {
         g.setColor(Color.BLACK);
         int capa = this.maxCap / 10;
@@ -61,17 +54,17 @@ public class Ressource {
         g.drawString("0%", this.posX - (this.widthP / 2), this.posY + heightP + (heightP / 10));
         g.drawString("50%", this.posX - (this.widthP / 2), pStart - (4 * heightP / 10));
         g.drawString("100%", this.posX - (this.widthP / 2), this.posY + (heightP / 10));
-        
-        if (this.currentCap <= 0) {
+
+        if ((int)this.currentCap <= 1) {
             changeOpacity();
             this.color = new Color(1f, 0, 0, opacity);
             this.currentCap = 0;
-        } else if ((int)this.currentCap <= capa) {
+        } else if ((int) this.currentCap <= capa) {
             this.color = red;
             //JukeBox.play("lowRessource", 1);
-        } else if ((int)this.currentCap <= (5 * capa)) {
+        } else if ((int) this.currentCap <= (5 * capa)) {
             this.color = orange;
-        } else if ((int)this.currentCap <= (10 * capa)) {
+        } else if ((int) this.currentCap <= (10 * capa)) {
             this.color = green;
         }
 
@@ -86,14 +79,16 @@ public class Ressource {
         g.drawRect(this.posX, this.posY + (heightP / 10), widthP, heightP);
         g.fillRect(this.posX, this.posY + (heightP / 10) + (heightP - (int) ratio), widthP, (int) ratio);
 
-        if (!"POPULATION".equals(this.name)){
+        if (!"POPULATION".equals(this.name)) {
             this.color = green;
             g.drawRect(this.posX, this.posY + heightP + (heightP / 8), (int) (totalCommandTime * 100), (heightP / 50));
             g.setColor(Color.blue);
             g.fillRect(this.posX, this.posY + heightP + (heightP / 8), (int) (currentCommandTime * 100), (heightP / 50));
         }
     }
-
+    
+    
+    //GESTION DU COOLDOWN LORS DE LA COMMANDE D'UNE RESSOURCE
     public void coolDown() {
         if (this.currentCommandTime != this.totalCommandTime) {
             this.currentCommandTime += this.restoreRate;
@@ -103,7 +98,8 @@ public class Ressource {
             }
         }
     }
-
+    
+    //GESTION DE LA COMMANDE D'UNE RESSOURCE
     public void commandRessource() {
         if (this.currentCommandTime == this.totalCommandTime) {
             this.command = true;
@@ -116,7 +112,8 @@ public class Ressource {
             this.canCommand = false;
         }
     }
-
+    
+    //CHANGE L'OPACITE QUAND LA CAPACIT2 ACTUELLE EST DE 0
     public void changeOpacity() {
         if (this.isDecreasing) {
             this.opacity -= 0.01;
@@ -204,7 +201,7 @@ public class Ressource {
     public boolean getCommand() {
         return this.command;
     }
-    
+
     public boolean getCanCommand() {
         return this.canCommand;
     }

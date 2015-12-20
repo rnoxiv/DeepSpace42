@@ -7,10 +7,11 @@ import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 
+//classe permettant l'affichage du panel quit
 public class EchapPanel {
 
-    private String question = "You sure about leaving the Simulation mate?", title = "DEEP SPACE 42";
-    private String[] options = {"Exit to Menu", "Quit", "Cancel"};
+    private final String question = "You sure about leaving the Simulation mate?", title = "DEEP SPACE 42";
+    private final String[] options = {"Exit to Menu", "Quit", "Cancel"};
 
     private boolean exit = false, stay = false, leaveSimulation = false;
     ;

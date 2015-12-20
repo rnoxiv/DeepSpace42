@@ -28,7 +28,8 @@ public class GameStateManager {
         loadState(currentState);
 
     }
-
+    
+    //charge l'état du jeu correspondant
     private void loadState(int state) throws IOException, InterruptedException {
         if (state == SIMULATIONSTATE) {
             gameStates[state] = new Simulation(this);
@@ -40,11 +41,13 @@ public class GameStateManager {
             gameStates[state] = new Help(this);
         }
     }
-
+    
+    //decharge l'état du jeu correspondant
     private void unloadState(int state) {
         gameStates[state] = null;
     }
-
+    
+    //décharge l'état du jeu actuel pour charger l'état du jeu demandé
     public void setState(int state) throws IOException, InterruptedException {
         unloadState(currentState);
         currentState = state;

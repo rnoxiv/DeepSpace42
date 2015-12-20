@@ -15,29 +15,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+//CLASSE DEFINISSANT UN BATIMENT
 public class Building extends Zone {
-
-    private String type;
-
-    private boolean showInfo, missile = false;
-
+    
+    //BOOLEANS GERANT LE BUILDING
+    private boolean showInfo = false, missile = false, isFire = false, isFight = false, selected, happinessLow = false;
+    
+    //LISTE DES BATIMENTS VOISINS
     private ArrayList<Building> neighbours = new ArrayList();
-
-    private final int maxCapacity, fontSize;
+    
+    private final int maxCapacity, fontSize, initPosX, widthConst = 10;
     private int currentCapacity, width, height, posX, posY;
-
+    
+    //INDICE DE COLERE DU BATIMENT
     private float happiness;
 
-    private final int initPosX, widthConst = 10;
-    private Functions var = new Functions();
+    private final Functions var = new Functions();
     
-    private boolean isFire = false;
-    private boolean isFight = false;
-    private boolean selected, happinessLow = false;
-    private Color color;
-
+    //GESTION DES COULEURS DU BATIMENT
     private static final Color colorBasic = Color.green;
     private static final Color colorSelected = Color.white;
+    private Color color = colorBasic;
     private int red = 0, blue = 0, green = 0;
     private boolean orange, darkBlue;
 
@@ -47,15 +45,11 @@ public class Building extends Zone {
 
         this.maxCapacity = maxCap;
         this.currentCapacity = 0;
-        this.happiness = var.randNum(20,80);;
+        this.happiness = var.randNum(20, 80);;
         this.posX = x;
         this.posY = y;
         this.initPosX = x;
         this.fontSize = w / 20;
-
-        this.showInfo = false;
-
-        this.color = colorBasic;
 
     }
 
@@ -63,27 +57,25 @@ public class Building extends Zone {
         super(name);
         this.maxCapacity = maxCap;
         this.currentCapacity = (4 * maxCap) / 10;
-        this.happiness = var.randNum(20,80);
+        this.happiness = var.randNum(20, 80);
         this.posX = x;
         this.posY = y;
         this.initPosX = x;
         this.fontSize = w / 22;
 
-        this.showInfo = false;
-
-        this.color = colorBasic;
-
     }
-
+    
+    //PURGE UN BATIMENT CAD TUE TOUTE LES PERSONNES PRESENTES ET ETEIND UN INCENDIE
     public void purge() {
         this.currentCapacity = 0;
         this.isFire = false;
         this.isFight = false;
     }
-
+    
+    //EVACUE LES PERSONNES PRESENTES DANS DES BATIMENTS VOISINS
     public void evacuate() {
         Random rand = new Random();
-        if(this.neighbours.isEmpty()){
+        if (this.neighbours.isEmpty()) {
             return;
         }
         int evacuateToBuilding = rand.nextInt(this.neighbours.size());
@@ -98,54 +90,52 @@ public class Building extends Zone {
         }
         this.currentCapacity = 0;
     }
+    
+    //GERE L'INDICE DE MECONTENTEMENT DU BATIMENT
+    public boolean happiness(ArrayList<Ressource> _r) {
+        int a = 0;
+        int b = 0;
+        for (int i = 1; i < _r.size(); i++) {
+            a += _r.get(i).getMaxcap();
+            b += _r.get(i).getCurrentcap();
+        }
 
-    public boolean happiness(ArrayList<Ressource> _r){
-        int a=0;
-        int b=0;
-        for (int i=1;i<_r.size();i++){
-            a+=_r.get(i).getMaxcap();
-            b+=_r.get(i).getCurrentcap();
-        }
-        
-        if(this.currentCapacity<=0){
-            happiness=0;
-        }
-        else if((a/b)<0.3 || this.currentCapacity>((9*this.maxCapacity)/10)){
-            float fireHapbis=0;
-            if (isFire || isFight){
-                fireHapbis=0.01f;
+        if (this.currentCapacity <= 0) {
+            happiness = 0;
+        } else if ((a / b) < 0.3 || this.currentCapacity > ((9 * this.maxCapacity) / 10)) {
+            float fireHapbis = 0;
+            if (isFire || isFight) {
+                fireHapbis = 0.01f;
             }
-            happiness-=(0.001 + fireHapbis);
-            fireHapbis=0;
-        }
-        else if ((a/b)<0.5 || this.currentCapacity>((8*this.maxCapacity)/10)){
-            float fireHap=0;
-            if (isFire || isFight){
-                fireHap=0.01f;
+            happiness -= (0.001 + fireHapbis);
+            fireHapbis = 0;
+        } else if ((a / b) < 0.5 || this.currentCapacity > ((8 * this.maxCapacity) / 10)) {
+            float fireHap = 0;
+            if (isFire || isFight) {
+                fireHap = 0.01f;
             }
-            happiness-=(0.00001+fireHap);
-            fireHap=0;
-        }
-        else{
-            if(isFire || isFight){
-                happiness-=0.001;
-            }
-            else{
-                happiness+=0.001;
+            happiness -= (0.00001 + fireHap);
+            fireHap = 0;
+        } else {
+            if (isFire || isFight) {
+                happiness -= 0.001;
+            } else {
+                happiness += 0.001;
             }
         }
-        if(happiness <=0){
-            this.happiness=0;
+        if (happiness <= 0) {
+            this.happiness = 0;
         }
-        if (happiness>=100){
-            this.happiness=100;
+        if (happiness >= 100) {
+            this.happiness = 100;
         }
-        if(happiness<25){
-            happinessLow=true;
+        if (happiness < 25) {
+            happinessLow = true;
         }
         return happinessLow;
     }
-
+    
+    //GERE L'AFFICHAGE DU BATIMENT
     public void draw(Graphics2D g) {
         g.setFont(new Font("TimesRoman", Font.PLAIN, this.fontSize));
         AffineTransform affinetransform = new AffineTransform();
@@ -163,7 +153,8 @@ public class Building extends Zone {
         g.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
         g.drawString(this.name, this.posX - textWidth / 2 + widthConst / 4, this.posY + widthConst / 4);
     }
-
+    
+    //CHANGE LA COULEUR DU BATIMENT SELON SON STATUT
     public void changeColor(Graphics2D g) {
         if (this.isFire) {
             if (!this.orange && this.green <= 140) {
@@ -196,7 +187,7 @@ public class Building extends Zone {
         }
         this.color = new Color(this.red, this.green, this.blue);
     }
-
+    
     public ArrayList<Building> getNeighbours() {
         return this.neighbours;
     }
@@ -258,10 +249,6 @@ public class Building extends Zone {
 
     public int getNumberOfActors() {
         return this.getActors().size();
-    }
-
-    public String getType() {
-        return type;
     }
 
     public int getWidth() {
@@ -339,10 +326,6 @@ public class Building extends Zone {
 
     public void setColorBuilding(Color c) {
         this.color = c;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public void showInfo(boolean b) {

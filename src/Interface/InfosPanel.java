@@ -12,6 +12,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
+//classe permettant l'affichage des informations relatives aux 3 mainsPanels
 public class InfosPanel {
 
     private final String name;
@@ -45,7 +46,7 @@ public class InfosPanel {
         ressourcesList = new ArrayList<>();
         buildingsList = new ArrayList<>();
     }
-
+    
     private void setClassList(Class c) {
         if (c == Ship.class) {
             this.classList = VEHICLE;
@@ -139,7 +140,7 @@ public class InfosPanel {
         }
 
     }
-
+    
     public void drawRessources(Graphics2D g) {
 
         int fontSize = width / 20;

@@ -45,7 +45,7 @@ public class Dock extends Building {
     public Building findBestHall() {
         ArrayList<Building> hallsPossibles = new ArrayList();
         for (Building b : this.getNeighbours()) {
-            if ("HallArrivee".equals(b.getType())) {
+            if ("ARRIVALS/DEPARTURES".equals(b.getName())) {
                 hallsPossibles.add(b);
             }
         }

@@ -12,16 +12,19 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+//Panel de l'appel des secours
 public class callUrgencesPanel {
-
-    private ArrayList<Urgence> urgences = new ArrayList();
     
+    //gère les différents types d'urgences
+    private ArrayList<Urgence> urgences = new ArrayList(); 
     public static final int FIREDepa = 0;
     public static final int POLICE = 1;
     public static final int AMBULANCE = 2;
     
+    //Urgence appelé
     private Urgence uToSend;
-
+    
+    //String affiché dans les différentes phases d'appels
     private static final String question1 = "Write down the urgence number you would like to call :";
     private static final String question2 = "Please select where to send help on the panel beside : ";
     private static final String urgenceSentMessage = "Urgences are dispatching, please wait end of operation : ";
@@ -30,13 +33,14 @@ public class callUrgencesPanel {
     private static final String[] nums = {"17", "18"};
     private String number = "";
     private static final int MAX_NUM = 1;
-
+    
+    //Timer
     private TimerTask taskPerformer;
     private Timer timer;
 
     private boolean goodNum = false;
     private final int tWidth, width, tHeight, height, widthCoolDown;
-
+    
     public callUrgencesPanel(int tW, int tH) {
         super();
         this.tWidth = tW;
@@ -48,6 +52,7 @@ public class callUrgencesPanel {
         urgences.add(new Urgence(new Zone(""), "18", 10));
         urgences.add(new Urgence(new Zone(""), "17", 7));
         
+        //urgence à envoyer par défaut
         uToSend = urgences.get(FIREDepa);
         
         taskPerformer = new TimerTask() {

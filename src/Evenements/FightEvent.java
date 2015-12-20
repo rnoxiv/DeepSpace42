@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.TimerTask;
 
+//Evennement Bagarre, hérite de la classe Evennement
 public class FightEvent extends Evenement{
 
     public FightEvent(ArrayList<Building> l) {

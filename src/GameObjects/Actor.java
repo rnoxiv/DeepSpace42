@@ -1,8 +1,6 @@
 package GameObjects;
 
-
-
-
+//CLASSE ACTOR
 public abstract class Actor {
     
     // L'EMPLACEMENT DE L'ACTOR

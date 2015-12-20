@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.TimerTask;
 
+//Evennement Incendie, hérite de la classe Incendie
 public class FireEvent extends Evenement{
 
     public FireEvent(ArrayList<Building> l) {

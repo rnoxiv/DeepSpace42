@@ -1,3 +1,6 @@
+/**
+ * Etat Menu, premier état de jeu
+ */
 package GameState;
 
 import Handlers.Arduino;
@@ -16,7 +19,6 @@ import java.awt.Toolkit;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
-import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,26 +26,35 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class Intro extends GameState {
+    
+    // LIEN AVEC L'ARDUINO
+    private final Arduino obj;
 
-    private Arduino obj;
-
-    private int width, height, eventCount;
-
+    private int width, height;
+    
+    //TEXTE DE L'INTRO
     private List<String> text;
     private static final String title1 = "DEEP SPACE", title2 = "42", action = "press Enter to continue";
-
-    private String[] options = {"Start", "Help", "Quit"};
+     
+    //CHOIX ET GESTION DES CHOIX DU MENU
+    private final String[] options = {"Start", "Help", "Quit"};
     private int currentSelection = 0;
-
-    private Font introFont, subFont;
+    
+    //FONT DU MENU
+    private Font introFont;
+    private final Font subFont;
     private float subFontSize, fontSize;
+    
+    //COULEUR DU TEXTE
     private final float WHITE_FIX = 1.0f;
-    private Color clrObject;
+    private Color clrObject = new Color(WHITE_FIX, WHITE_FIX, WHITE_FIX, 1.0f);
     private float objOpacity = 0, totOpacity = 0, bgOpacity = 0;
-
+    
+    //IMAGE DE FOND
     private Image bgImg;
-
-    private boolean isDecreasing, hasFontDecreased, eventWait, screenFilled, intro, menu;
+    
+    //BOOLEAN GERANT L'INTRO ET LE MENU
+    private boolean isDecreasing = true, hasFontDecreased = false,screenFilled = false,intro = true,menu = false;
 
     public Intro(GameStateManager gsm) {
         super(gsm);
@@ -67,14 +78,7 @@ public class Intro extends GameState {
         text.add(title1);
         text.add(title2);
         subFontSize = Math.min(width, height);
-        clrObject = new Color(WHITE_FIX, WHITE_FIX, WHITE_FIX, 1.0f);
-        isDecreasing = true;
-        hasFontDecreased = false;
-        eventWait = false;
-        screenFilled = false;
-        intro = true;
-        menu = false;
-        eventCount = 0;
+
         JukeBox.load("/SFX/bgIntro1.mp3", "bgIntro1");
         JukeBox.load("/SFX/bgIntro2.mp3", "bgIntro2");
         JukeBox.load("/SFX/menuselect.mp3", "menuselect");

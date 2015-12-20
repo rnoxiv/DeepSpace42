@@ -1,3 +1,7 @@
+/**
+ * classe functions, qui possède plusieurs fonctions utiles et réutilisables sur l'ensemble du code
+ */
+
 package Utilities;
 
 import java.awt.Color;

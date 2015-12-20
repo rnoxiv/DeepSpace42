@@ -1,19 +1,24 @@
-    package GameObjects.Actors;
+package GameObjects.Actors;
 
 import GameObjects.Actor;
 import GameObjects.Zone;
 import java.util.Timer;
 import java.util.TimerTask;
 
+    //CLASSE PERMETTANT DE DEFINIR UNE URGENCE
 public class Urgence extends Actor {
-
+    //NUMERO DE L'URGENCE
     private String number;
+    
+    //BOOLEANS GERANT L'URGENCE
     private boolean busy = false, started = false, done = false;
-    private int time;
-    private int used = 0;
+    
+    //GERE LE COOLDOW ET AUTRES DE L'URGENCE
+    private int time, used = 0;
     private static final int usedMax = 5;
     private int actualTime;
-
+    
+    //TIMER
     private TimerTask taskPerformer;
     private Timer timer;
 
@@ -25,7 +30,8 @@ public class Urgence extends Actor {
         this.timer = new Timer();
 
     }
-
+    
+    //SI LES URGENCES SONT EN SERVICES
     public void inService() {
         if (!this.started) {
             this.done = false;
@@ -55,7 +61,7 @@ public class Urgence extends Actor {
     public String getNumber() {
         return this.number;
     }
-    
+
     public int getUsed() {
         return this.used;
     }
@@ -63,7 +69,7 @@ public class Urgence extends Actor {
     public boolean getBusy() {
         return this.busy;
     }
-    
+
     public boolean getOnTheirWay() {
         return this.started;
     }
@@ -83,11 +89,11 @@ public class Urgence extends Actor {
             this.used = this.usedMax;
         }
     }
-    
-    public void setUsed(int i){
+
+    public void setUsed(int i) {
         this.used = i;
     }
-    
+
     public void setNumber(String _number) {
         this.number = _number;
     }

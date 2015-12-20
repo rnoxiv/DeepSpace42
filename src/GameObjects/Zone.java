@@ -61,12 +61,6 @@ public class Zone {
             System.out.println("Cet objet n'existe pas actuellement dans cette liste.");
         }
     }
-    //DEPLACE UN ACTOR VERS UNE NOUVELLE ZONE EN FONCTION DE SON INDEX
-    public void moveActor(int index, Zone newZone) {
-        Actor newActor = this.getActor(index);
-        this.removeActor(index);
-        newZone.addActor(newActor);
-    }
     
     //DEPLACE UN ACTOR VERS UNE NOUVELLE ZONE
     public void moveActor(Actor actor, Zone newZone) {

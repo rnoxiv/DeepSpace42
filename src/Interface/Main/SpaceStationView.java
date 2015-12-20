@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Random;
 
+//Affiche les batiments sur le mainPanel
 public class SpaceStationView extends MainPanel {
 
     private static final String IPANELNAME = "Buildings";
@@ -109,7 +110,9 @@ public class SpaceStationView extends MainPanel {
         }
         return docksList;
     }
-
+    
+    
+    //gère la flucutation de personnes de la station vers l'espace
     public void peopleQuitDocksInSpaceDirection() {
         for (int i = 0; i < docksList.size(); i++) {
             int randCap = var.randNum(0, docksList.get(i).getCurrentCapacity()) / 100;
@@ -124,7 +127,8 @@ public class SpaceStationView extends MainPanel {
             totalCapOut = 0;
         }
     }
-
+    
+    //gère la flucutation de personnes d'un batiments bers un autre batiment
     public void peopleQuitBuildingInBuildingDirection() {
         for (int i = 0; i < listBuilding.size(); i++) {
             if (!"COMMAND ROOM".equals(listBuilding.get(i).getName()) | !"DOCK A".equals(listBuilding.get(i).getName()) | !"DOCK B".equals(listBuilding.get(i).getName()) | !"DOCK C".equals(listBuilding.get(i).getName()) | !"DOCK D".equals(listBuilding.get(i).getName()) | !"DOCK E".equals(listBuilding.get(i).getName())) {
@@ -140,7 +144,8 @@ public class SpaceStationView extends MainPanel {
             }
         }
     }
-
+    
+    //gère la baisse de personne
     public void peopleDying() {
 
         int randBuilding = var.randNum(1, listBuilding.size());
@@ -153,7 +158,8 @@ public class SpaceStationView extends MainPanel {
         }
 
     }
-
+    
+    //gère la flucutation de personnes globale
     public void peopleTraffic() {
         peopleQuitDocksInSpaceDirection();
         peopleQuitBuildingInBuildingDirection();
@@ -183,7 +189,7 @@ public class SpaceStationView extends MainPanel {
         fireBuildingNumber = 0;
         angryBuildingNumber = 0;
     }
-
+    
     public void slideMap() {
         if (detailBarOn && isSliding) {
             for (Building b : listBuilding) {

@@ -11,14 +11,16 @@ public class Evenement {
     protected int x = 0;
     protected final int y = 0;
     
-    protected final ArrayList<Building> buildingList;
-    protected ArrayList<ArrayList<Building>> neighboursList = new ArrayList();
+    protected final ArrayList<Building> buildingList; //LISTE DE TOUS LES BATIMENTS
+    protected ArrayList<ArrayList<Building>> neighboursList = new ArrayList(); //LISTE DES BATIMENTS VOISINS
     protected ArrayList<Building> a = new ArrayList();
-    protected ArrayList<Building> buildingListEvent = new ArrayList();
+    protected ArrayList<Building> buildingListEvent = new ArrayList(); //LISTE DES BATIMENTS TOUCHES PAR L'EVENT
     
+    //TIMER 
     protected Timer timerEvent;
     protected TimerTask taskPerformer;
     
+    //BOOLEANS GERANT L'EVENT
     protected boolean launched = false, started = false, firstLoop = false;
     
     public Evenement(ArrayList<Building> l) {

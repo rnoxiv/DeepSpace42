@@ -3,7 +3,7 @@ package Evenements;
 import Utilities.Functions;
 import java.awt.Color;
 
-//CREE UN ASTEROID DE TAILLE ALEATOIRE!
+//CREE UN ASTEROID DE TAILLE ALEATOIRE ET DE COULEUR ROUGE!
 public class AsteroidIncoming{
     private final Functions var = new Functions();
     public AsteroidIncoming(){
